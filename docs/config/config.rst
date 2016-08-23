@@ -1,1 +1,0 @@
-.. cmake-source:: ../../Config/OpenCMISSDefaultConfig.cmake
