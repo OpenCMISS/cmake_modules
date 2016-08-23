@@ -7,3 +7,5 @@ unix/
 CMakeLists.txt.user
 *.swp
 *.pyc
+.project
+.pydevproject
