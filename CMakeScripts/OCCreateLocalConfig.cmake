@@ -30,7 +30,7 @@ if (NOT EXISTS ${OPENCMISS_LOCALCONFIG})
         endif()
         set(OC_USE_SYSTEM_FLAGS "${OC_USE_SYSTEM_FLAGS}#set(OC_SYSTEM_${COMPONENT} ${_VALUE})${_NL}")
     endforeach()
-    configure_file(${OPENCMISS_MANAGE_DIR}/Templates/OpenCMISSLocalConfig.template.cmake
+    configure_file(${OPENCMISS_MODULE_PATH}/Templates/OpenCMISSLocalConfig.template.cmake
         ${OPENCMISS_LOCALCONFIG})
     unset(OC_USE_SYSTEM_FLAGS)
     unset(OC_USE_FLAGS)
