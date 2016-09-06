@@ -11,7 +11,7 @@ set(CMAKE_COMPATIBLE YES)
 # check if system cmake has ssl support (dependent on whatever current version is running it!)
 string(REPLACE "." "_" _CMAKE_VERSION_UNDERSCORE "${CMAKE_VERSION}")
 set(_HTTPS_CHECK_VAR "CMAKE_${_CMAKE_VERSION_UNDERSCORE}_HAS_HTTPS")
-message(STATUS "Checking https CMAKE_${_CMAKE_VERSION_UNDERSCORE}_HAS_HTTPS: ${CMAKE_${_CMAKE_VERSION_UNDERSCORE}_HAS_HTTPS}"
+message(STATUS "Checking https CMAKE_${_CMAKE_VERSION_UNDERSCORE}_HAS_HTTPS: ${CMAKE_${_CMAKE_VERSION_UNDERSCORE}_HAS_HTTPS}")
 if (NOT ${_HTTPS_CHECK_VAR}) 
     message(STATUS "Checking CMake-${CMAKE_VERSION} HTTPS support ...")
     set(CMAKE_HTTPS_TEST_URL "https://raw.githubusercontent.com/OpenCMISS/manage/v1.0/README.rst")
