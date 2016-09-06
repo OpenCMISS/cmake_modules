@@ -11,10 +11,11 @@ set(CMAKE_COMPATIBLE YES)
 # check if system cmake has ssl support (dependent on whatever current version is running it!)
 string(REPLACE "." "_" _CMAKE_VERSION_UNDERSCORE "${CMAKE_VERSION}")
 set(_HTTPS_CHECK_VAR "CMAKE_${_CMAKE_VERSION_UNDERSCORE}_HAS_HTTPS")
+message(STATUS "Checking https CMAKE_${_CMAKE_VERSION_UNDERSCORE}_HAS_HTTPS: ${CMAKE_${_CMAKE_VERSION_UNDERSCORE}_HAS_HTTPS}"
 if (NOT ${_HTTPS_CHECK_VAR}) 
     message(STATUS "Checking CMake-${CMAKE_VERSION} HTTPS support ...")
     set(CMAKE_HTTPS_TEST_URL "https://raw.githubusercontent.com/OpenCMISS/manage/v1.0/README.rst")
-    set(CMAKE_HTTPS_TEST_DOWNLOAD_PATH "${OPENCMISS_ROOT}/build/cmake_https_test_download.txt")
+    set(CMAKE_HTTPS_TEST_DOWNLOAD_PATH "${CMAKE_CURRENT_BINARY_DIR}/cmake_https_test_download.txt")
     file(DOWNLOAD ${CMAKE_HTTPS_TEST_URL} ${CMAKE_HTTPS_TEST_DOWNLOAD_PATH} STATUS https_status TIMEOUT 60 INACTIVITY_TIMEOUT 60)
     list(GET https_status 0 HTTPS_TEST_DOWNLOAD_ERROR_CODE)
     list(GET https_status 1 HTTPS_TEST_DOWNLOAD_ERROR_STRING)
@@ -88,7 +89,6 @@ else(WIN32)
                 -DCMAKE_MIN_MINOR_VERSION=${CMAKE_MIN_MINOR_VERSION}
                 -DCMAKE_MIN_PATCH_VERSION=${CMAKE_MIN_PATCH_VERSION}
                 -DOPENCMISS_CMAKE_MIN_VERSION=${OPENCMISS_CMAKE_MIN_VERSION}
-                -DOPENCMISS_ROOT=${OPENCMISS_ROOT}
                 -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
                 -DCMAKE_MINIMUM_REQUIRED_VERSION=2.6
                 -P ${OPENCMISS_MANAGE_DIR}/CMakeScripts/ScriptCMakeBuild.cmake
