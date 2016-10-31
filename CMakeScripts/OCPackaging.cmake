@@ -38,7 +38,7 @@ set(PACKAGE_ARCH_DESC "${MPI} / ${CMAKE_SYSTEM_NAME} (${MACHINE}bit)")
 
 macro(CREATE_PACKAGING_TARGET)    
     configure_file(
-        "${OPENCMISS_MANAGE_DIR}/Templates/CPackProject.template.cmake"
+        "${OPENCMISS_MODULE_PATH}/Templates/CPackProject.template.cmake"
         "${OC_PACKAGE_ROOT}/${PACKAGE_TYPE}/source/CMakeLists.txt"
         @ONLY
     )
