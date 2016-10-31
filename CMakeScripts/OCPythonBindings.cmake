@@ -33,7 +33,7 @@ if (IRON_WITH_Python_BINDINGS OR ZINC_WITH_Python_BINDINGS)
             set(IS_VIRTUALENV true)
         endif()
         configure_file(
-            "${OPENCMISS_MANAGE_DIR}/Templates/python_virtualenv.in.py"
+            "${OPENCMISS_MODULE_PATH}/Templates/python_virtualenv.in.py"
             "${VIRTUALENV_INFO_FILE}" 
             @ONLY
         )
