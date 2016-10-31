@@ -12,7 +12,7 @@
 
 # ================================================================
 # Utils 
-#  -as long as we dont have more utilities i wont change everything to have that in the "Utilities.cmake" script
+#  -as long as we dont have more utilities I wont change everything to have that in the "Utilities.cmake" script
 #   we probably also dont need the release/debug versions here. we'll see what logic we need to extract from the build macros script
 # ================================================================ 
 
