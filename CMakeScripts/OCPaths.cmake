@@ -1,3 +1,6 @@
 
 # Set paths for the OPENCMISS Build.
 
+if (NOT DEFINED OPENCMISS_INSTALL_ROOT)
+  set(OPENCMISS_INSTALL_ROOT "${OPENCMISS_ROOT}/install")
+endif ()
