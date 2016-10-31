@@ -112,7 +112,7 @@ if (NOT OC_DEFAULT_MPI_BUILD_TYPE)
 endif()
 
 # There's litte to configure yet, but could become more
-configure_file(${OPENCMISS_MANAGE_DIR}/Templates/opencmiss-config.cmake
+configure_file(${OPENCMISS_MODULE_PATH}/Templates/opencmiss-config.cmake
  ${CMAKE_CURRENT_BINARY_DIR}/export/opencmiss-config.cmake @ONLY
 )
 # Version file
@@ -129,14 +129,14 @@ install(
 )
 
 # Copy the FindModule files so that the installation folder is self-contained
-install(DIRECTORY ${OPENCMISS_MANAGE_DIR}/CMakeModules/
-    DESTINATION cmake/OpenCMISSExtraFindModules
-    COMPONENT Development
-    PATTERN "FindOpenCMISS*.cmake" EXCLUDE) 
-install(FILES ${OPENCMISS_MANAGE_DIR}/CMakeScripts/OCArchitecturePath.cmake
-    ${OPENCMISS_MANAGE_DIR}/CMakeScripts/OCToolchainCompilers.cmake
-    DESTINATION cmake
-    COMPONENT Development)
+#install(DIRECTORY ${OPENCMISS_MODULE_PATH}/CMakeModules/
+#    DESTINATION cmake/OpenCMISSExtraFindModules
+#    COMPONENT Development
+#    PATTERN "FindOpenCMISS*.cmake" EXCLUDE) 
+#install(FILES ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCArchitecturePath.cmake
+#    ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCToolchainCompilers.cmake
+#    DESTINATION cmake
+#   # COMPONENT Development)
     
 # Install mingw libraries if we built with mingw
 # Needs checking - maybe the bundle stuff in iron (for windows) can do this automatically.
@@ -151,7 +151,7 @@ endif()
 # Additional User SDK files
 set(USERSDK_RESOURCE_DIR Resources)
 # Add the OpenCMISS.cmake file to the UserSDK - it is a tool to help find the correct installation paths.
-install(FILES ${OPENCMISS_MANAGE_DIR}/Packaging/OpenCMISS.cmake
+install(FILES ${OPENCMISS_MODULE_PATH}/Packaging/OpenCMISS.cmake
     DESTINATION ${USERSDK_RESOURCE_DIR} COMPONENT UserSDK)
     
 # Add the OpenCMISS.cmake file to the UserSDK - it is a tool to help find the correct installation paths.
