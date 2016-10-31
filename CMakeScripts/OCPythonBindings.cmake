@@ -5,7 +5,6 @@ if (IRON_WITH_Python_BINDINGS OR ZINC_WITH_Python_BINDINGS)
     endif()
         
     set(OPENCMISS_INSTALL_ROOT_PYTHON "${OPENCMISS_INSTALL_ROOT}/python")
-    file(MAKE_DIRECTORY ${OPENCMISS_INSTALL_ROOT_PYTHON})
     
     if (OC_PYTHON_BINDINGS_USE_VIRTUALENV)
         # This is already checked for earlier (in the main CMakeLists script before including OpenCMISSConfig)
@@ -18,6 +17,9 @@ if (IRON_WITH_Python_BINDINGS OR ZINC_WITH_Python_BINDINGS)
     endif()
     
     function(genBindingInfoFile BTYPE)
+        if (NOT EXISTS "")
+          file(MAKE_DIRECTORY ${OPENCMISS_INSTALL_ROOT_PYTHON})
+        endif ()
         string(TOLOWER ${BTYPE} BTYPE)
         string(REPLACE "/" "_" _APATH "${ARCHITECTURE_PATH_MPI}")
         set(VIRTUALENV_INFO_FILE ${OPENCMISS_INSTALL_ROOT_PYTHON}/bindings_${_APATH}_${BTYPE}.py)
