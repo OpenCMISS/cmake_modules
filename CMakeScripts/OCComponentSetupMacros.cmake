@@ -14,11 +14,15 @@ function(addAndConfigureLocalComponent COMPONENT_NAME)
 
     ##############################################################
     # Compute directories
-if (EXISTS "${OPENCMISS_ROOT}")
-    set(COMPONENT_SOURCE "${OPENCMISS_ROOT}/src/${SUBGROUP_PATH}/${FOLDER_NAME}")
-else ()
-message(FATAL_ERROR "Alternative component source not created!")
-endif ()
+    if (EXISTS "${OPENCMISS_ROOT}")
+        set(COMPONENT_SOURCE "${OPENCMISS_ROOT}/src/${SUBGROUP_PATH}/${FOLDER_NAME}")
+    else ()
+        if (COMPONENT_NAME IN_LIST "IRON;ZINC")
+            set(COMPONENT_SOURCE "${OPENCMISS_LIBRARIES_ROOT}/src/${FOLDER_NAME}")
+        else ()
+            set(COMPONENT_SOURCE "${OPENCMISS_DEPENDENCIES_ROOT}/src/${FOLDER_NAME}")
+        endif ()
+    endif ()
 
     # Check which build dir is required - depending on whether this component can be built against mpi
     if (COMPONENT_NAME IN_LIST "IRON")
