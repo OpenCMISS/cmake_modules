@@ -1,10 +1,5 @@
 
-/build*
-default/
-CMakeFindModuleWrappers/
-OpenCMISSDeveloper.cmake
-test/
-unix/
+FindModuleWrappers/
 CMakeLists.txt.user
 *.swp
 *.pyc
