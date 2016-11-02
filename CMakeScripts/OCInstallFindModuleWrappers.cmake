@@ -24,7 +24,6 @@ set(GTEST_TARGETNAME gtest_main) # This will bite us some day.
 # packages to cover with this kind of wrapper)
     
 # Generate the wrappers (if not existing)
-SET(OPENCMISS_FINDMODULE_WRAPPER_DIR ${OPENCMISS_INSTALL_ROOT}/cmake/OpenCMISSFindModuleWrappers)
 foreach(PACKAGE_NAME ${PACKAGES_WITH_TARGETS})
     # See above
     if (${PACKAGE_NAME}_CASENAME)
@@ -32,7 +31,8 @@ foreach(PACKAGE_NAME ${PACKAGES_WITH_TARGETS})
     else()
         SET(PACKAGE_CASENAME ${PACKAGE_NAME})
     endif()
-    set(FILE ${OPENCMISS_FINDMODULE_WRAPPER_DIR}/Find${PACKAGE_CASENAME}.cmake)
+    # OPENCMISS_FINDMODULEWRAPPERS_INSTALL_PREFIX is defined in OCPaths.cmake
+    set(FILE ${OPENCMISS_FINDMODULEWRAPPERS_INSTALL_PREFIX}/Find${PACKAGE_CASENAME}.cmake)
     #if(NOT EXISTS ${FILE})
         # Some packages have different target names than their package name
         if (${PACKAGE_NAME}_TARGETNAME)
@@ -51,11 +51,11 @@ endforeach()
 
 # Add directory to module path
 list(APPEND CMAKE_MODULE_PATH 
-    ${OPENCMISS_FINDMODULE_WRAPPER_DIR}
+    ${OPENCMISS_FINDMODULEWRAPPERS_INSTALL_PREFIX}
 )
 
 # Even though the Wrappers are already at the OpenCMISS install dir,
 # we also use the install command to have cpack get a hold of them
-install(DIRECTORY ${OPENCMISS_FINDMODULE_WRAPPER_DIR}
+install(DIRECTORY ${OPENCMISS_FINDMODULEWRAPPERS_INSTALL_PREFIX}
     DESTINATION cmake
     COMPONENT DevelopmentSDK)

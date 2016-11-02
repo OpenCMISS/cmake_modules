@@ -3,9 +3,7 @@ if (IRON_WITH_Python_BINDINGS OR ZINC_WITH_Python_BINDINGS)
     if (NOT OC_PYTHON_PREREQ_FOUND)
         log("Python bindings were requested for Iron or Zinc but the prerequisites are not met.\nPython, Python development libraries and Swig are required.\nSee http://www.opencmiss.org/documentation for more information." ERROR)
     endif()
-        
-    set(OPENCMISS_INSTALL_ROOT_PYTHON "${OPENCMISS_INSTALL_ROOT}/python")
-    
+
     if (OC_PYTHON_BINDINGS_USE_VIRTUALENV)
         # This is already checked for earlier (in the main CMakeLists script before including OpenCMISSConfig)
         # - however, we leave it here to be self-contained should the scripts be re-arranged some time
@@ -17,7 +15,8 @@ if (IRON_WITH_Python_BINDINGS OR ZINC_WITH_Python_BINDINGS)
     endif()
     
     function(genBindingInfoFile BTYPE)
-        if (NOT EXISTS "")
+        # OPENCMISS_INSTALL_ROOT_PYTHON is defined in OCPaths.cmake
+        if (NOT EXISTS "${OPENCMISS_INSTALL_ROOT_PYTHON}")
           file(MAKE_DIRECTORY ${OPENCMISS_INSTALL_ROOT_PYTHON})
         endif ()
         string(TOLOWER ${BTYPE} BTYPE)

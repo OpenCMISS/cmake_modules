@@ -94,8 +94,7 @@ unset(EXPORT_VARS)
 # Create opencmiss-config.cmake
 
 set(OPENCMISS_MODULE_PATH_EXPORT
-    ${OPENCMISS_FINDMODULE_WRAPPER_DIR}
-    ${OPENCMISS_INSTALL_ROOT}/cmake/OpenCMISSExtraFindModules
+    ${OPENCMISS_FINDMODULEWRAPPERS_INSTALL_PREFIX}
     ${OPENCMISS_INSTALL_ROOT}/cmake)
 relativizePathList(OPENCMISS_MODULE_PATH_EXPORT "${OPENCMISS_INSTALL_ROOT}" _OPENCMISS_IMPORT_PREFIX)
 
@@ -128,16 +127,6 @@ install(
     COMPONENT Development
 )
 
-# Copy the FindModule files so that the installation folder is self-contained
-#install(DIRECTORY ${OPENCMISS_MODULE_PATH}/CMakeModules/
-#    DESTINATION cmake/OpenCMISSExtraFindModules
-#    COMPONENT Development
-#    PATTERN "FindOpenCMISS*.cmake" EXCLUDE) 
-#install(FILES ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCArchitecturePath.cmake
-#    ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCToolchainCompilers.cmake
-#    DESTINATION cmake
-#   # COMPONENT Development)
-    
 # Install mingw libraries if we built with mingw
 # Needs checking - maybe the bundle stuff in iron (for windows) can do this automatically.
 if (MINGW AND WIN32)

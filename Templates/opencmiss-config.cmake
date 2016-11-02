@@ -208,7 +208,7 @@ if(iron IN_LIST OpenCMISS_FIND_COMPONENTS)
         endif()
         
         ###########################################################################
-        # This calls the FindMPI in the OpenCMISSExtraFindPackages folder, which
+        # This calls the FindMPI in the OpenCMISS FindModuleWrappers folder, which
         # respects the MPI settings exported in the OpenCMISS context
         # OPENCMISS_MPI_VERSION is set there, too
         find_package(MPI ${OPENCMISS_MPI_VERSION} REQUIRED)
