@@ -210,7 +210,7 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
     )
     set_target_properties(${OC_EP_PREFIX}${COMPONENT_NAME}_sources PROPERTIES FOLDER "Internal")
     
-    add_custom_target(${REPO_NAME}_updater_force
+    add_custom_target(${REPO_NAME}_update_force
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${SOURCE_DIR}"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${SOURCE_DIR}"
         COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR} --target ${REPO_NAME}-download
