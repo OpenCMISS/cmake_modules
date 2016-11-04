@@ -9,7 +9,7 @@ if (MODE STREQUAL "Check")
     if (NOT EXISTS "${SRC_DIR}/CMakeLists.txt")
         execute_process(
 	    COMMAND ${CMAKE_COMMAND} -E make_directory "${SRC_DIR}"
-            COMMAND ${CMAKE_COMMAND} --build "${BIN_DIR}" --target ${COMPONENT}-download
+            COMMAND ${CMAKE_COMMAND} --build "${BIN_DIR}" --target ${COMPONENT}_download
             RESULT_VARIABLE RES
             ERROR_VARIABLE ERR
         )
