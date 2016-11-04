@@ -182,7 +182,7 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
                 -DMODE=Download
                 -DURL=${${COMPONENT_NAME}_REPO}/archive/${_FILENAME}
                 -DTARGET="${SOURCE_DIR}/${_FILENAME}"
-                -P ${OPENCMISS_MANAGE_DIR}/CMakeScripts/ScriptSourceManager.cmake
+                -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/ScriptSourceManager.cmake
             COMMENT "Downloading ${COMPONENT_NAME} sources"
         )
         
@@ -205,7 +205,7 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
             -DCOMPONENT=${REPO_NAME}
             -DSRC_DIR=${SOURCE_DIR}
             -DBIN_DIR=${CMAKE_CURRENT_BINARY_DIR}
-            -P ${OPENCMISS_MANAGE_DIR}/CMakeScripts/ScriptSourceManager.cmake
+            -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/ScriptSourceManager.cmake
         COMMENT "Checking ${COMPONENT_NAME} sources are present"
     )
     set_target_properties(${COMPONENT_NAME}-sources PROPERTIES FOLDER "Internal")
@@ -381,7 +381,7 @@ Configure definitions:
             COMMAND ${CMAKE_COMMAND}
                 -DLOG_DIR=${BIN}/${_OC_EXTPROJ_STAMP_DIR}
                 -DSUPPORT_DIR=${OC_SUPPORT_DIR} 
-                -P ${OPENCMISS_MANAGE_DIR}/CMakeScripts/OCSupport.cmake
+                -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCSupport.cmake
             COMMENT "Support: Collecting ${COMPONENT_NAME} log files"
         )
         add_dependencies(collect_logs ${OC_EP_PREFIX}${NAME}_collect_log)
@@ -393,7 +393,7 @@ Configure definitions:
             -DBUILD_STAMP=YES 
             -DCOMPONENT_NAME=${NAME}
             -DLOGFILE="${OC_BUILDLOG}"
-            -P ${OPENCMISS_MANAGE_DIR}/CMakeScripts/OCSupport.cmake
+            -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCSupport.cmake
         COMMENT "Support: Creating ${COMPONENT_NAME} buildlog"             
         WORKING_DIRECTORY "${OC_SUPPORT_DIR}")
     add_dependencies(${OC_EP_PREFIX}${NAME} ${OC_EP_PREFIX}${NAME}_buildlog)

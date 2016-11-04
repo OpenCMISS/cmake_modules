@@ -91,7 +91,7 @@ else(WIN32)
                 -DOPENCMISS_CMAKE_MIN_VERSION=${OPENCMISS_CMAKE_MIN_VERSION}
                 -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
                 -DCMAKE_MINIMUM_REQUIRED_VERSION=2.6
-                -P ${OPENCMISS_MANAGE_DIR}/CMakeScripts/ScriptCMakeBuild.cmake
+                -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/ScriptCMakeBuild.cmake
         )
     endif(NOT CMAKE_COMPATIBLE)
 endif(WIN32)
