@@ -149,8 +149,9 @@ if (NOT MPI_FOUND)
     if (OC_USE_ARCHITECTURE_PATH)
         getShortArchitecturePath(SHORT_ARCH_PATH)
     endif()
-    # This is where our own build of MPI will reside if compilation is needed    
-    set(OWN_MPI_INSTALL_DIR ${OPENCMISS_ROOT}/install/${SHORT_ARCH_PATH}/mpi/${MPI}/${MPI_BUILD_TYPE_LOWER})
+
+    # This is where our own build of MPI will reside if compilation is needed
+    set(OWN_MPI_INSTALL_DIR ${OPENCMISS_COMPONENTS_INSTALL_PREFIX_NO_BUILD_TYPE}/${MPI}/${MPI_BUILD_TYPE_LOWER})
 
     # Set MPI_HOME to the install location - its not set outside anyways (see first if case at top)
     # Important: Do not unset(MPI_HOME) afterwards - this needs to get passed to all external projects the same way

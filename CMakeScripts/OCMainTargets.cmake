@@ -121,9 +121,17 @@ add_custom_target(update
 
 ## 
 #    :utter_destruction: Removes the complete build/ and install/ root directories created by any architecture build.
+if (EXISTS "${OPENCMISS_ROOT}")
+    set(_REMOVE_BUILD_COMMAND COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_ROOT}/build")
+    set(_REMOVE_INSTALL_COMMAND COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_ROOT}/install")
+else ()
+    set(_REMOVE_BUILD_COMMAND COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_LIBRARIES_ROOT}/build")
+    set(_REMOVE_INSTALL_COMMAND COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_LIBRARIES_ROOT}/install")
+endif ()
+
 add_custom_target(utter_destruction
-    COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_ROOT}/build"
-    COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_ROOT}/install"
+    ${_REMOVE_BUILD_COMMAND}
+    ${_REMOVE_INSTALL_COMMAND}
     COMMAND ${CMAKE_COMMAND} -E copy ${OPENCMISS_LOCALCONFIG} ../backup_localconfig.tmp
     COMMAND ${CMAKE_COMMAND} -E remove -f ${PROJECT_BINARY_DIR}/*
     COMMAND ${CMAKE_COMMAND} -E copy ../backup_localconfig.tmp ${OPENCMISS_LOCALCONFIG}
