@@ -54,7 +54,7 @@ add_custom_target(opencmiss
 #    :reset: Removes everything from the current build root but the :ref:`OpenCMISSLocalConfig <localconf>` file.
 #        Also invokes the following (independently usable) targets:
 add_custom_target(reset
-    DEPENDS reset-mpionly reset-keytests
+    DEPENDS reset_mpionly reset_keytests
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_COMPONENTS_INSTALL_PREFIX_NO_BUILD_TYPE}"
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_COMPONENTS_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E remove "${OC_BUILDLOG}"
@@ -68,23 +68,23 @@ add_custom_target(reset
 )
 
 ##
-#    :reset-keytests: Triggers a re-build of the key tests
+#    :reset_keytests: Triggers a re-build of the key tests
 #        For more information see the techical documentation on :ref:`keytests`.
 if (KEYTESTS_SRC_DIR) # only add if key tests are build. existence of the source dir is a sufficient criteria.
-    add_custom_target(reset-keytests
+    add_custom_target(reset_keytests
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${KEYTESTS_BINARY_DIR}"
         COMMENT "Cleaning up key test builds"
     )
     
-    add_custom_target(update-keytests
+    add_custom_target(update_keytests
         DEPENDS ${_KEYTESTS_UPDATE_TARGETS}
         COMMENT "Updating OpenCMISS key tests"
     )
 endif()
 
 ##
-#    :reset-mpionly: Blows away all the build and install data of components with MPI capabilities.
-add_custom_target(reset-mpionly
+#    :reset_mpionly: Blows away all the build and install data of components with MPI capabilities.
+add_custom_target(reset_mpionly
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_COMPONENTS_INSTALL_PREFIX_MPI_NO_BUILD_TYPE}"
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_COMPONENTS_BINARY_DIR_MPI}"
     COMMENT "Removing directories:
@@ -116,7 +116,7 @@ add_custom_target(update
 )
 
 ##
-#    :update-keytests: Updates the sources of the key tests only.
+#    :update_keytests: Updates the sources of the key tests only.
 #        For more information see the techical documentation on :ref:`keytests`.
 
 ## 
