@@ -342,7 +342,9 @@ option(OC_CREATE_LOGS "Create logfiles instead of direct output to screen" YES)
 # See also OC_USE_<COMP>_ 
 #
 # .. default:: NO
+message(STATUS "OC_DEPENDENCIES_ONLY: ${OC_DEPENDENCIES_ONLY}")
 option(OC_DEPENDENCIES_ONLY "Build dependencies only (no Iron or Zinc)" NO)
+message(STATUS "OC_DEPENDENCIES_ONLY: ${OC_DEPENDENCIES_ONLY}")
 
 ##
 # OC_MULTITHREADING
