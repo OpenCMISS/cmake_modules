@@ -260,8 +260,8 @@ if (NOT MPI_FOUND)
         
         ExternalProject_Add(${OC_EP_PREFIX}MPI
     		PREFIX ${_MPI_BINARY_DIR}
-    		TMP_DIR ${_MPI_BINARY_DIR}/ep_tmp
-    		STAMP_DIR ${_MPI_BINARY_DIR}/ep_stamp
+    		TMP_DIR ${_MPI_BINARY_DIR}/${OC_EXTPROJ_TMP_DIR}
+    		STAMP_DIR ${_MPI_BINARY_DIR}/${OC_EXTPROJ_STAMP_DIR}
     		
     		#--Download step--------------
     		${DOWNLOAD_COMMANDS}

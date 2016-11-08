@@ -164,7 +164,7 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
             DEPENDS ${OC_EP_PREFIX}${COMPONENT_NAME}_sources
             COMMAND ${GIT_EXECUTABLE} pull
             COMMAND ${GIT_EXECUTABLE} checkout ${${COMPONENT_NAME}_BRANCH}
-            COMMAND ${CMAKE_COMMAND} -E remove -f ${BINARY_DIR}/ep_stamps/*-build
+            COMMAND ${CMAKE_COMMAND} -E remove -f ${BINARY_DIR}/${OC_EXTPROJ_STAMP_DIR}/*-build
             COMMENT "Updating ${COMPONENT_NAME} sources"
             WORKING_DIRECTORY "${SOURCE_DIR}"
         )
@@ -189,7 +189,7 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
         # For tarballs, update is the same as download!
         add_custom_target(${REPO_NAME}_update
             DEPENDS ${REPO_NAME}-download
-            COMMAND ${CMAKE_COMMAND} -E remove -f ${BINARY_DIR}/ep_stamps/*-build
+            COMMAND ${CMAKE_COMMAND} -E remove -f ${BINARY_DIR}/${OC_EXTPROJ_STAMP_DIR}/*-build
             COMMENT "Updating ${COMPONENT_NAME} sources"
         )
     endif()
@@ -221,7 +221,6 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
 endfunction()
 
 ########################################################################################################################
-set(_OC_EXTPROJ_STAMP_DIR ep_stamps)
 function(createExternalProjects COMPONENT_NAME SOURCE_DIR BINARY_DIR DEFS)
 
     log("Configuring build of '${COMPONENT_NAME} ${${COMPONENT_NAME}_VERSION}' in ${BINARY_DIR}...")
@@ -253,8 +252,8 @@ function(createExternalProjects COMPONENT_NAME SOURCE_DIR BINARY_DIR DEFS)
         DEPENDS ${${COMPONENT_NAME}_DEPS} ${OC_EP_PREFIX}${COMPONENT_NAME}_sources
         PREFIX ${BINARY_DIR}
         LIST_SEPARATOR ${OC_LIST_SEPARATOR}
-        TMP_DIR ${BINARY_DIR}/ep_tmp
-        STAMP_DIR ${BINARY_DIR}/${_OC_EXTPROJ_STAMP_DIR}
+        TMP_DIR ${BINARY_DIR}/${OC_EXTPROJ_TMP_DIR}
+        STAMP_DIR ${BINARY_DIR}/${OC_EXTPROJ_STAMP_DIR}
         
         #--Download step--------------
         # Ideal solution - include in the external project that also builds.
@@ -267,17 +266,18 @@ function(createExternalProjects COMPONENT_NAME SOURCE_DIR BINARY_DIR DEFS)
         DOWNLOAD_COMMAND ""
         
         #--Configure step-------------
-        CMAKE_COMMAND ${CMAKE_COMMAND} --no-warn-unused-cli # disables warnings for unused cmdline options
+    CONFIGURE_COMMAND "" # Do nothing remove soon
+        CMAKE_COMMAND "" # ${CMAKE_COMMAND} --no-warn-unused-cli # disables warnings for unused cmdline options
         SOURCE_DIR ${SOURCE_DIR}
         BINARY_DIR ${BINARY_DIR}
-        CMAKE_ARGS ${DEFS}
+        CMAKE_ARGS "" # ${DEFS}
         
         #--Build step-----------------
-        BUILD_COMMAND ${BUILD_COMMAND}
+        BUILD_COMMAND "" # ${BUILD_COMMAND}
         #--Install step---------------
         # currently set as extra arg (above), somehow does not work
         #INSTALL_DIR ${CMAKE_INSTALL_PREFIX} 
-        INSTALL_COMMAND ${INSTALL_COMMAND}
+        INSTALL_COMMAND "" # ${INSTALL_COMMAND}
         # Logging
         LOG_CONFIGURE ${_LOGFLAG}
         LOG_BUILD ${_LOGFLAG}
@@ -379,7 +379,7 @@ Configure definitions:
         # So we have an extra target in between. 
         add_custom_target(${OC_EP_PREFIX}${NAME}_collect_log
             COMMAND ${CMAKE_COMMAND}
-                -DLOG_DIR=${BIN}/${_OC_EXTPROJ_STAMP_DIR}
+                -DLOG_DIR=${BIN}/${OC_EXTPROJ_STAMP_DIR}
                 -DSUPPORT_DIR=${OC_SUPPORT_DIR} 
                 -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCSupport.cmake
             COMMENT "Support: Collecting ${COMPONENT_NAME} log files"
