@@ -19,15 +19,15 @@
 # gTest
 if (OC_USE_GTEST AND (BUILD_TESTS OR OC_BUILD_ZINC_TESTS))
     find_package(GTEST ${GTEST_VERSION} QUIET)
-    if(NOT GTEST_FOUND)
+    if (NOT GTEST_FOUND)
         set(GTEST_FWD_DEPS LLVM CSIM ZINC)
         set(SUBGROUP_PATH utilities)
         set(GITHUB_ORGANIZATION OpenCMISS-Utilities)
         addAndConfigureLocalComponent(GTEST
             gtest_force_shared_crt=YES
         )
-    endif()
-endif()
+    endif ()
+endif ()
 
 # ================================================================
 # Dependencies
@@ -47,28 +47,28 @@ set(GITHUB_ORGANIZATION OpenCMISS-Dependencies)
 
 
 # zLIB
-if(OC_USE_ZLIB OR OC_USE_ZINC OR OC_DEPENDENCIES_ONLY)
+if (OC_USE_ZLIB OR OC_USE_ZINC OR OC_DEPENDENCIES_ONLY)
     find_package(ZLIB ${ZLIB_VERSION} QUIET)
-    if(NOT ZLIB_FOUND)
+    if (NOT ZLIB_FOUND)
         SET(ZLIB_FWD_DEPS 
             SCOTCH PTSCOTCH 
             MUMPS LIBXML2 HDF5 FIELDML-API
             IRON CSIM LLVM CELLML PNG
             TIFF GDCM-ABI)
         addAndConfigureLocalComponent(ZLIB)
-    endif()
-endif()
+    endif ()
+endif ()
 
 
 # libxml2
 find_package(LibXml2 ${LIBXML2_VERSION} QUIET)
-if(NOT LIBXML2_FOUND)
+if (NOT LIBXML2_FOUND)
     SET(LIBXML2_FWD_DEPS CSIM LLVM FIELDML-API CELLML LIBCELLML ITK)
     addAndConfigureLocalComponent(LIBXML2
         WITH_ZLIB=${LIBXML2_WITH_ZLIB}
         ZLIB_VERSION=${ZLIB_VERSION}
     )
-endif()
+endif ()
 
 # LAPACK (includes BLAS)
 # Thus far only Iron really makes heavy use of BLAS/LAPACK, opt++ from zinc
@@ -76,36 +76,36 @@ endif()
 if ((OC_USE_BLAS OR OC_USE_LAPACK) AND (OC_DEPENDENCIES_ONLY OR OC_USE_IRON OR (OC_USE_OPTPP AND OPTPP_WITH_BLAS)))
     find_package(BLAS ${BLAS_VERSION} QUIET)
     find_package(LAPACK ${LAPACK_VERSION} QUIET)
-    if(NOT (LAPACK_FOUND AND BLAS_FOUND))
+    if (NOT (LAPACK_FOUND AND BLAS_FOUND))
         SET(LAPACK_FWD_DEPS SCALAPACK SUITESPARSE MUMPS
             SUPERLU SUPERLU_DIST PARMETIS HYPRE SUNDIALS PASTIX PLAPACK PETSC IRON)
         addAndConfigureLocalComponent(LAPACK)
-    endif()
-endif()
+    endif ()
+endif ()
 
 # bzip2
-if(OC_USE_BZIP2 OR OC_USE_ZINC OR OC_DEPENDENCIES_ONLY)
+if (OC_USE_BZIP2 OR OC_USE_ZINC OR OC_DEPENDENCIES_ONLY)
     find_package(BZIP2 ${BZIP2_VERSION} QUIET)
-    if(NOT BZIP2_FOUND)
+    if (NOT BZIP2_FOUND)
         SET(BZIP2_FWD_DEPS SCOTCH PTSCOTCH GDCM-ABI IMAGEMAGICK)
         addAndConfigureLocalComponent(BZIP2)
-    endif()
-endif()
+    endif ()
+endif ()
 
 # hdf5
-if(OC_USE_HDF5)
+if (OC_USE_HDF5)
 
     # szip
-    if(OC_USE_SZIP)
+    if (OC_USE_SZIP)
         find_package(SZIP ${SZIP_VERSION} QUIET)
-        if(NOT SZIP_FOUND)
+        if (NOT SZIP_FOUND)
             SET(SZIP_FWD_DEPS HDF5)
             addAndConfigureLocalComponent(SZIP)
-        endif()
-    endif()
+        endif ()
+    endif ()
 
     find_package(HDF5 ${HDF5_VERSION} QUIET)
-    if(NOT HDF5_FOUND)
+    if (NOT HDF5_FOUND)
         SET(HDF5_FWD_DEPS FIELDML-API)
         addAndConfigureLocalComponent(HDF5
             HDF5_VERSION=${HDF5_VERSION}
@@ -116,12 +116,12 @@ if(OC_USE_HDF5)
             ZLIB_VERSION=${ZLIB_VERSION}
             HDF5_BUILD_FORTRAN=${HDF5_BUILD_FORTRAN}
         )
-    endif()
-endif()
+    endif ()
+endif ()
 
 # Fieldml
 find_package(FIELDML-API ${FIELDML-API_VERSION} QUIET)
-if(NOT FIELDML-API_FOUND)
+if (NOT FIELDML-API_FOUND)
     SET(FIELDML-API_FWD_DEPS ZINC IRON)
     addAndConfigureLocalComponent(FIELDML-API
         LIBXML2_VERSION=${LIBXML2_VERSION}
@@ -131,7 +131,7 @@ if(NOT FIELDML-API_FOUND)
         JAVA_BINDINGS=${FIELDML-API_WITH_JAVA_BINDINGS}
         FORTRAN_BINDINGS=${FIELDML-API_WITH_FORTRAN_BINDINGS}
     )
-endif()
+endif ()
 
 # ================================================================
 # Iron
@@ -141,7 +141,7 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
     # Scotch 6.0
     if (OC_USE_PTSCOTCH)
         find_package(PTSCOTCH ${PTSCOTCH_VERSION} QUIET)
-        if(NOT PTSCOTCH_FOUND)
+        if (NOT PTSCOTCH_FOUND)
             SET(SCOTCH_FWD_DEPS PASTIX PETSC MUMPS IRON)
             addAndConfigureLocalComponent(SCOTCH
                 BUILD_PTSCOTCH=YES
@@ -150,10 +150,10 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 USE_BZ2=${SCOTCH_WITH_BZIP2}
                 BZIP2_VERSION=${BZIP2_VERSION}
                 USE_THREADS=${SCOTCH_USE_THREADS})
-        endif()
-    elseif(OC_USE_SCOTCH)
+        endif ()
+    elseif (OC_USE_SCOTCH)
         find_package(SCOTCH ${SCOTCH_VERSION} QUIET)
-        if(NOT SCOTCH_FOUND)
+        if (NOT SCOTCH_FOUND)
             SET(PTSCOTCH_FWD_DEPS PASTIX PETSC MUMPS IRON)
             addAndConfigureLocalComponent(SCOTCH
                 BUILD_PTSCOTCH=NO
@@ -162,44 +162,44 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 USE_BZ2=${SCOTCH_WITH_BZIP2}
                 BZIP2_VERSION=${BZIP2_VERSION}
                 USE_THREADS=${SCOTCH_USE_THREADS})
-        endif()
-    endif()
+        endif ()
+    endif ()
 
     # PLAPACK
-    if(OC_USE_PLAPACK)
+    if (OC_USE_PLAPACK)
         find_package(PLAPACK ${PLAPACK_VERSION} QUIET)
-        if(NOT PLAPACK_FOUND)
+        if (NOT PLAPACK_FOUND)
             SET(PLAPACK_FWD_DEPS IRON)
             addAndConfigureLocalComponent(PLAPACK
                 BLAS_VERSION=${BLAS_VERSION}
                 LAPACK_VERSION=${LAPACK_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # ScaLAPACK
-    if(OC_USE_SCALAPACK)
+    if (OC_USE_SCALAPACK)
         find_package(SCALAPACK ${SCALAPACK_VERSION} QUIET)
-        if(NOT SCALAPACK_FOUND)
+        if (NOT SCALAPACK_FOUND)
             SET(SCALAPACK_FWD_DEPS MUMPS PETSC IRON)
             addAndConfigureLocalComponent(SCALAPACK
                 BLAS_VERSION=${BLAS_VERSION}
                 LAPACK_VERSION=${LAPACK_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # parMETIS 4 (+METIS 5)
-    if(OC_USE_PARMETIS)
+    if (OC_USE_PARMETIS)
         find_package(PARMETIS ${PARMETIS_VERSION} QUIET)
-        if(NOT PARMETIS_FOUND)
+        if (NOT PARMETIS_FOUND)
             SET(PARMETIS_FWD_DEPS MUMPS SUITESPARSE SUPERLU_DIST PASTIX IRON)
             addAndConfigureLocalComponent(PARMETIS)
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # MUMPS
     if (OC_USE_MUMPS)
         find_package(MUMPS ${MUMPS_VERSION} QUIET)
-        if(NOT MUMPS_FOUND)
+        if (NOT MUMPS_FOUND)
             SET(MUMPS_FWD_DEPS PETSC IRON)
             addAndConfigureLocalComponent(MUMPS
                 USE_SCOTCH=${MUMPS_WITH_SCOTCH}
@@ -214,47 +214,47 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 LAPACK_VERSION=${LAPACK_VERSION}
                 SCALAPACK_VERSION=${SCALAPACK_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # SUITESPARSE [CHOLMOD / UMFPACK]
     if (OC_USE_SUITESPARSE)
         find_package(SUITESPARSE ${SUITESPARSE_VERSION} QUIET)
-        if(NOT SUITESPARSE_FOUND)
+        if (NOT SUITESPARSE_FOUND)
             SET(SUITESPARSE_FWD_DEPS PETSC IRON)
             addAndConfigureLocalComponent(SUITESPARSE
                 BLAS_VERSION=${BLAS_VERSION}
                 LAPACK_VERSION=${LAPACK_VERSION}
                 METIS_VERSION=${METIS_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # SuperLU 4.3
     if (OC_USE_SUPERLU)
         find_package(SUPERLU ${SUPERLU_VERSION} QUIET)
-        if(NOT SUPERLU_FOUND)
+        if (NOT SUPERLU_FOUND)
             SET(SUPERLU_FWD_DEPS PETSC IRON HYPRE)
             addAndConfigureLocalComponent(SUPERLU
                 BLAS_VERSION=${BLAS_VERSION}
                 LAPACK_VERSION=${LAPACK_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # Hypre 2.9.0b
     if (OC_USE_HYPRE)
         find_package(HYPRE ${HYPRE_VERSION} QUIET)
-        if(NOT HYPRE_FOUND)
+        if (NOT HYPRE_FOUND)
             SET(HYPRE_FWD_DEPS PETSC IRON)
             addAndConfigureLocalComponent(HYPRE
                 BLAS_VERSION=${BLAS_VERSION}
                 LAPACK_VERSION=${LAPACK_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # SuperLU-DIST 4.0
     if (OC_USE_SUPERLU_DIST)
         find_package(SUPERLU_DIST ${SUPERLU_DIST_VERSION} QUIET)
-        if(NOT SUPERLU_DIST_FOUND)
+        if (NOT SUPERLU_DIST_FOUND)
             SET(SUPERLU_DIST_FWD_DEPS PETSC IRON)
             addAndConfigureLocalComponent(SUPERLU_DIST
                 BLAS_VERSION=${BLAS_VERSION}
@@ -263,25 +263,25 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 USE_METIS=${SUPERLU_DIST_WITH_METIS}
                 METIS_VERSION=${METIS_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # Sundials 2.5
     if (OC_USE_SUNDIALS)
         find_package(SUNDIALS ${SUNDIALS_VERSION} QUIET)
-        if(NOT SUNDIALS_FOUND)
+        if (NOT SUNDIALS_FOUND)
             SET(SUNDIALS_FWD_DEPS CSIM PETSC IRON)
             addAndConfigureLocalComponent(SUNDIALS
                 USE_LAPACK=${SUNDIALS_WITH_LAPACK}
                 BLAS_VERSION=${BLAS_VERSION}
                 LAPACK_VERSION=${LAPACK_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # Pastix 5.2.2.16
     if (OC_USE_PASTIX)
         find_package(PASTIX ${PASTIX_VERSION} QUIET)
-        if(NOT PASTIX_FOUND)
+        if (NOT PASTIX_FOUND)
             SET(PASTIX_FWD_DEPS PETSC IRON)
             addAndConfigureLocalComponent(PASTIX
                 BLAS_VERSION=${BLAS_VERSION}
@@ -291,22 +291,22 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 METIS_VERSION=${METIS_VERSION}
                 PTSCOTCH_VERSION=${PTSCOTCH_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # Sowing (only for PETSC ftn-auto generation)
     if (OC_USE_SOWING)
         find_package(SOWING ${SOWING_VERSION} QUIET)
-        if(NOT SOWING_FOUND)
+        if (NOT SOWING_FOUND)
             SET(SOWING_FWD_DEPS PETSC)
             addAndConfigureLocalComponent(SOWING)
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # PETSc 3.5
     if (OC_USE_PETSC)
         find_package(PETSC ${PETSC_VERSION} QUIET)
-        if(NOT PETSC_FOUND)
+        if (NOT PETSC_FOUND)
             SET(PETSC_FWD_DEPS SLEPC IRON)
             addAndConfigureLocalComponent(PETSC
                 USE_PASTIX=${PETSC_WITH_PASTIX}
@@ -332,13 +332,13 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 BLAS_VERSION=${BLAS_VERSION}
                 LAPACK_VERSION=${LAPACK_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # SLEPc 3.5
     if (OC_USE_SLEPC)
         find_package(SLEPC ${SLEPC_VERSION} QUIET)
-        if(NOT SLEPC_FOUND)
+        if (NOT SLEPC_FOUND)
             SET(SLEPC_FWD_DEPS IRON)
             addAndConfigureLocalComponent(SLEPC
                 USE_PASTIX=${PETSC_WITH_PASTIX}
@@ -362,8 +362,8 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 USE_PARMETIS=${PETSC_WITH_PARMETIS}
                 PARMETIS_VERSION=${PARMETIS_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # CellML
     if (OC_USE_LIBCELLML)
@@ -371,8 +371,8 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
         if (NOT LIBCELLML_FOUND)
             SET(LIBCELLML_FWD_DEPS CSIM CELLML IRON)
             addAndConfigureLocalComponent(LIBCELLML)
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     if (OC_USE_CELLML)
         find_package(CELLML ${CELLML_VERSION} QUIET)
@@ -383,8 +383,8 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 CSIM_VERSION=${CSIM_VERSION}
                 LIBCELLML_VERSION=${LIBCELLML_VERSION}
                 CELLML_USE_CSIM=${CELLML_WITH_CSIM})
-        endif()
-    endif()
+        endif ()
+    endif ()
 
     if (OC_USE_CSIM)
         if (OC_USE_LLVM)
@@ -394,8 +394,8 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 addAndConfigureLocalComponent(LLVM
                     GTEST_VERSION=${GTEST_VERSION}
                 )
-            endif()
-        endif()
+            endif ()
+        endif ()
         
         if (OC_USE_CLANG)
             find_package(CLANG ${CLANG_VERSION} QUIET)
@@ -404,8 +404,8 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 addAndConfigureLocalComponent(CLANG
                     GTEST_VERSION=${GTEST_VERSION}
                     LIBXML2_VERSION=${LIBXML2_VERSION})
-            endif()
-        endif()
+            endif ()
+        endif ()
         
         find_package(CSIM ${CSIM_VERSION} QUIET)
         if (NOT CSIM_FOUND)
@@ -418,10 +418,10 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
                 LIBXML2_VERSION=${LIBXML2_VERSION}
                 ZLIB_VERSION=${ZLIB_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
 
-    if(NOT OC_DEPENDENCIES_ONLY)
+    if (NOT OC_DEPENDENCIES_ONLY)
         set(SUBGROUP_PATH .)
         set(GITHUB_ORGANIZATION OpenCMISS)
         addAndConfigureLocalComponent(IRON
@@ -447,18 +447,18 @@ if (OC_USE_IRON OR OC_DEPENDENCIES_ONLY)
         )
         if (OC_PYTHON_BINDINGS_USE_VIRTUALENV)
             add_dependencies(${OC_EP_PREFIX}IRON virtualenv_install)
-        endif()
-    endif()
-endif()
+        endif ()
+    endif ()
+endif ()
 
 if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
     set(SUBGROUP_PATH dependencies)
     set(GITHUB_ORGANIZATION OpenCMISS-Dependencies)
     
     # jpeg
-    if(OC_USE_JPEG)
+    if (OC_USE_JPEG)
         find_package(JPEG ${JPEG_VERSION} QUIET)
-        if(NOT JPEG_FOUND)
+        if (NOT JPEG_FOUND)
             set(JPEG_FWD_DEPS ZINC TIFF GDCM-ABI IMAGEMAGICK)
             addAndConfigureLocalComponent(JPEG
                 JPEG_BUILD_CJPEG=OFF
@@ -467,8 +467,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                 JPEG_BUILD_RDJPGCOM=OFF
                 JPEG_BUILD_WRJPGCOM=OFF
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # netgen
     if (OC_USE_NETGEN)
@@ -479,8 +479,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                 NETGEN_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                 NETGEN_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # Freetype
     if (OC_USE_FREETYPE)
@@ -492,8 +492,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                     FREETYPE_USE_BZIP2=YES
                     ZLIB_VERSION=${ZLIB_VERSION}
                     BZIP2_VERSION=${BZIP2_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # FTGL
     if (OC_USE_FTGL)
@@ -502,8 +502,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
             set(FTGL_FWD_DEPS ZINC)
             addAndConfigureLocalComponent(FTGL
                 FREETYPE_VERSION=${FREETYPE_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # GLEW
     if (OC_USE_GLEW)
@@ -511,8 +511,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
         if (NOT GLEW_FOUND)
             set(GLEW_FWD_DEPS ZINC)
             addAndConfigureLocalComponent(GLEW)
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # opt++
     if (OC_USE_OPTPP)
@@ -523,8 +523,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                 USE_EXTERNAL_BLAS=${OPTPP_WITH_BLAS}
                 BLAS_VERSION=${BLAS_VERSION}
                 LAPACK_VERSION=${LAPACK_VERSION})
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # png
     if (OC_USE_PNG)
@@ -536,8 +536,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                 PNG_NO_STDIO=OFF
                 ZLIB_VERSION=${ZLIB_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # tiff
     if (OC_USE_TIFF)
@@ -550,8 +550,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                 PNG_VERSION=${PNG_VERSION}
                 JPEG_VERSION=${JPEG_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     # gdcm
     if (OC_USE_GDCM-ABI)
@@ -563,8 +563,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                 GDCM-ABI_USE_SYSTEM_ZLIB=ON
                 GDCM-ABI_USE_SYSTEM_EXPAT=ON
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     if (OC_USE_IMAGEMAGICK)
         find_package(IMAGEMAGICK ${IMAGEMAGICK_VERSION} QUIET)
@@ -578,8 +578,8 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                 TIFF_VERSION=${TIFF_VERSION}
                 JPEG_VERSION=${JPEG_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
     if (OC_USE_ITK)
         find_package(ITK ${ITK_VERSION} QUIET)
@@ -600,15 +600,15 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
                 TIFF_VERSION=${TIFF_VERSION}
                 LIBXML2_VERSION=${LIBXML2_VERSION}
             )
-        endif()
-    endif()
+        endif ()
+    endif ()
     
-    if(NOT OC_DEPENDENCIES_ONLY)
+    if (NOT OC_DEPENDENCIES_ONLY)
         string(REPLACE ";" ${OC_LIST_SEPARATOR} CMAKE_MODULE_PATH_ESC "${CMAKE_MODULE_PATH}")
         set(ZINC_BUILD_TESTS FALSE)
-        if(OC_BUILD_ZINC_TESTS OR BUILD_TESTS)
+        if (OC_BUILD_ZINC_TESTS OR BUILD_TESTS)
             set(ZINC_BUILD_TESTS TRUE)
-        endif()
+        endif ()
         set(SUBGROUP_PATH .)
         set(GITHUB_ORGANIZATION OpenCMISS)
         addAndConfigureLocalComponent(ZINC
@@ -621,9 +621,9 @@ if (OC_USE_ZINC OR (OPENGL_FOUND AND OC_DEPENDENCIES_ONLY))
         )
         if (OC_PYTHON_BINDINGS_USE_VIRTUALENV)
             add_dependencies(${OC_EP_PREFIX}ZINC virtualenv_install)
-        endif()
-    endif()
-endif()
+        endif ()
+    endif ()
+endif ()
 
 # Notes:
 # lapack: not sure if LAPACKE is build/required
