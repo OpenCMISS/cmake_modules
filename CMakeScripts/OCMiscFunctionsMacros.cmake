@@ -51,7 +51,7 @@ if (DEFINED EVEL OR EVEL)
     if (NOT EXISTS "${PROJECT_SOURCE_DIR}/OpenCMISSDeveloper.cmake")
         log("Creating OpenCMISSDeveloper file in ${PROJECT_SOURCE_DIR}")
         configure_file(
-            "${PROJECT_SOURCE_DIR}/Templates/OpenCMISSDeveloper.template.cmake"
+            "${OPENCMISS_MODULE_PATH}/Templates/OpenCMISSDeveloper.template.cmake"
             "${PROJECT_SOURCE_DIR}/OpenCMISSDeveloper.cmake"
             COPYONLY)
         set(EVIL_MESSAGE "Being a Developer: ${EVEL}. Copied the OpenCMISSDeveloper template.")
