@@ -67,7 +67,7 @@ list(APPEND CMAKE_MODULE_PATH ${OPENCMISS_MODULE_PATH})
 # Assemble architecture-path dependent search locations
 set(ARCHPATH .)
 if (@OC_USE_ARCHITECTURE_PATH@)
-    include(OCArchitecturePath)
+    include(OCArchitecturePathFunctions)
     getArchitecturePath(_UNUSED ARCHPATH)
 endif()
 
