@@ -76,15 +76,15 @@ option(BUILD_TESTS "Build OpenCMISS(-components) tests" ON)
 # For different build types, use this variable.
 # Possible values are (in general)
 #
-#     :RELEASE: Optimised build
-#     :DEBUG: Build including debug information
-#     :MINSIZEREL: Optimised build for minimal library/binary size
-#     :RELWITHDEBINFO: Optimised build with debug information
+#     :Release: Optimised build
+#     :Debug: Build including debug information
+#     :MinSizeRel: Optimised build for minimal library/binary size
+#     :RelWithDebInfo: Optimised build with debug information
 #
 # .. cmake-var:: CMAKE_BUILD_TYPE
-# .. default:: RELEASE
+# .. default:: Release
 if (NOT DEFINED CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE RELEASE) 
+    set(CMAKE_BUILD_TYPE Release) 
 endif()
 
 ##
@@ -243,14 +243,14 @@ set(INT_TYPE int32 CACHE STRING "OpenCMISS integer type (only used by PASTIX yet
 # For different MPI build types, use this variable.
 # Possible values are (in general)
 #
-#     :RELEASE: Optimised build
-#     :DEBUG: Build including debug information
-#     :MINSIZEREL: Optimised build for minimal library/binary size
-#     :RELWITHDEBINFO: Optimised build with debug information
+#     :Release: Optimised build
+#     :Debug: Build including debug information
+#     :MinSizeRel: Optimised build for minimal library/binary size
+#     :RelWithDebInfo: Optimised build with debug information
 #
-# .. default:: RELEASE
+# .. default:: Release
 if (NOT DEFINED MPI_BUILD_TYPE)
-    set(MPI_BUILD_TYPE RELEASE)
+    set(MPI_BUILD_TYPE Release)
 endif()
 
 ##
@@ -410,6 +410,7 @@ foreach(COMPONENT ${OPENCMISS_COMPONENTS})
         set(_VALUE ON)
     endif()
     option(OC_SYSTEM_${COMPONENT} "Allow ${COMPONENT} to be used from local environment/system" ${_VALUE})
+    unset(_VALUE)
 endforeach()
 
 ##
@@ -444,6 +445,7 @@ foreach(COMPONENT ${OPENCMISS_COMPONENTS})
     endif()
     # Use everything but the components in OPENCMISS_COMPONENTS_DISABLED_BY_DEFAULT
     option(OC_USE_${COMPONENT} "Enable use/build of ${COMPONENT}" ${_VALUE})
+    unset(_VALUE)
 endforeach()
 
 ##
