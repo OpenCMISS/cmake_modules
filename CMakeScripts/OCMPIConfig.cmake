@@ -35,7 +35,7 @@ you have to specify MPI_BUILD_TYPE. Using '${MPI_BUILD_TYPE}'.
 https://github.com/OpenCMISS/manage/issues/28        
         " WARNING)
     endif()
-else()
+else ()
 
     # Ensure lower-case mpi and upper case mpi build type
     # Whether to allow a system search for MPI implementations

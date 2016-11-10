@@ -31,7 +31,7 @@ unset(_LC_CDIR)
 unset(_CONFIG_FOUND)
 
 # Look for an OpenCMISS Developer script
-SET(OC_DEVELOPER_CONFIG ${CMAKE_CURRENT_LIST_DIR}/../OpenCMISSDeveloper.cmake)
+SET(OC_DEVELOPER_CONFIG ${PROJECT_BINARY_DIR}/OpenCMISSInstallationConfig.cmake)
 set(OC_DEVELOPER NO)
 if (EXISTS ${OC_DEVELOPER_CONFIG})
     get_filename_component(OC_DEVELOPER_CONFIG ${OC_DEVELOPER_CONFIG} ABSOLUTE)

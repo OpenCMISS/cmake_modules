@@ -285,7 +285,7 @@ function(createExternalProjects COMPONENT_NAME SOURCE_DIR BINARY_DIR DEFS)
     )
     set_target_properties(${OC_EP_PREFIX}${COMPONENT_NAME} PROPERTIES FOLDER "ExternalProjects")
         
-    # See OpenCMISSDeveloper.cmake
+    # See OpenCMISSInstallationConfig.cmake
     if (OC_CLEAN_REBUILDS_COMPONENTS)
         set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${BINARY_DIR}/CMakeCache.txt)
     endif()

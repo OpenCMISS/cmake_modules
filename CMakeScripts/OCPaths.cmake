@@ -17,3 +17,5 @@ endif ()
 
 set(OC_EXTPROJ_STAMP_DIR extproj/stamp)
 set(OC_EXTPROJ_TMP_DIR extproj/tmp)
+
+set(OC_SUPPORT_DIR ${CMAKE_CURRENT_BINARY_DIR}/support)

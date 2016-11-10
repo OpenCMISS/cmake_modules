@@ -1,6 +1,5 @@
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(OC_SUPPORT_DIR ${OpenCMISS_BINARY_DIR}/support)
 string(TIMESTAMP NOW "%Y-%m-%d_%H-%M")
 ##
 # CMake logging
@@ -48,15 +47,15 @@ if (DEFINED EVIL OR EVIL)
     set(EVEL ${EVIL})
 endif()
 if (DEFINED EVEL OR EVEL)
-    if (NOT EXISTS "${PROJECT_SOURCE_DIR}/OpenCMISSDeveloper.cmake")
-        log("Creating OpenCMISSDeveloper file in ${PROJECT_SOURCE_DIR}")
+    if (NOT EXISTS "${PROJECT_BINARY_DIR}/OpenCMISSInstallationConfig.cmake")
+        log("Creating OpenCMISSInstallationConfig file in ${PROJECT_BINARY_DIR}")
         configure_file(
-            "${OPENCMISS_MODULE_PATH}/Templates/OpenCMISSDeveloper.template.cmake"
-            "${PROJECT_SOURCE_DIR}/OpenCMISSDeveloper.cmake"
+            "${OPENCMISS_MODULE_PATH}/Templates/OpenCMISSInstallationConfig.template.cmake"
+            "${PROJECT_BINARY_DIR}/OpenCMISSInstallationConfig.cmake"
             COPYONLY)
-        set(EVIL_MESSAGE "Being a Developer: ${EVEL}. Copied the OpenCMISSDeveloper template.")
+        set(EVIL_MESSAGE "Being a Developer: ${EVEL}. Copied the OpenCMISSInstallationConfig template.")
     else()
-        set(EVIL_MESSAGE "OpenCMISSDeveloper script already copied. Not overwriting.")
+        set(EVIL_MESSAGE "OpenCMISSInsatallationConfig script already copied. Not overwriting.")
     endif()
 endif()
 
@@ -65,7 +64,7 @@ function(printnextsteps)
     message(STATUS "@")
     message(STATUS "@ - Change ${OPENCMISS_LOCALCONFIG} according to your setup/needs")
     if (DEFINED EVIL)
-        message(STATUS "@ - Change ${CMAKE_CURRENT_SOURCE_DIR}/OpenCMISSDeveloper.cmake according to your developing setup/needs (Overrides anything in OpenCMISSLocalConfig!)")        
+        message(STATUS "@ - Change ${CMAKE_CURRENT_SOURCE_DIR}/OpenCMISSInstallationConfig.cmake according to your developing setup/needs (Overrides anything in OpenCMISSLocalConfig!)")        
     endif()
     message(STATUS "@ - Build the 'opencmiss' target (e.g. '${CMAKE_MAKE_PROGRAM} opencmiss') to start the build process")
     message(STATUS "@")

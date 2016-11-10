@@ -100,7 +100,7 @@ set(OPENCMISS_MODULE_PATH_EXPORT
 relativizePathList(OPENCMISS_MODULE_PATH_EXPORT "${OPENCMISS_EXPORT_INSTALL_ROOT}" _OPENCMISS_IMPORT_PREFIX)
 
 if (OC_DEVELOPER AND NOT OC_INSTALL_SUPPORT_EMAIL)
-    message(WARNING "Dear developer! Please set the OC_INSTALL_SUPPORT_EMAIL variable in OpenCMISSDeveloper.cmake "
+    message(WARNING "Dear developer! Please set the OC_INSTALL_SUPPORT_EMAIL variable in OpenCMISSInstallationConfig.cmake "
                     "to your eMail address so that people using your installation can contact you for support. Thanks!")
 endif()
 # Check if there are defaults - otherwise use the current build's settings
