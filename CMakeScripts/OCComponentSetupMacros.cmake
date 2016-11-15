@@ -153,15 +153,15 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
             set(${COMPONENT_NAME}_REPO ${GITHUB_PROTOCOL}${_GITHUB_USERNAME}/${REPO_NAME})
         endif()
         
-        add_custom_target(${REPO_NAME}_download
+        add_custom_target(${OC_SM_PREFIX}${REPO_NAME}_download
             COMMAND ${GIT_EXECUTABLE} clone ${${COMPONENT_NAME}_REPO} .
             COMMAND ${GIT_EXECUTABLE} checkout ${${COMPONENT_NAME}_BRANCH}
             COMMENT "Cloning ${COMPONENT_NAME} sources"
             WORKING_DIRECTORY "${SOURCE_DIR}"
         )
         
-        add_custom_target(${REPO_NAME}_update
-            DEPENDS ${OC_EP_PREFIX}${COMPONENT_NAME}_sources
+        add_custom_target(${OC_SM_PREFIX}${REPO_NAME}_update
+            DEPENDS ${OC_SM_PREFIX}${COMPONENT_NAME}_sources
             COMMAND ${GIT_EXECUTABLE} pull
             COMMAND ${GIT_EXECUTABLE} checkout ${${COMPONENT_NAME}_BRANCH}
             COMMAND ${CMAKE_COMMAND} -E remove -f ${BINARY_DIR}/${OC_EXTPROJ_STAMP_DIR}/*-build
@@ -177,7 +177,7 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
         endif()
         
         set(_FILENAME ${${COMPONENT_NAME}_BRANCH}.tar.gz)
-        add_custom_target(${REPO_NAME}_download
+        add_custom_target(${OC_SM_PREFIX}${REPO_NAME}_download
             COMMAND ${CMAKE_COMMAND}
                 -DMODE=Download
                 -DURL=${${COMPONENT_NAME}_REPO}/archive/${_FILENAME}
@@ -187,19 +187,19 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
         )
         
         # For tarballs, update is the same as download!
-        add_custom_target(${REPO_NAME}_update
-            DEPENDS ${REPO_NAME}-download
+        add_custom_target(${OC_SM_PREFIX}${REPO_NAME}_update
+            DEPENDS ${OC_SM_PREFIX}${REPO_NAME}_download
             COMMAND ${CMAKE_COMMAND} -E remove -f ${BINARY_DIR}/${OC_EXTPROJ_STAMP_DIR}/*-build
             COMMENT "Updating ${COMPONENT_NAME} sources"
         )
     endif()
-    set_target_properties(${REPO_NAME}_download PROPERTIES FOLDER "Source management")
-    set_target_properties(${REPO_NAME}_update PROPERTIES FOLDER "Source management")
+    set_target_properties(${OC_SM_PREFIX}${REPO_NAME}_download PROPERTIES FOLDER "Source management")
+    set_target_properties(${OC_SM_PREFIX}${REPO_NAME}_update PROPERTIES FOLDER "Source management")
     
     # Add extra target that makes sure the source files are being present
-    # Triggers buildof ${REPO_NAME}-download if the directory does not exist or 
+    # Triggers build of ${OC_SM_PREFIX}${REPO_NAME}_download if the directory does not exist or 
     # no CMakeLists.txt is found in the target source directory.
-    add_custom_target(${OC_EP_PREFIX}${COMPONENT_NAME}_sources
+    add_custom_target(${OC_SM_PREFIX}${COMPONENT_NAME}_sources
         COMMAND ${CMAKE_COMMAND}
             -DMODE=Check
             -DCOMPONENT=${REPO_NAME}
@@ -208,15 +208,15 @@ function(addSourceManagementTargets COMPONENT_NAME BINARY_DIR SOURCE_DIR)
             -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/ScriptSourceManager.cmake
         COMMENT "Checking ${COMPONENT_NAME} sources are present"
     )
-    set_target_properties(${OC_EP_PREFIX}${COMPONENT_NAME}_sources PROPERTIES FOLDER "Internal")
+    set_target_properties(${OC_SM_PREFIX}${COMPONENT_NAME}_sources PROPERTIES FOLDER "Internal")
     
-    add_custom_target(${REPO_NAME}_update_force
+    add_custom_target(${OC_SM_PREFIX}${REPO_NAME}_update_force
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${SOURCE_DIR}"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${SOURCE_DIR}"
-        COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR} --target ${REPO_NAME}-download
+        COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR} --target ${OC_SM_PREFIX}${REPO_NAME}_download
         COMMENT "Forced update of ${COMPONENT_NAME} - removing and downloading"
     )
-    set_target_properties(${REPO_NAME}_update_force PROPERTIES FOLDER "Source management")
+    set_target_properties(${OC_SM_PREFIX}${REPO_NAME}_update_force PROPERTIES FOLDER "Source management")
     
 endfunction()
 
@@ -249,7 +249,7 @@ function(createExternalProjects COMPONENT_NAME SOURCE_DIR BINARY_DIR DEFS)
     
     log("Adding ${COMPONENT_NAME} with DEPS=${${COMPONENT_NAME}_DEPS}" VERBOSE)
     ExternalProject_Add(${OC_EP_PREFIX}${COMPONENT_NAME}
-        DEPENDS ${${COMPONENT_NAME}_DEPS} ${OC_EP_PREFIX}${COMPONENT_NAME}_sources
+        DEPENDS ${${COMPONENT_NAME}_DEPS} ${OC_SM_PREFIX}${COMPONENT_NAME}_sources
         PREFIX ${BINARY_DIR}
         LIST_SEPARATOR ${OC_LIST_SEPARATOR}
         TMP_DIR ${BINARY_DIR}/${OC_EXTPROJ_TMP_DIR}
@@ -377,25 +377,25 @@ Configure definitions:
     if (OC_CREATE_LOGS)
         # Using PRE_BUILD directly for target support does not work :-| See docs.
         # So we have an extra target in between. 
-        add_custom_target(${OC_EP_PREFIX}${NAME}_collect_log
+        add_custom_target(${OC_SM_PREFIX}${NAME}_collect_log
             COMMAND ${CMAKE_COMMAND}
                 -DLOG_DIR=${BIN}/${OC_EXTPROJ_STAMP_DIR}
                 -DSUPPORT_DIR=${OC_SUPPORT_DIR} 
                 -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCSupport.cmake
             COMMENT "Support: Collecting ${COMPONENT_NAME} log files"
         )
-        add_dependencies(collect_logs ${OC_EP_PREFIX}${NAME}_collect_log)
-        set_target_properties(${OC_EP_PREFIX}${NAME}_collect_log PROPERTIES FOLDER "Internal")
+        add_dependencies(collect_logs ${OC_SM_PREFIX}${NAME}_collect_log)
+        set_target_properties(${OC_SM_PREFIX}${NAME}_collect_log PROPERTIES FOLDER "Internal")
     endif()
     
-    add_custom_target(${OC_EP_PREFIX}${NAME}_buildlog
+    add_custom_target(${OC_SM_PREFIX}${NAME}_build_log
         COMMAND ${CMAKE_COMMAND}
             -DBUILD_STAMP=YES 
             -DCOMPONENT_NAME=${NAME}
-            -DLOGFILE="${OC_BUILDLOG}"
+            -DLOGFILE="${OC_BUILD_LOG}"
             -P ${OPENCMISS_MODULE_PATH}/CMakeScripts/OCSupport.cmake
         COMMENT "Support: Creating ${COMPONENT_NAME} buildlog"             
         WORKING_DIRECTORY "${OC_SUPPORT_DIR}")
-    add_dependencies(${OC_EP_PREFIX}${NAME} ${OC_EP_PREFIX}${NAME}_buildlog)
-    set_target_properties(${OC_EP_PREFIX}${NAME}_buildlog PROPERTIES FOLDER "Internal")
+    add_dependencies(${OC_EP_PREFIX}${NAME} ${OC_SM_PREFIX}${NAME}_build_log)
+    set_target_properties(${OC_SM_PREFIX}${NAME}_build_log PROPERTIES FOLDER "Internal")
 endfunction()

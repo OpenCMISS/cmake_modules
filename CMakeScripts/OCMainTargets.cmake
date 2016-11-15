@@ -57,7 +57,7 @@ add_custom_target(reset
     DEPENDS reset_mpionly reset_keytests
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_COMPONENTS_INSTALL_PREFIX_NO_BUILD_TYPE}"
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${OPENCMISS_COMPONENTS_BINARY_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E remove "${OC_BUILDLOG}"
+    COMMAND ${CMAKE_COMMAND} -E remove "${OC_BUILD_LOG}"
     COMMAND ${CMAKE_COMMAND} -E copy ${OPENCMISS_LOCALCONFIG} ../backup_localconfig.tmp
     COMMAND ${CMAKE_COMMAND} -E remove -f ${PROJECT_BINARY_DIR}/*
     COMMAND ${CMAKE_COMMAND} -E copy ../backup_localconfig.tmp ${OPENCMISS_LOCALCONFIG}

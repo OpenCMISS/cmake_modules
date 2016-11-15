@@ -65,5 +65,8 @@ set(OC_BUILD_SUPPORT_EMAIL "users@opencmiss.org")
 # If not set, a warning will be issued!
 set(OC_INSTALL_SUPPORT_EMAIL FALSE)
 
+# The prefix for opencmiss source manaagement targets
+set(OC_SM_PREFIX "SM_")
+
 # The prefix for opencmiss dependencies external projects
 set(OC_EP_PREFIX "OC_")

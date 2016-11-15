@@ -6,7 +6,7 @@ string(TIMESTAMP NOW "%Y-%m-%d_%H-%M")
 # -------------
 #
 # The build system creates a build log in order to ease the support process.
-set(OC_BUILDLOG ${OC_SUPPORT_DIR}/configure_builds_${NOW}.log)
+set(OC_BUILD_LOG ${OC_SUPPORT_DIR}/configure_builds_${NOW}.log)
 
 ##
 # The function :command:`log()` can be used to produce screen output as well as write messages to the build log::
@@ -26,10 +26,10 @@ function(log msg)
     # Write to config log file
     if (level IN_LIST OC_CONFIG_LOG_LEVELS)
         #message(STATUS "@@@@@ writing to file")    
-        if (NOT EXISTS "${OC_BUILDLOG}")
-            file(WRITE "${OC_BUILDLOG}" "${level_prefix}${msg}\r\n")
+        if (NOT EXISTS "${OC_BUILD_LOG}")
+            file(WRITE "${OC_BUILD_LOG}" "${level_prefix}${msg}\r\n")
         else()
-            file(APPEND "${OC_BUILDLOG}" "${level_prefix}${msg}\r\n")
+            file(APPEND "${OC_BUILD_LOG}" "${level_prefix}${msg}\r\n")
         endif()
     endif()
     # Also write to console output
