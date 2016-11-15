@@ -16,6 +16,10 @@ set(OPENCMISS_CMAKE_MODULES_PATH ${OPENCMISS_CMAKE_MODULES_PATH} CACHE PATH "Loc
 
 set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindMPI.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCArchitecturePathFunctions.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCMiscFunctionsMacros.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCToolchainCompilers.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCDetermineMPI.cmake
     )
 
 install(FILES ${MODULES_FILES_LIST}

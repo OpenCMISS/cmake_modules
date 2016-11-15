@@ -91,9 +91,9 @@ OpenCMISS Support variable dump file, ${NOW}
         set(_SUPPORT_DEPS DEPENDS collect_logs)
     endif()
     
-    # Fall back to the OC_BUILD_SUPPORT_EMAIL if no install email is set.
-    if (NOT OC_INSTALL_SUPPORT_EMAIL)
-        set(OC_INSTALL_SUPPORT_EMAIL ${OC_BUILD_SUPPORT_EMAIL})
+    # Fall back to the OPENCMISS_BUILD_SUPPORT_EMAIL if no install email is set.
+    if (NOT OPENCMISS_INSTALLATION_SUPPORT_EMAIL)
+        set(OPENCMISS_INSTALLATION_SUPPORT_EMAIL ${OPENCMISS_BUILD_SUPPORT_EMAIL})
     endif()
     
     add_custom_target(support

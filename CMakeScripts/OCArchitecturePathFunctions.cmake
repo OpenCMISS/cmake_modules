@@ -50,12 +50,27 @@
 # Requires the extra (=non-cmake default) variables:
 # MPI
 #
-# See also: getShortArchitecturePath
+# See also: getSystemPartArchitecturePath, getMPIPartArchitecturePath
 function(getArchitecturePath VARNAME VARNAME_MPI)
     
-    # Get short version to start with
-    getShortArchitecturePath(ARCHPATH)
+    # Get the system part
+    getSystemPartArchitecturePath(SYSTEM_PART)
     
+    # Get the MPI Part
+    getMPIPartArchitecturePath(MPI_PART)
+
+    set(ARCH_PATH_MPI ${SYSTEM_PART}/${MPI_PART})
+    set(ARCH_PATH_NOMPI ${SYSTEM_PART}/no_mpi)
+
+    # Append to desired variable
+    set(${VARNAME_MPI} ${ARCH_PATH_MPI} PARENT_SCOPE)
+    set(${VARNAME} ${ARCH_PATH_NOMPI} PARENT_SCOPE)
+endfunction()
+
+# This function assembles the MPI part of the architecture path.
+# This part is made up of [MPI][MPI_BUILD_TYPE]
+#
+function(getMPIPartArchitecturePath VARNAME)
     # MPI version information
     if (MPI STREQUAL none)
         SET(MPI_PART "no_mpi")
@@ -65,19 +80,15 @@ function(getArchitecturePath VARNAME VARNAME_MPI)
         string(TOLOWER "${MPI_BUILD_TYPE}" MPI_BUILD_TYPE_LOWER)
         set(MPI_PART ${MPI}_${MPI_BUILD_TYPE_LOWER})
     endif()
-    set(ARCHPATH ${ARCHPATH}/${MPI_PART})
-    
+
     # Append to desired variable
-    set(${VARNAME_MPI} ${ARCHPATH} PARENT_SCOPE)
-    # The full architecture path without mpi is the same but with "no_mpi" at the same level
-    string(REPLACE "/${MPI_PART}" "/no_mpi" ARCHPATH_NOMPI ${ARCHPATH})
-    set(${VARNAME} ${ARCHPATH_NOMPI} PARENT_SCOPE)
+    SET(${VARNAME} ${ARCHPATH} PARENT_SCOPE)
 endfunction()
 
 # This function assembles a short version (the beginning) of the architecture path
 # We have [ARCH][COMPILER][MT]
 #
-function(getShortArchitecturePath VARNAME)
+function(getSystemPartArchitecturePath VARNAME)
     
     # Architecture/System
     STRING(TOLOWER ${CMAKE_SYSTEM_NAME} CMAKE_SYSTEM_NAME_LOWER)

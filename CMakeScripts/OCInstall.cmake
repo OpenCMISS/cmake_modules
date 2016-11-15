@@ -146,7 +146,7 @@ install(FILES ${OPENCMISS_MODULE_PATH}/Packaging/OpenCMISS.cmake
     
 # Add the OpenCMISS.cmake file to the UserSDK - it is a tool to help find the correct installation paths.
 set(_VERSION_BRANCH v${OpenCMISS_VERSION})
-if (OC_DEVEL_ALL)
+if (OPENCMISS_DEVEL_ALL)
     set(_VERSION_BRANCH devel)
 endif()
 if(NOT EXISTS ${CMAKE_INSTALL_PREFIX}/${USERSDK_RESOURCE_DIR}/Examples)
