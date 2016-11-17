@@ -15,11 +15,36 @@ endif ()
 set(OPENCMISS_CMAKE_MODULES_PATH ${OPENCMISS_CMAKE_MODULES_PATH} CACHE PATH "Location of OpenCMISS CMake files.")
 
 set(MODULES_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindBLACS.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindBLAS.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindFTGL.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindGLEW.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindGTKGLext.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindGit.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindHYPRE.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindImageMagick.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindJPEG.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindLAPACK.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindLibGDCM.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindMPI.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindMUMPS.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindNETGEN.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindOpt++.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindPETSC.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindPNG.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindPackageMultipass.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindPerlLibs.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindSCALAPACK.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindSUNDIALS.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindTAO.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindTIFF.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindVALGRIND.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindwxWidgets.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCArchitecturePathFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCMiscFunctionsMacros.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCToolchainCompilers.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCDetermineMPI.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCCheckSDKInstallation.cmake
     )
 
 install(FILES ${MODULES_FILES_LIST}
