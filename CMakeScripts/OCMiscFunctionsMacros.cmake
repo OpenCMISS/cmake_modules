@@ -1,13 +1,5 @@
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-string(TIMESTAMP NOW "%Y-%m-%d_%H-%M")
-##
-# CMake logging
-# -------------
-#
-# The build system creates a build log in order to ease the support process.
-set(OC_BUILD_LOG ${OC_SUPPORT_DIR}/configure_builds_${NOW}.log)
-
 ##
 # The function :command:`log()` can be used to produce screen output as well as write messages to the build log::
 #
