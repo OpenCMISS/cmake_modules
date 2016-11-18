@@ -42,7 +42,7 @@
 #
 #     x86_64_linux/gnu-C4.6-gnu-F4.6/openmpi_release/release
 #
-# See also: :var:`OC_USE_ARCHITECTURE_PATH`
+# See also: :var:`OPENCMISS_USE_ARCHITECTURE_PATH`
 
 # This function returns two architecture paths, the first for mpi-unaware applications (VARNAME)
 # and the second for applications that link against an mpi implementation (VARNAME_MPI)
@@ -82,7 +82,7 @@ function(getMPIPartArchitecturePath VARNAME)
     endif()
 
     # Append to desired variable
-    SET(${VARNAME} ${ARCHPATH} PARENT_SCOPE)
+    SET(${VARNAME} ${MPI_PART} PARENT_SCOPE)
 endfunction()
 
 # This function assembles a short version (the beginning) of the architecture path

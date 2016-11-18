@@ -36,6 +36,7 @@ https://github.com/OpenCMISS/manage/issues/28
     endif()
 else ()
 
+message(STATUS "here 1")
     # Ensure lower-case mpi and upper case mpi build type
     # Whether to allow a system search for MPI implementations
     option(MPI_USE_SYSTEM "Allow to use a system MPI if found" YES)
@@ -44,7 +45,7 @@ else ()
         set(MPI ${MPI} CACHE STRING "User-specified MPI implementation" FORCE)
     endif()
     if (DEFINED MPI_BUILD_TYPE)
-        capitalise(MPI_BUILD_TYPE)
+        capitalise(${MPI_BUILD_TYPE})
         set(MPI_BUILD_TYPE ${MPI_BUILD_TYPE} CACHE STRING "User-specified MPI build type" FORCE)
     else()
         if (DEFINED OC_DEFAULT_MPI_BUILD_TYPE)
@@ -144,7 +145,7 @@ if (NOT MPI_FOUND)
     # Only the debug/release versions of MPI are located in different folders (for own builds only - the behaviour using system mpi
     # in debug mode is unspecified)
     set(SYSTEM_PART_ARCH_PATH .)
-    if (OC_USE_ARCHITECTURE_PATH)
+    if (OPENCMISS_USE_ARCHITECTURE_PATH)
         getSystemPartArchitecturePath(SYSTEM_PART_ARCH_PATH)
     endif()
 
