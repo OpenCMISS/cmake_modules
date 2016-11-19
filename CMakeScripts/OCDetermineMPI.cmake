@@ -41,6 +41,7 @@ message(STATUS "here 1")
     # Whether to allow a system search for MPI implementations
     option(MPI_USE_SYSTEM "Allow to use a system MPI if found" YES)
     if (DEFINED OPENCMISS_MPI)
+message(STATUS "after here: ${OPENCMISS_MPI} OPENCMISS_MPI"
         string(TOLOWER ${OPENCMISS_MPI} OPENCMISS_MPI)
         set(OPENCMISS_MPI ${OPENCMISS_MPI} CACHE STRING "User-specified MPI implementation" FORCE)
     endif()
