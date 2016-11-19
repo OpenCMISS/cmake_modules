@@ -40,6 +40,8 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindTIFF.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindVALGRIND.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindwxWidgets.cmake
+    )
+set(PACKAGES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCArchitecturePathFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCMiscFunctionsMacros.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCToolchainCompilers.cmake
@@ -50,4 +52,7 @@ set(MODULES_FILES_LIST
 
 install(FILES ${MODULES_FILES_LIST}
     DESTINATION ${OPENCMISS_CMAKE_MODULES_PATH}/Modules
+    )
+install(FILES ${PACKAGES_FILES_LIST}
+    DESTINATION ${OPENCMISS_CMAKE_MODULES_PATH}/Modules/Packages
     )
