@@ -22,9 +22,9 @@ if (DEFINED MPI_HOME AND NOT MPI_HOME STREQUAL "")
     if (NOT MPI_FOUND)
         log("No MPI implementation found at MPI_HOME. Please check." ERROR)
     endif()
-    if (NOT DEFINED MPI)
+    if (NOT DEFINED OPENCMISS_MPI)
         # MPI_DETECTED is set by FindMPI.cmake to one of the mnemonics or unknown (MPI_TYPE_UNKNOWN in FindMPI.cmake)
-        set(MPI ${MPI_DETECTED} CACHE STRING "Detected MPI implementation" FORCE)
+        set(OPENCMISS_MPI ${MPI_DETECTED} CACHE STRING "Detected MPI implementation" FORCE)
     endif()
     if (NOT DEFINED MPI_BUILD_TYPE)
         set(MPI_BUILD_TYPE USER_MPIHOME)
@@ -40,9 +40,9 @@ message(STATUS "here 1")
     # Ensure lower-case mpi and upper case mpi build type
     # Whether to allow a system search for MPI implementations
     option(MPI_USE_SYSTEM "Allow to use a system MPI if found" YES)
-    if (DEFINED MPI)
-        string(TOLOWER ${MPI} MPI)
-        set(MPI ${MPI} CACHE STRING "User-specified MPI implementation" FORCE)
+    if (DEFINED OPENCMISS_MPI)
+        string(TOLOWER ${OPENCMISS_MPI} OPENCMISS_MPI)
+        set(OPENCMISS_MPI ${OPENCMISS_MPI} CACHE STRING "User-specified MPI implementation" FORCE)
     endif()
     if (DEFINED MPI_BUILD_TYPE)
         capitalise(${MPI_BUILD_TYPE})
@@ -60,8 +60,8 @@ message(STATUS "here 1")
     endif()
     
     # We did not get any user choice in terms of MPI
-    if(NOT DEFINED MPI)
-        # No MPI or MPI_HOME - let cmake look and find the default MPI.
+    if(NOT DEFINED OPENCMISS_MPI)
+        # No OPENCMISS_MPI or MPI_HOME - let cmake look and find the default MPI.
         if(MPI_USE_SYSTEM)
             log("Looking for default system MPI...")
             find_package(MPI QUIET)
@@ -70,8 +70,8 @@ message(STATUS "here 1")
         # If there's a system MPI, set MPI to the detected version
         if (MPI_FOUND)
             # MPI_DETECTED is set by FindMPI.cmake to one of the mnemonics or unknown (MPI_TYPE_UNKNOWN in FindMPI.cmake)
-            set(MPI ${MPI_DETECTED} CACHE STRING "Detected MPI implementation" FORCE)
-            log("Found '${MPI}'")
+            set(OPENCMISS_MPI ${MPI_DETECTED} CACHE STRING "Detected MPI implementation" FORCE)
+            log("Found '${OPENCMISS_MPI}'")
         else()
             # No MPI found - Prescribe a reasonable system default choice and go with that
             if (UNIX AND NOT APPLE)
@@ -110,7 +110,7 @@ message(STATUS "here 1")
                 log("No default MPI suggestion implemented for your platform. Using '${OC_DEFAULT_MPI}'" WARNING)
                 SET(SUGGESTED_MPI ${OC_DEFAULT_MPI})
             endif()
-            set(MPI ${SUGGESTED_MPI} CACHE STRING "Auto-suggested MPI implementation" FORCE)
+            set(OPENCMISS_MPI ${SUGGESTED_MPI} CACHE STRING "Auto-suggested MPI implementation" FORCE)
             unset(SUGGESTED_MPI)
         endif()
     endif()
@@ -128,7 +128,7 @@ string(TOLOWER "${MPI_BUILD_TYPE}" MPI_BUILD_TYPE_LOWER)
 if (NOT MPI_FOUND AND MPI_USE_SYSTEM) 
     # Educated guesses are used to look for an MPI implementation
     # This bit of logic is covered inside the FindMPI module where MPI is consumed
-    log("Looking for '${MPI}' MPI on local system..")
+    log("Looking for '${OPENCMISS_MPI}' MPI on local system..")
     find_package(MPI QUIET)
 endif()
 
@@ -150,7 +150,7 @@ if (NOT MPI_FOUND)
     endif()
 
     # This is where our own build of MPI will reside if compilation is needed
-    set(OWN_MPI_INSTALL_DIR ${OPENCMISS_OWN_MPI_INSTALL_PREFIX}/${SYSTEM_PART_ARCH_PATH}/${MPI}/${MPI_BUILD_TYPE_LOWER})
+    set(OWN_MPI_INSTALL_DIR ${OPENCMISS_OWN_MPI_INSTALL_PREFIX}/${SYSTEM_PART_ARCH_PATH}/${OPENCMISS_MPI}/${MPI_BUILD_TYPE_LOWER})
 
     # Set MPI_HOME to the install location - its not set outside anyways (see first if case at top)
     # Important: Do not unset(MPI_HOME) afterwards - this needs to get passed to all external projects the same way
@@ -158,7 +158,7 @@ if (NOT MPI_FOUND)
     set(MPI_HOME "${OWN_MPI_INSTALL_DIR}" CACHE STRING "Installation directory of own/local MPI build" FORCE)
     find_package(MPI QUIET)
     if (MPI_FOUND)
-        log("Using own '${MPI}' MPI: ${OWN_MPI_INSTALL_DIR}")
+        log("Using own '${OPENCMISS_MPI}' MPI: ${OWN_MPI_INSTALL_DIR}")
     endif()
 endif()
 
