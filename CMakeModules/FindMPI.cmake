@@ -126,6 +126,25 @@
 #  License text for the above reference.)
 cmake_minimum_required(VERSION 3.3)
 
+macro(clearFindMPIVariables)
+    unset(MPI_FOUND)
+    foreach ( _lang C CXX Fortran)
+        unset(MPI_${_lang}_FOUND)
+        unset(MPI_${_lang}_COMPILER)
+        unset(MPI_${_lang}_COMPILER_FLAGS)
+        unset(MPI_${_lang}_INCLUDE_PATH)
+        unset(MPI_${_lang}_LINK_FLAGS)
+        unset(MPI_${_lang}_LIBRARIES)
+    endforeach ()
+    unset(MPI_Fortran_MODULE_COMPATIBLE)
+    unset(MPI_DETECTED)
+    unset(MPIEXEC CACHE)
+    unset(MPIEXEC_NUMPROC_FLAG CACHE)
+    unset(MPIEXEC_PREFLAGS CACHE)
+    unset(MPIEXEC_POSTFLAGS CACHE)
+    unset(MPIEXEC_MAX_NUMPROCS CACHE)
+endmacro()
+
 # include this to handle the QUIETLY and REQUIRED arguments
 include(FindPackageHandleStandardArgs)
 
