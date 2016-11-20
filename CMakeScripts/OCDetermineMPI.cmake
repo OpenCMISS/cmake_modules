@@ -44,6 +44,7 @@ message(STATUS "here 1")
 message(STATUS "after here: ${OPENCMISS_MPI} OPENCMISS_MPI")
         string(TOLOWER ${OPENCMISS_MPI} OPENCMISS_MPI)
         set(OPENCMISS_MPI ${OPENCMISS_MPI} CACHE STRING "User-specified MPI implementation" FORCE)
+        set(_USER_SPECIFIED_MPI_FLAG TRUE) # ${OPENCMISS_MPI})
     endif()
     if (DEFINED MPI_BUILD_TYPE)
         capitalise(${MPI_BUILD_TYPE})
@@ -55,13 +56,14 @@ message(STATUS "after here: ${OPENCMISS_MPI} OPENCMISS_MPI")
             set(MPI_BUILD_TYPE Release CACHE STRING "MPI build type, initialized to default of Release")
 	endif()
     endif()
-    if (MPI_BUILD_TYPE STREQUAL DEBUG AND MPI_USE_SYSTEM)
+    if (MPI_BUILD_TYPE STREQUAL Debug AND MPI_USE_SYSTEM)
         log("Cannot have debug MPI builds and MPI_USE_SYSTEM at the same time. Setting MPI_USE_SYSTEM=OFF" WARNING)
         set(MPI_USE_SYSTEM OFF CACHE BOOL "Allow to use a system MPI if found" FORCE)
     endif()
     
     # We did not get any user choice in terms of MPI
     if(NOT DEFINED OPENCMISS_MPI)
+        set(_USER_SPECIFIED_MPI_FLAG FALSE)
         # No OPENCMISS_MPI or MPI_HOME - let cmake look and find the default MPI.
         if(MPI_USE_SYSTEM)
             log("Looking for default system MPI...")
@@ -130,8 +132,18 @@ if (NOT MPI_FOUND AND MPI_USE_SYSTEM)
     # Educated guesses are used to look for an MPI implementation
     # This bit of logic is covered inside the FindMPI module where MPI is consumed
     log("Looking for '${OPENCMISS_MPI}' MPI on local system..")
+    if (_USER_SPECIFIED_MPI_FLAG)
+        set(MPI ${OPENCMISS_MPI})
+    endif ()
     find_package(MPI QUIET)
+    # If the user specified an MPI check to make sure the found MPI is the correct one.
+    if (_USER_SPECIFIED_MPI_FLAG AND MPI_FOUND AND NOT MPI_DETECTED STREQUAL OPENCMISS_MPI)
+        clearFindMPIVariables()
+    elseif (_USER_SPECIFIED_MPI_FLAG)
+        unset(MPI)
+    endif ()
 endif()
+
 
 # Last check before building - there might be an own already built MPI implementation
 if (NOT MPI_FOUND)
@@ -151,15 +163,37 @@ if (NOT MPI_FOUND)
     endif()
 
     # This is where our own build of MPI will reside if compilation is needed
-    set(OWN_MPI_INSTALL_DIR ${OPENCMISS_OWN_MPI_INSTALL_PREFIX}/${SYSTEM_PART_ARCH_PATH}/${OPENCMISS_MPI}/${MPI_BUILD_TYPE_LOWER})
+    set(OWN_MPI_INSTALL_DIR ${OPENCMISS_OWN_MPI_INSTALL_PREFIX}/${SYSTEM_PART_ARCH_PATH}/no_mpi/${OPENCMISS_MPI}/${MPI_BUILD_TYPE_LOWER})
 
     # Set MPI_HOME to the install location - its not set outside anyways (see first if case at top)
     # Important: Do not unset(MPI_HOME) afterwards - this needs to get passed to all external projects the same way
     # it has been after building MPI in the first place.
-    set(MPI_HOME "${OWN_MPI_INSTALL_DIR}" CACHE STRING "Installation directory of own/local MPI build" FORCE)
+    set(OPENCMISS_MPI_HOME "${OWN_MPI_INSTALL_DIR}" CACHE STRING "Installation directory of own/local MPI build" FORCE)
+    set(MPI_HOME ${OPENCMISS_MPI_HOME})
     find_package(MPI QUIET)
     if (MPI_FOUND)
-        log("Using own '${OPENCMISS_MPI}' MPI: ${OWN_MPI_INSTALL_DIR}")
+        log("Using own '${OPENCMISS_MPI}' MPI: ${OPENCMISS_MPI_HOME}")
+    else ()
+        unset(MPI_HOME)
     endif()
 endif()
+
+macro(clearFindMPIVariables)
+    unset(MPI_FOUND)
+    foreach ( _lang C CXX Fortran)
+        unset(MPI_${_lang}_FOUND)
+        unset(MPI_${_lang}_COMPILER)
+        unset(MPI_${_lang}_COMPILER_FLAGS)
+        unset(MPI_${_lang}_INCLUDE_PATH)
+        unset(MPI_${_lang}_LINK_FLAGS)
+        unset(MPI_${_lang}_LIBRARIES)
+    endforeach ()
+    unset(MPI_Fortran_MODULE_COMPATIBLE)
+    unset(MPI_DETECTED)
+    unset(MPIEXEC CACHE)
+    unset(MPIEXEC_NUMPROC_FLAG CACHE)
+    unset(MPIEXEC_PREFLAGS CACHE)
+    unset(MPIEXEC_POSTFLAGS CACHE)
+    unset(MPIEXEC_MAX_NUMPROCS CACHE)
+endmacro()
 
