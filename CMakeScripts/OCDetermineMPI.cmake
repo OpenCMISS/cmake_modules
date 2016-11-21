@@ -54,13 +54,10 @@ https://github.com/OpenCMISS/manage/issues/28
         " WARNING)
     endif()
 else ()
-
-message(STATUS "here 1")
     # Ensure lower-case mpi and upper case mpi build type
     # Whether to allow a system search for MPI implementations
     option(MPI_USE_SYSTEM "Allow to use a system MPI if found" YES)
     if (DEFINED OPENCMISS_MPI)
-message(STATUS "after here: ${OPENCMISS_MPI} OPENCMISS_MPI")
         string(TOLOWER ${OPENCMISS_MPI} OPENCMISS_MPI)
         set(OPENCMISS_MPI ${OPENCMISS_MPI} CACHE STRING "User-specified MPI implementation" FORCE)
         set(_USER_SPECIFIED_MPI_FLAG TRUE) # ${OPENCMISS_MPI})
@@ -180,9 +177,6 @@ if (NOT MPI_FOUND)
 
     # This is where our own build of MPI will reside if compilation is needed
     set(OPENCMISS_OWN_MPI_INSTALL_PREFIX ${OPENCMISS_OWN_MPI_INSTALL_BASE}/${SYSTEM_PART_ARCH_PATH}/no_mpi/${OPENCMISS_MPI}/${MPI_BUILD_TYPE_LOWER})
-message(STATUS "OPENCMISS_DEPENDENCIES_INSTALL_NO_MPI_PREFIX: ${OPENCMISS_DEPENDENCIES_INSTALL_NO_MPI_PREFIX}")
-message(STATUS "OPENCMISS_OWN_MPI_INSTALL_BASE: ${OPENCMISS_OWN_MPI_INSTALL_BASE}")
-message(STATUS "OPENCMISS_OWN_MPI_INSTALL_PREFIX: ${OPENCMISS_OWN_MPI_INSTALL_PREFIX}")
 
     # Set MPI_HOME to the install location - its not set outside anyways (see first if case at top)
     # Important: Do not unset(MPI_HOME) afterwards - this needs to get passed to all external projects the same way
