@@ -179,7 +179,7 @@ if (NOT MPI_FOUND)
     endif()
 
     # This is where our own build of MPI will reside if compilation is needed
-    set(OWN_MPI_INSTALL_DIR ${OPENCMISS_OWN_MPI_INSTALL_PREFIX}/${SYSTEM_PART_ARCH_PATH}/no_mpi/${OPENCMISS_MPI}/${MPI_BUILD_TYPE_LOWER})
+    set(OWN_MPI_INSTALL_DIR ${OPENCMISS_DEPENDENCIES_INSTALL_NO_MPI_PREFIX}/${OPENCMISS_MPI}/${MPI_BUILD_TYPE_LOWER})
 
     # Set MPI_HOME to the install location - its not set outside anyways (see first if case at top)
     # Important: Do not unset(MPI_HOME) afterwards - this needs to get passed to all external projects the same way
