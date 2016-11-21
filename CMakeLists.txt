@@ -48,6 +48,7 @@ set(PACKAGES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCToolchainChecks.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCDetermineMPI.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCCheckSDKInstallation.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCMultiConfigEnvironment.cmake
     )
 
 install(FILES ${MODULES_FILES_LIST}
