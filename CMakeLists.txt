@@ -7,12 +7,12 @@ cmake_minimum_required(VERSION 3.4.0 FATAL_ERROR)
 # Ready to start the "CMake Modules"
 project(OpenCMISS-CMake-Modules VERSION 1.0.0 LANGUAGES CXX)
 
-if (NOT DEFINED OPENCMISS_CMAKE_MODULES_PATH)
+if (NOT DEFINED OPENCMISS_CMAKE_MODULE_PATH)
     # Standard installation scenario and the module path can be found relative to this directory
-    get_filename_component(OPENCMISS_CMAKE_MODULES_PATH "${CMAKE_CURRENT_LIST_DIR}/../../install/share/cmake" REALPATH)
+    get_filename_component(OPENCMISS_CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../install/share/cmake" REALPATH)
 endif ()
 
-set(OPENCMISS_CMAKE_MODULES_PATH ${OPENCMISS_CMAKE_MODULES_PATH} CACHE PATH "Location of OpenCMISS CMake files.")
+set(OPENCMISS_CMAKE_MODULE_PATH ${OPENCMISS_CMAKE_MODULE_PATH} CACHE PATH "Location of OpenCMISS CMake files.")
 
 set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindBLACS.cmake
@@ -52,8 +52,8 @@ set(PACKAGES_FILES_LIST
     )
 
 install(FILES ${MODULES_FILES_LIST}
-    DESTINATION ${OPENCMISS_CMAKE_MODULES_PATH}/Modules
+    DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Modules
     )
 install(FILES ${PACKAGES_FILES_LIST}
-    DESTINATION ${OPENCMISS_CMAKE_MODULES_PATH}/Modules/Packages
+    DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Modules/Packages
     )
