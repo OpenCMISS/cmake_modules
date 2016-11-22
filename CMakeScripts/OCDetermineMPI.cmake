@@ -45,11 +45,11 @@ if (DEFINED MPI_HOME AND NOT MPI_HOME STREQUAL "")
         # MPI_DETECTED is set by FindMPI.cmake to one of the mnemonics or unknown (MPI_TYPE_UNKNOWN in FindMPI.cmake)
         set(OPENCMISS_MPI ${MPI_DETECTED} CACHE STRING "Detected MPI implementation" FORCE)
     endif()
-    if (NOT DEFINED MPI_BUILD_TYPE)
-        set(MPI_BUILD_TYPE USER_MPIHOME)
+    if (NOT DEFINED OPENCMISS_MPI_BUILD_TYPE)
+        set(OPENCMISS_MPI_BUILD_TYPE USER_MPIHOME)
         log("Using MPI via MPI_HOME variable.
 If you want to use different build types for the same MPI implementation, please
-you have to specify MPI_BUILD_TYPE. Using '${MPI_BUILD_TYPE}'.
+you have to specify OPENCMISS_MPI_BUILD_TYPE. Using '${OPENCMISS_MPI_BUILD_TYPE}'.
 https://github.com/OpenCMISS/manage/issues/28        
         " WARNING)
     endif()
@@ -62,17 +62,17 @@ else ()
         set(OPENCMISS_MPI ${OPENCMISS_MPI} CACHE STRING "User-specified MPI implementation" FORCE)
         set(_USER_SPECIFIED_MPI_FLAG TRUE) # ${OPENCMISS_MPI})
     endif()
-    if (DEFINED MPI_BUILD_TYPE)
-        capitalise(${MPI_BUILD_TYPE})
-        set(MPI_BUILD_TYPE ${MPI_BUILD_TYPE} CACHE STRING "User-specified MPI build type" FORCE)
+    if (DEFINED OPENCMISS_MPI_BUILD_TYPE)
+        capitalise(${OPENCMISS_MPI_BUILD_TYPE})
+        set(OPENCMISS_MPI_BUILD_TYPE ${OPENCMISS_MPI_BUILD_TYPE} CACHE STRING "User-specified MPI build type" FORCE)
     else()
         if (DEFINED OC_DEFAULT_MPI_BUILD_TYPE)
-            set(MPI_BUILD_TYPE ${OC_DEFAULT_MPI_BUILD_TYPE} CACHE STRING "MPI build type, initialized to default of ${OC_DEFAULT_MPI_BUILD_TYPE}")
+            set(OPENCMISS_MPI_BUILD_TYPE ${OC_DEFAULT_MPI_BUILD_TYPE} CACHE STRING "MPI build type, initialized to default of ${OC_DEFAULT_MPI_BUILD_TYPE}")
 	else()
-            set(MPI_BUILD_TYPE Release CACHE STRING "MPI build type, initialized to default of Release")
+            set(OPENCMISS_MPI_BUILD_TYPE Release CACHE STRING "MPI build type, initialized to default of Release")
 	endif()
     endif()
-    if (MPI_BUILD_TYPE STREQUAL Debug AND MPI_USE_SYSTEM)
+    if (OPENCMISS_MPI_BUILD_TYPE STREQUAL Debug AND MPI_USE_SYSTEM)
         log("Cannot have debug MPI builds and MPI_USE_SYSTEM at the same time. Setting MPI_USE_SYSTEM=OFF" WARNING)
         set(MPI_USE_SYSTEM OFF CACHE BOOL "Allow to use a system MPI if found" FORCE)
     endif()
@@ -142,7 +142,7 @@ endif()
 # of default MPI type. In the latter case we already have MPI_FOUND=TRUE.
 
 # This variable is also used in the main CMakeLists file at path computations!
-string(TOLOWER "${MPI_BUILD_TYPE}" MPI_BUILD_TYPE_LOWER)
+string(TOLOWER "${OPENCMISS_MPI_BUILD_TYPE}" MPI_BUILD_TYPE_LOWER)
 
 if (NOT MPI_FOUND AND MPI_USE_SYSTEM) 
     # Educated guesses are used to look for an MPI implementation
