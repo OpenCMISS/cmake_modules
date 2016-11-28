@@ -1041,7 +1041,7 @@ foreach (lang C CXX Fortran)
         endif()
     
         if (WIN32)
-            string(REPLACE "\\" "\\\\" _MPI_PREFIX_PATH_msg ${_MPI_PREFIX_PATH})
+            string(REPLACE "\\" "\\\\" _MPI_PREFIX_PATH_msg "${_MPI_PREFIX_PATH}")
             messagev("Looking for MPI_${lang}_COMPILER with names ${_MPI_${lang}_COMPILER_NAMES} [try libs: ${try_libs}] at ${_MPI_PREFIX_PATH_msg} + environment PATH")
         else ()
             messagev("Looking for MPI_${lang}_COMPILER with names ${_MPI_${lang}_COMPILER_NAMES} at ${_MPI_PREFIX_PATH} + environment PATH")
