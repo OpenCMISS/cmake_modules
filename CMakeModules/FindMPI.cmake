@@ -235,11 +235,16 @@ set(_MPI_EXEC_NAMES mpiexec mpirun lamexec srun)
 ############################################################
 # For 64bit environments, look in bin64 folders first!
 set(_BIN_SUFFIX bin sbin)
-set(PROGRAM_FILES_PATH "Program\ Files (x86)")
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "64")
     LIST(INSERT _BIN_SUFFIX 0 bin64 sbin64)
-    set(PROGRAM_FILES_PATH "Program\ Files")
 endif()
+if (WIN32)
+    file(TO_CMAKE_PATH "$ENV{ProgramFiles}" PROGRAM_FILES_PATH)
+    file(TO_CMAKE_PATH "$ENV{ProgramFiles(x86)}" PROGRAM_FILES_X86_PATH)
+    if (NOT PROGRAM_FILES_X86_PATH)
+        set(PROGRAM_FILES_X86_PATH ${PROGRAM_FILES_PATH})
+    endif ()
+endif ()
 
 # Case 1: MPI_HOME is set. Look there and ONLY there.
 if (DEFINED MPI_HOME)
@@ -259,15 +264,15 @@ else()
             #LIST(APPEND _MPI_PREFIX_PATH /usr/lib/mpich /usr/lib64/mpich /usr/local/lib/mpich /usr/local/lib64/mpich)
             LIST(APPEND _MPI_PREFIX_PATH mpich)
             if(WIN32)
-                LIST(APPEND _MPI_PREFIX_PATH "C:/${PROGRAM_FILES_PATH}/MPICH" "C:/${PROGRAM_FILES_PATH}/mpich")
+                LIST(APPEND _MPI_PREFIX_PATH "${PROGRAM_FILES_PATH}/MPICH" "${PROGRAM_FILES_PATH}/mpich")
             endif()
         elseif(MPI STREQUAL mpich2)
             #LIST(APPEND _MPI_PREFIX_PATH /usr/lib/mpich2 /usr/lib64/mpich2 /usr/local/lib/mpich2 /usr/local/lib64/mpich2)
             LIST(APPEND _MPI_PREFIX_PATH mpich2)
             if(WIN32)
-                LIST(APPEND _MPI_PREFIX_PATH "C:/${PROGRAM_FILES_PATH}/MPICH2" "C:/${PROGRAM_FILES_PATH}/mpich2"
+                LIST(APPEND _MPI_PREFIX_PATH "${PROGRAM_FILES_PATH}/MPICH2" "${PROGRAM_FILES_PATH}/mpich2"
                 "C:/MPICH2" "C:/mpich2"
-                "D:/${PROGRAM_FILES_PATH}/MPICH2" "D:/${PROGRAM_FILES_PATH}/mpich2"
+                "${PROGRAM_FILES_PATH}/MPICH2" "${PROGRAM_FILES_PATH}/mpich2"
                 "D:/MPICH2" "D:/mpich2")
             endif()
         elseif(MPI STREQUAL intel)
@@ -278,7 +283,7 @@ else()
             #    /usr/local/openmpi /usr/local/lib/openmpi)
             LIST(APPEND _MPI_PREFIX_PATH compat-openmpi openmpi)
         elseif(MPI STREQUAL msmpi)
-            list(APPEND _MPI_PREFIX_PATH "C:/${PROGRAM_FILES_PATH}/Microsoft SDKs/MPI") 
+            list(APPEND _MPI_PREFIX_PATH "${PROGRAM_FILES_PATH}/Microsoft SDKs/MPI") 
         elseif(MPI STREQUAL mvapich2)
             LIST(APPEND _MPI_PREFIX_PATH mvapich2 mvapich)
         elseif(MPI STREQUAL poe)
