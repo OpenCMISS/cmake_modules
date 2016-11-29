@@ -150,7 +150,7 @@ include(FindPackageHandleStandardArgs)
 
 # Comment the message command line to shut up the script
 macro(messagev TEXT)
-    #message(STATUS "FindMPI: ${TEXT}")
+    message(STATUS "FindMPI: ${TEXT}")
 endmacro()
 
 # Get the currently enabled languages - the find mpi will only look for mpi wrappers to those languages
@@ -244,6 +244,7 @@ if (WIN32)
         # Have a 32 bit program asking about 32 bit binary locations
         file(TO_CMAKE_PATH "$ENV{ProgramFiles}" PROGRAM_FILES_PATH)
     endif ()
+    messagev("Program files path: ${PROGRAM_FILES_PATH}")
 endif ()
 
 # Case 1: MPI_HOME is set. Look there and ONLY there.
