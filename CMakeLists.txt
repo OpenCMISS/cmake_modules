@@ -57,3 +57,14 @@ install(FILES ${MODULES_FILES_LIST}
 install(FILES ${PACKAGES_FILES_LIST}
     DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Modules/Packages
     )
+
+set(PRINT_SUMMARY TRUE)
+if (PRINT_SUMMARY)
+    message(STATUS "")
+    message(STATUS "====================== SUMMARY ==========================")
+    message(STATUS "")
+    message(STATUS "OPENCMISS_CMAKE_MODULE_PATH: ${OPENCMISS_CMAKE_MODULE_PATH}")
+    message(STATUS "")
+    message(STATUS "=========================================================")
+    message(STATUS "")
+endif ()
