@@ -150,7 +150,7 @@ include(FindPackageHandleStandardArgs)
 
 # Comment the message command line to shut up the script
 macro(messagev TEXT)
-    message(STATUS "FindMPI: ${TEXT}")
+    #message(STATUS "FindMPI: ${TEXT}")
 endmacro()
 
 # Get the currently enabled languages - the find mpi will only look for mpi wrappers to those languages
