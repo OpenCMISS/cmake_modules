@@ -244,7 +244,7 @@ if (WIN32)
         # Have a 32 bit program asking about 32 bit binary locations
         file(TO_CMAKE_PATH "$ENV{ProgramFiles}" PROGRAM_FILES_PATH)
     endif ()
-    messagev("Program files path: ${PROGRAM_FILES_PATH}")
+    messagev(STATUS "Program files path: ${PROGRAM_FILES_PATH}")
 endif ()
 
 # Case 1: MPI_HOME is set. Look there and ONLY there.
