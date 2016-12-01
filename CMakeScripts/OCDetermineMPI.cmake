@@ -8,11 +8,11 @@
 #  a. MPI FOUND - ok, detect type and use that
 #  b. MPI NOT FOUND - Error and abort
 # 2. Nothing specified - Call FindMPI and let it come up with whatever is found on the default path
-#  a. MPI_USE_SYSTEM = NO AND/OR No MPI found - Prescribe a reasonable system default choice and go with that
-#  b. MPI_USE_SYSTEM = YES AND MPI found - Use the MPI implementation found on PATH/environment 
+#  a. OPENCMISS_MPI_USE_SYSTEM = NO AND/OR No MPI found - Prescribe a reasonable system default choice and go with that
+#  b. OPENCMISS_MPI_USE_SYSTEM = YES AND MPI found - Use the MPI implementation found on PATH/environment 
 # 3. MPI mnemonic/variable specified
-#  b. MPI_USE_SYSTEM = YES Try to find the specific version on the system
-#  a. MPI_USE_SYSTEM = NO Build your own (unix only)
+#  b. OPENCMISS_MPI_USE_SYSTEM = YES Try to find the specific version on the system
+#  a. OPENCMISS_MPI_USE_SYSTEM = NO Build your own (unix only)
 
 macro(clearFindMPIVariables)
     unset(MPI_FOUND)
@@ -56,7 +56,7 @@ https://github.com/OpenCMISS/manage/issues/28
 else ()
     # Ensure lower-case mpi and upper case mpi build type
     # Whether to allow a system search for MPI implementations
-    option(MPI_USE_SYSTEM "Allow to use a system MPI if found" YES)
+    option(OPENCMISS_MPI_USE_SYSTEM "Allow to use a system MPI if found" YES)
     if (DEFINED OPENCMISS_MPI)
         string(TOLOWER ${OPENCMISS_MPI} OPENCMISS_MPI)
         set(OPENCMISS_MPI ${OPENCMISS_MPI} CACHE STRING "User-specified MPI implementation" FORCE)
@@ -73,16 +73,16 @@ else ()
             set(OPENCMISS_MPI_BUILD_TYPE Release CACHE STRING "MPI build type, initialized to default of Release")
         endif()
     endif()
-    if (OPENCMISS_MPI_BUILD_TYPE STREQUAL Debug AND MPI_USE_SYSTEM)
-        log("Cannot have debug MPI builds and MPI_USE_SYSTEM at the same time. Setting MPI_USE_SYSTEM=OFF" WARNING)
-        set(MPI_USE_SYSTEM OFF CACHE BOOL "Allow to use a system MPI if found" FORCE)
+    if (OPENCMISS_MPI_BUILD_TYPE STREQUAL Debug AND OPENCMISS_MPI_USE_SYSTEM)
+        log("Cannot have debug MPI builds and OPENCMISS_MPI_USE_SYSTEM at the same time. Setting OPENCMISS_MPI_USE_SYSTEM=OFF" WARNING)
+        set(OPENCMISS_MPI_USE_SYSTEM OFF CACHE BOOL "Allow to use a system MPI if found" FORCE)
     endif()
     
     # We did not get any user choice in terms of MPI
     if(NOT DEFINED OPENCMISS_MPI)
         set(_USER_SPECIFIED_MPI_FLAG FALSE)
         # No OPENCMISS_MPI or MPI_HOME - let cmake look and find the default MPI.
-        if(MPI_USE_SYSTEM)
+        if(OPENCMISS_MPI_USE_SYSTEM)
             log("Looking for default system MPI...")
             find_package(MPI QUIET)
 			log("System MPI found: ${MPI_DETECTED}, ${MPI_FOUND}")
@@ -150,7 +150,7 @@ endif()
 # This variable is also used in the main CMakeLists file at path computations!
 string(TOLOWER "${OPENCMISS_MPI_BUILD_TYPE}" MPI_BUILD_TYPE_LOWER)
 
-if (NOT MPI_FOUND AND MPI_USE_SYSTEM) 
+if (NOT MPI_FOUND AND OPENCMISS_MPI_USE_SYSTEM) 
     # Educated guesses are used to look for an MPI implementation
     # This bit of logic is covered inside the FindMPI module where MPI is consumed
     log("Looking for '${OPENCMISS_MPI}' MPI on local system.")
@@ -167,7 +167,7 @@ endif()
 
 # Last check before building - there might be an own already built MPI implementation
 if (NOT MPI_FOUND)
-    if (MPI_USE_SYSTEM)
+    if (OPENCMISS_MPI_USE_SYSTEM)
         log("No (matching) system MPI found.")    
     endif()
     log("Checking if own build already exists.")
