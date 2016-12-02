@@ -56,11 +56,14 @@ function(getArchitecturePath VARNAME VARNAME_MPI)
     # Get the system part
     getSystemPartArchitecturePath(SYSTEM_PART)
     
+    # Get compiler part
+    getCompilerPartArchitecturePath(COMPILER_PART)
+
     # Get the MPI Part
     getMPIPartArchitecturePath(MPI_PART)
 
-    set(ARCH_PATH_MPI ${SYSTEM_PART}/${MPI_PART})
-    set(ARCH_PATH_NOMPI ${SYSTEM_PART}/no_mpi)
+    set(ARCH_PATH_MPI ${SYSTEM_PART}/${COMPILER_PART}/${MPI_PART})
+    set(ARCH_PATH_NOMPI ${SYSTEM_PART}/${COMPILER_PART}/no_mpi)
 
     # Append to desired variable
     set(${VARNAME_MPI} ${ARCH_PATH_MPI} PARENT_SCOPE)
@@ -99,10 +102,6 @@ function(getSystemPartArchitecturePath VARNAME)
     #    SET(ARCHPATH ${ARCHPATH}/${ABI}bit)
     #endif()
     
-    # Compiler
-    getCompilerPathElem(COMPILER)
-    SET(ARCHPATH ${ARCHPATH}/${COMPILER})
-    
     # Profiling
     
     # Multithreading
@@ -114,7 +113,7 @@ function(getSystemPartArchitecturePath VARNAME)
     SET(${VARNAME} ${ARCHPATH} PARENT_SCOPE)
 endfunction()
 
-function(getCompilerPathElem VARNAME)
+function(getCompilerPartArchitecturePath VARNAME)
     # Form the C compiler part
     # Get the C compiler name
     if(MINGW)
