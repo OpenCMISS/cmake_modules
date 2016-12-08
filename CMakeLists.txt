@@ -47,6 +47,7 @@ set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCToolchainCompilers.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCToolchainChecks.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCDetermineMPI.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCPythonBindings.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCCheckSDKInstallation.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCMultiConfigEnvironment.cmake
     )
