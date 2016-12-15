@@ -38,14 +38,16 @@ configure_file(
 )
 
 # Delay final configuragion of bindings info file until build type is known.
+get_filename_component(_DISPLAY_SCRIPT_NAME "${BINDINGS_INFO_FILE}" NAME)
 add_custom_command(TARGET collect_python_binding_files POST_BUILD
-	COMMAND "${CMAKE_COMMAND}" 
-	    -DBTYPE=$<LOWER_CASE:$<CONFIG>> 
-	    -DACTIVATE_SCRIPT=${ACTIVATE_SCRIPT} 
-	    -DBINDINGS_INFO_STAGED_FILE=${BINDINGS_INFO_STAGED_FILE}
-	    -DBINDINGS_INFO_FILE=${BINDINGS_INFO_FILE}
-	    -P ${GEN_BINDINGS_INFO_FILE}
+    COMMAND "${CMAKE_COMMAND}" 
+        -DBTYPE=$<LOWER_CASE:$<CONFIG>> 
+        -DACTIVATE_SCRIPT=${ACTIVATE_SCRIPT} 
+        -DBINDINGS_INFO_STAGED_FILE=${BINDINGS_INFO_STAGED_FILE}
+        -DBINDINGS_INFO_FILE=${BINDINGS_INFO_FILE}
+        -P ${GEN_BINDINGS_INFO_FILE}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating ${_DISPLAY_SCRIPT_NAME}."
 )
 
 set(VIRTUALENV_OPENCMISS_LIBRARIES_FILE ${CMAKE_CURRENT_BINARY_DIR}/opencmisslibraries.py)
@@ -70,24 +72,35 @@ else ()
 endif ()
 
 message(STATUS "OUTPUT_ACTIVATE_SCRIPTS: ${OUTPUT_ACTIVATE_SCRIPTS}")
-add_custom_command(OUTPUT ${OUTPUT_ACTIVATE_SCRIPTS}
-    COMMAND ${VIRTUALENV_EXEC} --system-site-packages "${VIRTUALENV_COMPLETE_INSTALL_PREFIX}"
-)
-add_custom_target(virtualenv_create
-    DEPENDS ${ACTIVATE_SCRIPT}
-)
+#add_custom_command(OUTPUT ${OUTPUT_ACTIVATE_SCRIPTS}
+#    COMMAND ${VIRTUALENV_EXEC} --system-site-packages "${VIRTUALENV_COMPLETE_INSTALL_PREFIX}"
+#)
+#add_custom_target(virtualenv_create
+#    DEPENDS ${ACTIVATE_SCRIPT}
+#)
 
 # We need a native path to pass to the pip program
 file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>" NATIVE_CMAKE_CURRENT_BINARY_DIR)
 # This target takes care to install the python package generated in the build tree to the specified virtual
 # environment.
-add_custom_target(install_venv
-    DEPENDS collect_python_binding_files virtualenv_create
-    COMMAND ${VIRTUALENV_COMPLETE_INSTALL_PREFIX}/${VENV_BINDIR}/pip install --upgrade "${NATIVE_CMAKE_CURRENT_BINARY_DIR}"
-#    WORKING_DIRECTORY "${VIRTUALENV_COMPLETE_INSTALL_PREFIX}" # Cannot use this if we want to use generator expressions, which we/I do.
-    COMMENT "Installing: opencmiss.${PYTHON_PACKAGE_CURRENT_NAME} package for Python virtual environment ..."
+set(GEN_SCRIPT_VIRTUAL_ENV_CREATE_AND_INSTALL ${CMAKE_CURRENT_LIST_DIR}/../OpenCMISSScriptGenerateVirtualEnvCreateAndInstall.cmake)
+set(SCRIPT_VIRTUALENV_CREATE_INSTALL "${CMAKE_CURRENT_BINARY_DIR}/script_virtualenv_create_and_install.cmake")
+# Delay final configuragion of virtualenv create and install until build type is known.
+get_filename_component(_DISPLAY_SCRIPT_NAME "${SCRIPT_VIRTUALENV_CREATE_INSTALL}" NAME)
+add_custom_command(TARGET collect_python_binding_files POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" 
+        -DACTIVATE_SCRIPT=${ACTIVATE_SCRIPT} 
+        -DNATIVE_CMAKE_CURRENT_BINARY_DIR=${NATIVE_CMAKE_CURRENT_BINARY_DIR}
+        -DVIRTUALENV_EXEC=${VIRTUALENV_EXEC}
+        -DVENV_BINDIR=${VENV_BINDIR}
+        -DVIRTUALENV_COMPLETE_INSTALL_PREFIX=${VIRTUALENV_COMPLETE_INSTALL_PREFIX}
+        -DCREATE_AND_INSTALL_TEMPLATE_SCRIPT=${CMAKE_CURRENT_LIST_DIR}/../../Templates/script_virtualenv_create_and_install.in.cmake
+        -DCREATE_AND_INSTALL_SCRIPT=${SCRIPT_VIRTUALENV_CREATE_INSTALL}
+        -P ${GEN_SCRIPT_VIRTUAL_ENV_CREATE_AND_INSTALL}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating ${_DISPLAY_SCRIPT_NAME}."
 )
-install(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" --build . --target install_venv --config \${CMAKE_INSTALL_CONFIG_NAME} WORKING_DIRECTORY \"${PROJECT_BINARY_DIR}\")"
+install(SCRIPT ${SCRIPT_VIRTUALENV_CREATE_INSTALL}
     COMPONENT VirtualEnv
 )
 install(FILES ${BINDINGS_INFO_FILE} ${VIRTUALENV_OPENCMISS_LIBRARIES_FILE}
