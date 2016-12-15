@@ -58,27 +58,6 @@ configure_file(
     "${VIRTUALENV_OPENCMISS_LIBRARIES_FILE}" COPYONLY
 )
 
-# Cannot use generator expressions in custom command OUTPUTs so we will say it outputs 
-# all possible options.
-message(STATUS "OPENCMISS_HAVE_MULTICONFIG_ENV: ${OPENCMISS_HAVE_MULTICONFIG_ENV}")
-set(OUTPUT_ACTIVATE_SCRIPTS)
-if (OPENCMISS_HAVE_MULTICONFIG_ENV)
-    foreach( _config ${CMAKE_CONFIGURATION_BUILD_TYPES)
-        list(APPEND OUTPUT_ACTIVATE_SCRIPTS "${VIRTUALENV_COMPLETE_INSTALL_PREFIX_WO_CONFIG}${_config}/${VENV_BINDIR}/activate")
-    endforeach()
-else ()
-    string(TOLOWER ${CMAKE_BUILD_TYPE} build_type)
-    list(APPEND OUTPUT_ACTIVATE_SCRIPTS "${VIRTUALENV_COMPLETE_INSTALL_PREFIX_WO_CONFIG}${build_type}/${VENV_BINDIR}/activate")
-endif ()
-
-message(STATUS "OUTPUT_ACTIVATE_SCRIPTS: ${OUTPUT_ACTIVATE_SCRIPTS}")
-#add_custom_command(OUTPUT ${OUTPUT_ACTIVATE_SCRIPTS}
-#    COMMAND ${VIRTUALENV_EXEC} --system-site-packages "${VIRTUALENV_COMPLETE_INSTALL_PREFIX}"
-#)
-#add_custom_target(virtualenv_create
-#    DEPENDS ${ACTIVATE_SCRIPT}
-#)
-
 # We need a native path to pass to the pip program
 file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>" NATIVE_CMAKE_CURRENT_BINARY_DIR)
 # This target takes care to install the python package generated in the build tree to the specified virtual
