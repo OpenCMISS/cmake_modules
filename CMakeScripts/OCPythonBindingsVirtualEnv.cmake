@@ -79,11 +79,22 @@ add_custom_command(TARGET collect_python_binding_files POST_BUILD
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating ${_DISPLAY_SCRIPT_NAME}."
 )
+
 install(SCRIPT ${SCRIPT_VIRTUALENV_CREATE_INSTALL}
     COMPONENT VirtualEnv
 )
+
+# These scripts need to be installed in a sligtly different location.
+# They are placed in an architecture path agnostic directory much like
+# the OpenCMISS CMake modules files are.
+getSystemPartArchitecturePath(SYSTEM_PART)
+string(REGEX REPLACE "/${SYSTEM_PART}.*" "" AGNOSTIC_CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+
+message(STATUS "AGNOSTIC_CMAKE_INSTALL_PREFIX: ${AGNOSTIC_CMAKE_INSTALL_PREFIX}")
+
+set(DESTINATION_PATH ${AGNOSTIC_CMAKE_INSTALL_PREFIX}/share/python)
 install(FILES ${BINDINGS_INFO_FILE} ${VIRTUALENV_OPENCMISS_LIBRARIES_FILE}
-    DESTINATION python
+    DESTINATION "${DESTINATION_PATH}"
     COMPONENT VirtualEnv
 )
 
