@@ -126,3 +126,22 @@ function(add_opencmiss_environment TESTNAME)
     endif()
 endfunction()
 
+
+# Breaks up a string in the form n1.n2.n3 into three parts and stores
+# them in major, minor, and patch.  version should be a value, not a
+# variable, while major, minor and patch should be variables.
+function(THREE_PART_VERSION_TO_VARS VERSION MAJOR_VAR MINOR_VAR PATCH_VAR)
+    set(_THREE_PART_VERSION_REGEX "[0-9]+\\.[0-9]+\\.[0-9]+")
+    if (${VERSION} MATCHES ${_THREE_PART_VERSION_REGEX})
+        string(REGEX REPLACE "^([0-9]+)\\.[0-9]+\\.[0-9]+" "\\1" major "${VERSION}")
+        string(REGEX REPLACE "^[0-9]+\\.([0-9])+\\.[0-9]+" "\\1" minor "${VERSION}")
+        string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+)" "\\1" patch "${VERSION}")
+    else ()
+        message(STATUS "MACRO(THREE_PART_VERSION_TO_VARS ${VERSION}")
+        message(STATUS "Problem parsing version string, I can't parse it properly.")
+    endif ()
+    set(${MAJOR_VAR} ${major} PARENT_SCOPE)
+    set(${MINOR_VAR} ${minor} PARENT_SCOPE)
+    set(${PATCH_VAR} ${patch} PARENT_SCOPE)
+endfunction()
+

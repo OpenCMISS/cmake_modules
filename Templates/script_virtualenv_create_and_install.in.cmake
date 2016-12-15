@@ -1,0 +1,7 @@
+
+if (NOT EXISTS "${ACTIVATE_SCRIPT}")
+    execute_process(COMMAND ${VIRTUALENV_EXEC} --system-site-packages "${VIRTUALENV_COMPLETE_INSTALL_PREFIX}")
+endif ()
+
+execute_process(COMMAND ${VIRTUALENV_COMPLETE_INSTALL_PREFIX}/${VENV_BINDIR}/pip install --upgrade "${NATIVE_CMAKE_CURRENT_BINARY_DIR}")
+

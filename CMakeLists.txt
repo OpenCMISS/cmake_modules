@@ -40,24 +40,32 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindTIFF.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindVALGRIND.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindwxWidgets.cmake
-    )
+)
 set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCArchitecturePathFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCMiscFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCToolchainCompilers.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCToolchainChecks.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCDetermineMPI.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCPythonBindings.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCPythonBindingsVirtualEnv.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCCheckSDKInstallation.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCMultiConfigEnvironment.cmake
-    )
+)
+set(TEMPLATE_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/Templates/librarybindings.in.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Templates/bindingsinfo.in.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Templates/script_gen_bindings_info.in.cmake
+)
 
 install(FILES ${MODULES_FILES_LIST}
     DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Modules
-    )
+)
+install(FILES ${TEMPLATE_FILES_LIST}
+    DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Templates
+)
 install(FILES ${OPENCMISS_MODULES_FILES_LIST}
     DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Modules/OpenCMISS
-    )
+)
 
 set(PRINT_SUMMARY TRUE)
 if (PRINT_SUMMARY)

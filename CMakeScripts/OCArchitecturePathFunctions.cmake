@@ -142,7 +142,7 @@ function(getCompilerPartArchitecturePath VARNAME)
     endif()
 	
     # Get compiler major + minor versions
-    set(_COMPILER_VERSION_REGEX "^[0-9]+\.[0-9]+")
+    set(_COMPILER_VERSION_REGEX "^[0-9]+\\.[0-9]+")
     string(REGEX MATCH ${_COMPILER_VERSION_REGEX}
        _C_COMPILER_VERSION_MM "${CMAKE_C_COMPILER_VERSION}")
     # Form C part
