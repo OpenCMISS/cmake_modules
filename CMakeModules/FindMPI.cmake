@@ -216,8 +216,8 @@ set(_MPI_XL_Fortran_COMPILER_NAMES         mpixlf95   mpixlf95_r mpxlf95 mpxlf95
 foreach(lang C CXX Fortran)
     set(_MPI_${lang}_COMPILER_NAMES )
     if (lang IN_LIST ENABLED_LANGUAGES)
-        #Add in add instrumentation wrappers
-        if (OC_INSTRUMENTATION STREQUAL "scorep")
+        # Add in instrumentation wrappers
+        if (SCOREP_FOUND AND USE_SCOREP)
             # Replace mpi compiler name with the appropriate scorep wrapper name
             foreach (mpicompiler ${_MPI_GENERIC_${lang}_COMPILER_NAMES})
                 list(INSERT _MPI_${lang}_COMPILER_NAMES 0 "scorep-${mpicompiler}")
@@ -227,8 +227,8 @@ foreach(lang C CXX Fortran)
         endif()
         foreach (id GNU Intel PGI XL)
             if (NOT CMAKE_${lang}_COMPILER_ID OR CMAKE_${lang}_COMPILER_ID STREQUAL id)
-                #Add in add instrumentation wrappers
-                if(OC_INSTRUMENTATION STREQUAL "scorep")
+                # Add in instrumentation wrappers
+                if(SCOREP_FOUND AND USE_SCOREP)
                     # Replace mpi compiler name with the appropriate scorep wrapper name
                     foreach (mpicompiler ${_MPI_${id}_${lang}_COMPILER_NAMES})
                         list(INSERT _MPI_${lang}_COMPILER_NAMES 0 "scorep-${mpicompiler}")

@@ -34,6 +34,7 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindPNG.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindPackageMultipass.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindPerlLibs.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindScoreP.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindSCALAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindSUNDIALS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindTAO.cmake
