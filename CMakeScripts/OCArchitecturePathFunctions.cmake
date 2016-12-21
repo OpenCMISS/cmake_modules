@@ -27,6 +27,8 @@
 #            :watcom: The Watcom toolchain
 #            :unknown: Unknown compiler
 #    
+#    :instrumenation: Any instrumentation systems
+#        Otherwise, the path element is skipped.
 #    :multithreading: If :var:`OC_USE_MULTITHREADING` is enabled, this segment is :path:`/mt`.
 #        Otherwise, the path element is skipped.
 #    :mpi: Denotes the used MPI implementation along with the mpi build type.
@@ -53,17 +55,41 @@
 # See also: getSystemPartArchitecturePath, getMPIPartArchitecturePath
 function(getArchitecturePath VARNAME VARNAME_MPI)
     
-    # Get the system part
-    getSystemPartArchitecturePath(SYSTEM_PART)
-    
     # Get compiler part
     getCompilerPartArchitecturePath(COMPILER_PART)
+
+    getArchitecturePathGivenCompilerPart(${COMPILER_PART} ARCH_PATH_NOMPI ARCH_PATH_MPI)
+ 
+    # Append to desired variable
+    set(${VARNAME_MPI} ${ARCH_PATH_MPI} PARENT_SCOPE)
+    set(${VARNAME} ${ARCH_PATH_NOMPI} PARENT_SCOPE)
+endfunction()
+
+
+# This function returns two architecture paths, the first for mpi-unaware applications (VARNAME)
+# and the second for applications that link against an mpi implementation (VARNAME_MPI) when the 
+# compiler part of the architecture path is given
+#
+function(getArchitecturePathGivenCompilerPart COMPILER_PART VARNAME VARNAME_MPI)
+    # Get the system part
+    getSystemPartArchitecturePath(SYSTEM_PART)
+
+    # Don't get compiler part
+
+    # Get instrumentation part
+    getInstrumentationPartArchitecturePath(INSTRUMENTATION_PART)
+
+    # Get multithreading part
+    getMultithreadingPartArchitecturePath(MULTITHREADING_PART)
+
+    # Get user part
+    getUserPartArchitecturePath(USER_PART)
 
     # Get the MPI Part
     getMPIPartArchitecturePath(MPI_PART)
 
-    set(ARCH_PATH_MPI ${SYSTEM_PART}/${COMPILER_PART}/${MPI_PART})
-    set(ARCH_PATH_NOMPI ${SYSTEM_PART}/${COMPILER_PART}/no_mpi)
+    set(ARCH_PATH_MPI ${SYSTEM_PART}/${COMPILER_PART}${INSTRUMENTATION_PART}${MULTITHREADING_PART}${USER_PART}/${MPI_PART})
+    set(ARCH_PATH_NOMPI ${SYSTEM_PART}/${COMPILER_PART}${INSTRUMENTATION_PART}${MULTITHREADING_PART}${USER_PART}/no_mpi)
 
     # Append to desired variable
     set(${VARNAME_MPI} ${ARCH_PATH_MPI} PARENT_SCOPE)
@@ -85,32 +111,73 @@ function(getMPIPartArchitecturePath VARNAME)
     endif()
 
     # Append to desired variable
-    SET(${VARNAME} ${MPI_PART} PARENT_SCOPE)
+    set(${VARNAME} ${MPI_PART} PARENT_SCOPE)
 endfunction()
 
-# This function assembles a short version (the beginning) of the architecture path
-# We have [ARCH][COMPILER][MT]
+# This function assembles the instrumentation part of the architecture path.
+# This part is made up of [INSTRUMENTATION]
+#
+function(getMultithreadingPartArchitecturePath VARNAME)
+    # Multithreading
+    if (OC_MULTITHREADING)
+        SET(MULTITHREAD_PART /mt)
+    endif()
+    
+    # Append to desired variable
+    set(${VARNAME} "${MULTITHREAD_PART}" PARENT_SCOPE)
+endfunction()
+
+# This function assembles the instrumentation part of the architecture path.
+# This part is made up of [INSTRUMENTATION]
+#
+function(getUserPartArchitecturePath VARNAME)# User part
+    if (OPENCMISS_USER_PATH_ARCHITECTURE_PATH)
+        file(TO_CMAKE_PATH OPENCMISS_USER_PATH_ARCHITECTURE_PATH_WITH_SLASH ${OPENCMISS_USER_PATH_ARCHITECTURE_PATH})
+        if (NOT "OPENCMISS_USER_PATH_ARCHITECTURE_PATH_WITH_SLASH" MATCHES "^/")
+            set(OPENCMISS_USER_PATH_ARCHITECTURE_PATH_WITH_SLASH /${OPENCMISS_USER_PATH_ARCHITECTURE_PATH_WITH_SLASH})
+        endif ()
+    endif ()
+
+    # Append to desired variable
+    set(${VARNAME} "${OPENCMISS_USER_PATH_ARCHITECTURE_PATH_WITH_SLASH}" PARENT_SCOPE)
+endfunction()
+
+# This function assembles the instrumentation part of the architecture path.
+# This part is made up of [INSTRUMENTATION]
+#
+function(getInstrumentationPartArchitecturePath VARNAME)
+
+    # Instrumentation
+    if ("${OPENCMISS_INSTRUMENTATION}" STREQUAL "scorep")
+        set(INSTRUMENTATION_PART /scorep)
+    elseif ("${OPENCMISS_INSTRUMENTATION}" STREQUAL "vtune")
+        set(INSTRUMENTATION_PART /vtune)
+    elseif ("${OPENCMISS_INSTRUMENTATION}" STREQUAL "none")
+        set(INSTRUMENTATION_PART) # Do nothing
+    else ()
+        message(STATUS "Unknown instrumentation option. Ignoring.")
+    endif ()
+    
+    # Append to desired variable
+    set(${VARNAME} "${INSTRUMENTATION_PART}" PARENT_SCOPE)
+endfunction()
+
+# This function assembles the system part of the architecture path
+# This part is made up of [SYSTEM_NAME][SYSTEM_PROCESSOR]
 #
 function(getSystemPartArchitecturePath VARNAME)
     
     # Architecture/System
-    STRING(TOLOWER ${CMAKE_SYSTEM_NAME} CMAKE_SYSTEM_NAME_LOWER)
-    SET(ARCHPATH ${CMAKE_SYSTEM_PROCESSOR}_${CMAKE_SYSTEM_NAME_LOWER})
+    string(TOLOWER ${CMAKE_SYSTEM_NAME} CMAKE_SYSTEM_NAME_LOWER)
+    set(ARCHPATH ${CMAKE_SYSTEM_PROCESSOR}_${CMAKE_SYSTEM_NAME_LOWER})
     
     # Bit/Adressing bandwidth
     #if (ABI)
     #    SET(ARCHPATH ${ARCHPATH}/${ABI}bit)
     #endif()
     
-    # Profiling
-    
-    # Multithreading
-    if (OC_MULTITHREADING)
-        SET(ARCHPATH ${ARCHPATH}/mt)
-    endif()
-    
     # Append to desired variable
-    SET(${VARNAME} ${ARCHPATH} PARENT_SCOPE)
+    set(${VARNAME} ${ARCHPATH} PARENT_SCOPE)
 endfunction()
 
 function(getCompilerPartArchitecturePath VARNAME)
