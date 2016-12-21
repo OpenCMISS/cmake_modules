@@ -176,18 +176,18 @@ get_property(ENABLED_LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES)
 #
 
 # Start out with the generic MPI compiler names, as these are most commonly used.
-set(_MPI_C_COMPILER_NAMES                  mpicc    mpcc      mpicc_r mpcc_r)
-set(_MPI_CXX_COMPILER_NAMES                mpicxx   mpiCC     mpcxx   mpCC    mpic++   mpc++
+set(_MPI_Generic_C_COMPILER_NAMES          mpicc    mpcc      mpicc_r mpcc_r)
+set(_MPI_Generic_CXX_COMPILER_NAMES                mpicxx   mpiCC     mpcxx   mpCC    mpic++   mpc++
                                            mpicxx_r mpiCC_r   mpcxx_r mpCC_r  mpic++_r mpc++_r)
 set(_MPI_Fortran_COMPILER_NAMES            #mpif77   mpif77_r  mpf77   mpf77_r
                                            mpif90   mpif90_r  mpf90   mpf90_r
                                            mpif95   mpif95_r  mpf95   mpf95_r)
 
 # GNU compiler names
-set(_MPI_GNU_C_COMPILER_NAMES              mpigcc mpgcc mpigcc_r mpgcc_r)
+set(_MPI_GNU_C_COMPILER_NAMES              mpgcc mpigcc_r mpgcc_r)
 set(_MPI_GNU_CXX_COMPILER_NAMES            mpig++ mpg++ mpig++_r mpg++_r)
 set(_MPI_GNU_Fortran_COMPILER_NAMES        #mpig77 mpig77_r mpg77 mpg77_r
-                                           mpigfortran mpgfortran mpigfortran_r mpgfortran_r)
+                                           mpgfortran mpigfortran_r mpgfortran_r)
 
 # Intel MPI compiler names
 set(_MPI_Intel_C_COMPILER_NAMES            mpiicc)
@@ -213,16 +213,34 @@ set(_MPI_XL_Fortran_COMPILER_NAMES         mpixlf95   mpixlf95_r mpxlf95 mpxlf95
 ############################################################
 # append vendor-specific compilers to the list if we either don't know the compiler id,
 # or if we know it matches the regular compiler.
-foreach (lang C CXX Fortran)
-  if (lang IN_LIST ENABLED_LANGUAGES)
-      foreach (id GNU Intel PGI XL)
-        if (NOT CMAKE_${lang}_COMPILER_ID OR CMAKE_${lang}_COMPILER_ID STREQUAL id)
-          list(INSERT _MPI_${lang}_COMPILER_NAMES 0 ${_MPI_${id}_${lang}_COMPILER_NAMES})
+foreach(lang C CXX Fortran)
+    set(_MPI_${lang}_COMPILER_NAMES )
+    if (lang IN_LIST ENABLED_LANGUAGES)
+        #Add in add instrumentation wrappers
+        if (OC_INSTRUMENTATION STREQUAL "scorep")
+            # Replace mpi compiler name with the appropriate scorep wrapper name
+            foreach (mpicompiler ${_MPI_Generic_${lang}_COMPILER_NAMES})
+                list(INSERT _MPI_${lang}_COMPILER_NAMES 0 "scorep-${mpicompiler}")
+            endforeach()
+        else ()
+            list(INSERT _MPI_${lang}_COMPILER_NAMES 0 ${_MPI_Generic_${lang}_COMPILER_NAMES})
         endif()
-        unset(_MPI_${id}_${lang}_COMPILER_NAMES)    # clean up the namespace here
-      endforeach()
-      messagev("Looking for _MPI_${lang}_COMPILER_NAMES=${_MPI_${lang}_COMPILER_NAMES}")
-  endif()
+        foreach (id GNU Intel PGI XL)
+            if (NOT CMAKE_${lang}_COMPILER_ID OR CMAKE_${lang}_COMPILER_ID STREQUAL id)
+                #Add in add instrumentation wrappers
+                if(OC_INSTRUMENTATION STREQUAL "scorep")
+                    # Replace mpi compiler name with the appropriate scorep wrapper name
+                    foreach (mpicompiler ${_MPI_${id}_${lang}_COMPILER_NAMES})
+                        list(INSERT _MPI_${lang}_COMPILER_NAMES 0 "scorep-${mpicompiler}")
+                    endforeach()
+                else()
+                    list(INSERT _MPI_${lang}_COMPILER_NAMES 0 ${_MPI_${id}_${lang}_COMPILER_NAMES})
+                endif()
+            endif()
+            unset(_MPI_${id}_${lang}_COMPILER_NAMES) # clean up the namespace here
+        endforeach()
+        messagev(STATUS "Looking for _MPI_${lang}_COMPILER_NAMES=${_MPI_${lang}_COMPILER_NAMES}")
+    endif()
 endforeach()
 
 # Names to try for MPI exec
@@ -322,10 +340,10 @@ else()
     # Build a list of prefixes to search for MPI.
     set(_MPI_PREFIX_PATH_COPY ${_MPI_PREFIX_PATH})
     foreach(SystemPrefixDir 
-        ${CMAKE_SYSTEM_PREFIX_PATH}
-        # Add some more paths
-        /usr/lib /usr/lib64
-        /usr/local/lib /usr/local/lib64)
+      ${CMAKE_SYSTEM_PREFIX_PATH}
+      # Add some more paths
+      /usr/lib /usr/lib64
+      /usr/local/lib /usr/local/lib64)
         foreach(MpiPackageDir ${_MPI_PREFIX_PATH_COPY})
             if (WIN32)
                 string(REPLACE "\\" "\\\\" MpiPackageDir_msg "${MpiPackageDir}")
@@ -382,19 +400,20 @@ set(_PATTERNS
 ############################################################
 
 function (_mpi_check_compiler compiler options cmdvar resvar)
-  execute_process(
-    COMMAND "${compiler}" ${options}
-    OUTPUT_VARIABLE  cmdline OUTPUT_STRIP_TRAILING_WHITESPACE
-    ERROR_VARIABLE   cmdline ERROR_STRIP_TRAILING_WHITESPACE
-    RESULT_VARIABLE  success)
-  # Intel MPI 5.0.1 will return a zero return code even when the
-  # argument to the MPI compiler wrapper is unknown.  Attempt to
-  # catch this case.
-  if("${cmdline}" MATCHES "undefined reference")
-    set(success 255 )
-  endif()
-  set(${cmdvar} "${cmdline}" PARENT_SCOPE)
-  set(${resvar} "${success}" PARENT_SCOPE)
+    execute_process(
+      COMMAND "${compiler}" ${options}
+      OUTPUT_VARIABLE  cmdline OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_VARIABLE   cmdline ERROR_STRIP_TRAILING_WHITESPACE
+      RESULT_VARIABLE  success)
+    # Intel MPI 5.0.1 will return a zero return code even when the
+    # argument to the MPI compiler wrapper is unknown.  Attempt to
+    # catch this case.
+    if("${cmdline}" MATCHES "undefined reference")
+        set(success 255 )
+    endif()
+    set(${cmdvar} "${cmdline}" PARENT_SCOPE)
+    set(${resvar} "${success}" PARENT_SCOPE)
+    messagev("Checking MPI compiler; compiler=${compiler}; options=${options}; cmdline=${cmdline}; result=${success}")
 endfunction()
 
 #
@@ -1050,7 +1069,7 @@ foreach (lang C CXX Fortran)
         else()
           set(try_libs TRUE)
         endif()
-    
+
         if (WIN32)
             string(REPLACE "\\" "\\\\" _MPI_PREFIX_PATH_msg "${_MPI_PREFIX_PATH}")
             messagev("Looking for MPI_${lang}_COMPILER with names ${_MPI_${lang}_COMPILER_NAMES} [try libs: ${try_libs}] at ${_MPI_PREFIX_PATH_msg} + environment PATH")
@@ -1061,17 +1080,32 @@ foreach (lang C CXX Fortran)
           NAMES  ${_MPI_${lang}_COMPILER_NAMES}
           HINTS  ${_MPI_PREFIX_PATH}
           PATH_SUFFIXES ${_BIN_SUFFIX}
-          ${PATHOPT})
+          NO_DEFAULT_PATH)
         interrogate_mpi_compiler(${lang} ${try_libs})
-        mark_as_advanced(MPI_${lang}_COMPILER)
-    
+        if(NOT $MPI_${lang}_FOUND AND NOT "${PATHOPT}" STREQUAL "NO_DEFAULT_PATH")
+            # If the MPI compiler is not found then look in wider paths.
+            if (WIN32)
+                string(REPLACE "\\" "\\\\" _MPI_PREFIX_PATH_msg "${_MPI_PREFIX_PATH}")
+                messagev("Looking for MPI_${lang}_COMPILER with names ${_MPI_${lang}_COMPILER_NAMES} [try libs: ${try_libs}] at ${_MPI_PREFIX_PATH_msg} + environment PATH")
+            else ()
+                messagev("Looking for MPI_${lang}_COMPILER with names ${_MPI_${lang}_COMPILER_NAMES} at ${_MPI_PREFIX_PATH} + environment PATH")
+            endif ()
+            find_program(MPI_${lang}_COMPILER
+              NAMES  ${_MPI_${lang}_COMPILER_NAMES}
+              HINTS  ${_MPI_PREFIX_PATH}
+              PATH_SUFFIXES ${_BIN_SUFFIX}
+              ${PATHOPT})
+            interrogate_mpi_compiler(${lang} ${try_libs})
+        endif()
+        
+
         # last ditch try -- if nothing works so far, just try running the regular compiler and
         # see if we can create an MPI executable.
         set(regular_compiler_worked 0)
         if (NOT MPI_${lang}_LIBRARIES OR NOT MPI_${lang}_INCLUDE_PATH)
-          try_regular_compiler(${lang} regular_compiler_worked)
+            try_regular_compiler(${lang} regular_compiler_worked)
         endif()
-    
+
         set(MPI_${lang}_FIND_QUIETLY ${MPI_FIND_QUIETLY})
         set(MPI_${lang}_FIND_REQUIRED ${MPI_FIND_REQUIRED})
         set(MPI_${lang}_FIND_VERSION ${MPI_FIND_VERSION})
@@ -1083,6 +1117,7 @@ foreach (lang C CXX Fortran)
         if(MPI_${lang}_FOUND)
             messagev("Found MPI-${lang}!")
             check_mpi_type(${lang})
+            mark_as_advanced(MPI_${lang}_COMPILER)
         endif()
         
         # See that the found MPI is compatible with the toolchain.
