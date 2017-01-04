@@ -990,6 +990,7 @@ function(verify_mpi_toolchain_compatibility lang)
             endif()
         endif()
         set(MPI_${lang}_VERIFIED TRUE CACHE BOOL "Compatibility of MPI with toolchain is verified")
+        mark_as_advanced(MPI_${lang}_VERIFIED)
     endif()
 endfunction()
 
@@ -1274,6 +1275,8 @@ else()
   set(MPI_EXTRA_LIBRARY "MPI_EXTRA_LIBRARY-NOTFOUND" CACHE STRING "Extra MPI libraries to link against" FORCE)
 endif()
 #=============================================================================
+
+mark_as_advanced(MPI_EXTRA_LIBRARY MPI_LIBRARY)
 
 # unset these vars to cleanup namespace
 unset(_MPI_OLD_VARS)
