@@ -7,12 +7,28 @@ cmake_minimum_required(VERSION 3.4.0 FATAL_ERROR)
 # Ready to start the "CMake Modules"
 project(OpenCMISS-CMake-Modules VERSION 1.0.0 LANGUAGES CXX)
 
-if (NOT DEFINED OPENCMISS_CMAKE_MODULE_PATH)
-    # Standard installation scenario and the module path can be found relative to this directory
-    get_filename_component(OPENCMISS_CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../install/share/cmake" REALPATH)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts)
+include(OCMiscFunctions)
+include(OCMultiConfigEnvironment)
+tidy_gui_variables()
+if (OPENCMISS_HAVE_MULTICONFIG_ENV)
+    mark_as_advanced(CMAKE_CONFIGURATION_TYPES)
+else ()
+    mark_as_advanced(CMAKE_BUILD_TYPE)
 endif ()
 
-set(OPENCMISS_CMAKE_MODULE_PATH ${OPENCMISS_CMAKE_MODULE_PATH} CACHE PATH "Location of OpenCMISS CMake files.")
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE PATH "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif ()
+
+# Standard installation scenario and the module path can be found relative to this directory
+get_filename_component(_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}/../../install/share/cmake" REALPATH)
+
+set(CMAKE_MODULES_INSTALL_PREFIX "${_INSTALL_PREFIX}" CACHE PATH "Install path prefix, prepended onto install directories.")
+if (DEFINED INSTALL_PREFIX)
+    set(CMAKE_MODULES_INSTALL_PREFIX "${INSTALL_PREFIX}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
+endif ()
+set(CMAKE_INSTALL_PREFIX "${CMAKE_MODULES_INSTALL_PREFIX}" CACHE INTERNAL "Internalise install path prefix." FORCE)
 
 set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindBLACS.cmake
@@ -61,15 +77,15 @@ set(TEMPLATE_FILES_LIST
 )
 
 install(FILES ${MODULES_FILES_LIST}
-    DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Modules
+    DESTINATION Modules
     COMPONENT CMakeFiles
 )
 install(FILES ${TEMPLATE_FILES_LIST}
-    DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Templates
+    DESTINATION Templates
     COMPONENT CMakeFiles
 )
 install(FILES ${OPENCMISS_MODULES_FILES_LIST}
-    DESTINATION ${OPENCMISS_CMAKE_MODULE_PATH}/Modules/OpenCMISS
+    DESTINATION Modules/OpenCMISS
     COMPONENT CMakeFiles
 )
 
@@ -78,7 +94,7 @@ if (PRINT_SUMMARY)
     message(STATUS "@")
     message(STATUS "@@@@@@@@@@@@@@@@@@@@@@ SUMMARY @@@@@@@@@@@@@@@@@@@@@@@")
     message(STATUS "@")
-    message(STATUS "@ OPENCMISS_CMAKE_MODULE_PATH: ${OPENCMISS_CMAKE_MODULE_PATH}")
+    message(STATUS "@ OPENCMISS_CMAKE_MODULE_PATH: ${CMAKE_INSTALL_PREFIX}")
     message(STATUS "@")
     message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     message(STATUS "@")
