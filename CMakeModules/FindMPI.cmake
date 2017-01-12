@@ -917,7 +917,7 @@ function(check_mpi_type lang)
         else()
             messagev("Matching MPI? '${MPI}' == '${MNEMONIC}'")
             # Getting desperate last resort is to scan mpi.h header file for (probable) symbols.
-            include(checksymbolexists)
+            include(CheckSymbolExists)
             if (${MNEMONIC} STREQUAL mpich)
                 set(_PROIR_TO_TEST_VALUE ${CMAKE_REQUIRED_INCLUDES})
                 set(CMAKE_REQUIRED_INCLUDES ${MPI_${lang}_INCLUDE_PATH})
