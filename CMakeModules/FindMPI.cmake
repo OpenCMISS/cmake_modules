@@ -273,8 +273,12 @@ if (DEFINED MPI_HOME)
 else()
     # Allow all paths, and add an extra path if set
     set(PATHOPT )
-    # Start with MPI_HOME from the environment, of given
-    set(_MPI_PREFIX_PATH $ENV{MPI_HOME})
+    # CPB 11/11/16 Don't look at MPI_HOME environment variable. Some MPI distros set this but others don't. This can mean that
+    # the MPI_HOME environment variable might clash with what has been specified via the -DMPI= option. The common MPI_HOME's
+    # are covered below regardless.
+    # Start with MPI_HOME from the environment, of given    
+    #set(_MPI_PREFIX_PATH $ENV{MPI_HOME})
+    set(_MPI_PREFIX_PATH )
     # Check if a mpi mnemonic is given
     # Standard local paths will be added below later
     if(DEFINED MPI)
@@ -295,7 +299,7 @@ else()
                 "D:/MPICH2" "D:/mpich2")
             endif()
         elseif(MPI STREQUAL intel)
-            LIST(APPEND _MPI_PREFIX_PATH /opt/intel/impi_latest)
+            LIST(APPEND _MPI_PREFIX_PATH /opt/intel/impi_latest /opt/intel/compilers_and_libraries/linux/mpi)
         elseif(MPI STREQUAL openmpi)
             #LIST(APPEND _MPI_PREFIX_PATH /usr/lib64/compat-openmpi /usr/lib/compat-openmpi
             #    /usr/lib64/openmpi /usr/lib/openmpi
