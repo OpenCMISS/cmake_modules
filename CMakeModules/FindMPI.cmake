@@ -273,15 +273,12 @@ if (DEFINED MPI_HOME)
 else()
     # Allow all paths, and add an extra path if set
     set(PATHOPT )
-    # CPB 11/11/16 Don't look at MPI_HOME environment variable. Some MPI distros set this but others don't. This can mean that
-    # the MPI_HOME environment variable might clash with what has been specified via the -DMPI= option. The common MPI_HOME's
-    # are covered below regardless.
-    # Start with MPI_HOME from the environment, of given    
-    #set(_MPI_PREFIX_PATH $ENV{MPI_HOME})
-    set(_MPI_PREFIX_PATH )
     # Check if a mpi mnemonic is given
-    # Standard local paths will be added below later
     if(DEFINED MPI)
+        # Don't look at MPI_HOME environment variable. Some MPI distros set this but others don't. This can mean that
+        # the MPI_HOME environment variable might clash with what has been specified via the -DMPI= option. The common MPI_HOME's
+        # are covered below regardless.
+        set(_MPI_PREFIX_PATH )
         messagev("Trying to find ${MPI}-MPI implementation")
         if (MPI STREQUAL mpich)
             #LIST(APPEND _MPI_PREFIX_PATH /usr/lib/mpich /usr/lib64/mpich /usr/local/lib/mpich /usr/local/lib64/mpich)
@@ -320,6 +317,9 @@ else()
 1. Use one of 'mpich','mpich2','openmpi','intel','mvapich2' or 'msmpi'
 2. Do not define the MPI variable and let CMake find the system default")
         endif()
+    else()
+        # Start with MPI_HOME from the environment
+        set(_MPI_PREFIX_PATH $ENV{MPI_HOME})
     endif()
     
     if(WIN32)
