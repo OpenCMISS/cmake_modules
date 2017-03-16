@@ -10,7 +10,7 @@ set(VIRTUALENV_COMPLETE_INSTALL_PREFIX_WO_CONFIG ${VIRTUALENV_INSTALL_PREFIX}/oc
 set(VIRTUALENV_COMPLETE_INSTALL_PREFIX ${VIRTUALENV_COMPLETE_INSTALL_PREFIX_WO_CONFIG}$<LOWER_CASE:$<CONFIG>>)
 
 set(ACTIVATE_SCRIPT ${VIRTUALENV_COMPLETE_INSTALL_PREFIX}/${VENV_BINDIR}/activate)
-file(TO_NATIVE_PATH "${ACTIVATE_SCRIPT}" ACTIVATE_SCRIPT)
+file(TO_CMAKE_PATH "${ACTIVATE_SCRIPT}" ACTIVATE_SCRIPT)
 # Have to replace ; with : as they might have changed as TO_NATIVE_PATH sees these as path separators in a list of paths.
 string(REPLACE ";" ":" ACTIVATE_SCRIPT "${ACTIVATE_SCRIPT}")
 
@@ -58,8 +58,9 @@ configure_file(
     "${VIRTUALENV_OPENCMISS_LIBRARIES_FILE}" COPYONLY
 )
 
-# We need a native path to pass to the pip program
-file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>" NATIVE_CMAKE_CURRENT_BINARY_DIR)
+
+# We need a native path to pass to the pip program, so we have to use indirection to get a $ symbol into the configured file
+set(DOLLAR_SYMBOL $)
 # This target takes care to install the python package generated in the build tree to the specified virtual
 # environment.
 set(GEN_SCRIPT_VIRTUAL_ENV_CREATE_AND_INSTALL ${CMAKE_CURRENT_LIST_DIR}/../OpenCMISSScriptGenerateVirtualEnvCreateAndInstall.cmake)
@@ -68,8 +69,9 @@ set(SCRIPT_VIRTUALENV_CREATE_INSTALL "${CMAKE_CURRENT_BINARY_DIR}/script_virtual
 get_filename_component(_DISPLAY_SCRIPT_NAME "${SCRIPT_VIRTUALENV_CREATE_INSTALL}" NAME)
 add_custom_command(TARGET collect_python_binding_files POST_BUILD
     COMMAND "${CMAKE_COMMAND}" 
-        -DACTIVATE_SCRIPT=${ACTIVATE_SCRIPT} 
-        -DNATIVE_CMAKE_CURRENT_BINARY_DIR=${NATIVE_CMAKE_CURRENT_BINARY_DIR}
+        -DACTIVATE_SCRIPT=${ACTIVATE_SCRIPT}
+		-DDOLLAR_SYMBOL=${DOLLAR_SYMBOL}
+        -DPACKAGE_BINARY_DIR="${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
         -DVIRTUALENV_EXEC=${VIRTUALENV_EXEC}
         -DVENV_BINDIR=${VENV_BINDIR}
         -DVIRTUALENV_COMPLETE_INSTALL_PREFIX=${VIRTUALENV_COMPLETE_INSTALL_PREFIX}
