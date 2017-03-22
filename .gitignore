@@ -5,3 +5,6 @@ CMakeLists.txt.user
 *.pyc
 .project
 .pydevproject
+
+# OS X System Files
+.DS_Store
