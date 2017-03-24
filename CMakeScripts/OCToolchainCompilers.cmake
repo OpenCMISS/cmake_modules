@@ -1,7 +1,7 @@
 # In this file the (possibly) set compiler mnemonics are used to specify default compilers.
 macro(setCMakeCompilersForToolchain TOOLCHAIN)
-	if (TOOLCHAIN)
-		message(STATUS "Trying to use ${TOOLCHAIN} compilers..")
+	if (NOT "${TOOLCHAIN}" STREQUAL "")
+		message(STATUS "Attempting to use ${TOOLCHAIN} compilers.")
 		STRING(TOLOWER "${TOOLCHAIN}" TOOLCHAIN)
 		if (TOOLCHAIN STREQUAL "gnu" OR TOOLCHAIN STREQUAL "mingw")
 			SET(CMAKE_C_COMPILER gcc)
