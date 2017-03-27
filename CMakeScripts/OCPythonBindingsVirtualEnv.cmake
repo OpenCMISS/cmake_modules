@@ -63,14 +63,13 @@ configure_file(
 set(DOLLAR_SYMBOL $)
 # This target takes care to install the python package generated in the build tree to the specified virtual
 # environment.
-set(GEN_SCRIPT_VIRTUAL_ENV_CREATE_AND_INSTALL ${CMAKE_CURRENT_LIST_DIR}/../OpenCMISSScriptGenerateVirtualEnvCreateAndInstall.cmake)
+set(GEN_SCRIPT_VIRTUAL_ENV_CREATE_AND_INSTALL ${CMAKE_CURRENT_LIST_DIR}/../OpenCMISS/OCScriptGenerateVirtualEnvCreateAndInstall.cmake)
 set(SCRIPT_VIRTUALENV_CREATE_INSTALL "${CMAKE_CURRENT_BINARY_DIR}/script_virtualenv_create_and_install.cmake")
 # Delay final configuragion of virtualenv create and install until build type is known.
 get_filename_component(_DISPLAY_SCRIPT_NAME "${SCRIPT_VIRTUALENV_CREATE_INSTALL}" NAME)
 add_custom_command(TARGET collect_python_binding_files POST_BUILD
     COMMAND "${CMAKE_COMMAND}" 
         -DACTIVATE_SCRIPT=${ACTIVATE_SCRIPT}
-		-DDOLLAR_SYMBOL=${DOLLAR_SYMBOL}
         -DPACKAGE_BINARY_DIR="${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
         -DVIRTUALENV_EXEC=${VIRTUALENV_EXEC}
         -DVENV_BINDIR=${VENV_BINDIR}

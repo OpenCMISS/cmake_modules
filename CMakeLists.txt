@@ -57,7 +57,6 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindTIFF.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindVALGRIND.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindwxWidgets.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/OpenCMISSScriptGenerateVirtualEnvCreateAndInstall.cmake
 )
 set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCArchitecturePathFunctions.cmake
@@ -68,6 +67,7 @@ set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCPythonBindingsVirtualEnv.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCCheckSDKInstallation.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCMultiConfigEnvironment.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts/OCScriptGenerateVirtualEnvCreateAndInstall.cmake
 )
 set(TEMPLATE_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Templates/librarybindings.in.py
