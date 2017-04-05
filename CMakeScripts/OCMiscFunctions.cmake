@@ -148,3 +148,23 @@ function(THREE_PART_VERSION_TO_VARS VERSION MAJOR_VAR MINOR_VAR PATCH_VAR)
     set(${PATCH_VAR} ${patch} PARENT_SCOPE)
 endfunction()
 
+function(GET_GIT_BRANCH GIT_SRC_DIR BRANCH_VAR)
+    find_package(Git)
+    if (GIT_FOUND)
+        # Get the current working branch
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+            WORKING_DIRECTORY ${GIT_SRC_DIR}
+            OUTPUT_VARIABLE GIT_BRANCH
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        if (GIT_BRANCH MATCHES "fatal.*")
+            set(GIT_BRANCH -----)
+        endif ()
+    else ()
+        set(GIT_BRANCH -----)
+    endif ()
+    set(${BRANCH_VAR} ${GIT_BRANCH} PARENT_SCOPE)
+endfunction()
+
+
