@@ -18,8 +18,9 @@ include(OCArchitecturePathFunctions)
 include(OCToolchainCompilers)
 
 # Variables used inside configured file
-getToolchain(TOOLCHAIN)
-getCompilerPartArchitecturePath(COMPILER)
+getToolchain(_ACTIVE_TOOLCHAIN)
+getCompilerPartArchitecturePath(_ACTIVE_COMPILER)
+set(_ACTIVE_MPI ${MPI})
 
 set(BINDINGS_INFO_FILE "${CMAKE_CURRENT_BINARY_DIR}/bindingsinfo_${PYTHON_PACKAGE_CURRENT_NAME}_py${PYTHONLIBS_MAJOR_VERSION}${PYTHONLIBS_MINOR_VERSION}_$<LOWER_CASE:$<CONFIG>>.py")
 set(BINDINGS_INFO_STAGED_FILE "${CMAKE_CURRENT_BINARY_DIR}/Templates/bindingsinfo_${PYTHON_PACKAGE_CURRENT_NAME}_py${PYTHONLIBS_MAJOR_VERSION}${PYTHONLIBS_MINOR_VERSION}.in.py")
