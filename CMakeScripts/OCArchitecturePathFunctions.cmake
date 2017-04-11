@@ -217,7 +217,7 @@ function(getCompilerPartArchitecturePath VARNAME)
  
     # Also for the fortran compiler (if exists)
     set(_FORTRAN_PART "")
-    if (CMAKE_Fortran_COMPILER)
+    if (CMAKE_Fortran_COMPILER_ID)
        # Get the Fortran compiler name
        if(CMAKE_Fortran_COMPILER_ID MATCHES Absoft)
 	   set(_Fortran_COMP "absoft")
