@@ -22,7 +22,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 
 # Standard installation scenario and the module path can be found relative to this directory
-get_filename_component(_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}/../../install/share/cmake" REALPATH)
+get_filename_component(_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}/../../install/" REALPATH)
 
 set(CMAKE_MODULES_INSTALL_PREFIX "${_INSTALL_PREFIX}" CACHE PATH "Install path prefix, prepended onto install directories.")
 if (DEFINED INSTALL_PREFIX)
@@ -77,15 +77,15 @@ set(TEMPLATE_FILES_LIST
 )
 
 install(FILES ${MODULES_FILES_LIST}
-    DESTINATION Modules
+    DESTINATION share/cmake/Modules
     COMPONENT CMakeFiles
 )
 install(FILES ${TEMPLATE_FILES_LIST}
-    DESTINATION Templates
+    DESTINATION share/cmake/Templates
     COMPONENT CMakeFiles
 )
 install(FILES ${OPENCMISS_MODULES_FILES_LIST}
-    DESTINATION Modules/OpenCMISS
+    DESTINATION share/cmake/Modules/OpenCMISS
     COMPONENT CMakeFiles
 )
 
@@ -94,7 +94,7 @@ if (PRINT_SUMMARY)
     message(STATUS "@")
     message(STATUS "@@@@@@@@@@@@@@@@@@@@@@ SUMMARY @@@@@@@@@@@@@@@@@@@@@@@")
     message(STATUS "@")
-    message(STATUS "@ OPENCMISS_CMAKE_MODULE_PATH: ${CMAKE_INSTALL_PREFIX}")
+    message(STATUS "@ OPENCMISS_CMAKE_MODULE_PATH: ${CMAKE_INSTALL_PREFIX}/share/cmake")
     message(STATUS "@")
     message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     message(STATUS "@")
