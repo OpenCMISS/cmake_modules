@@ -115,7 +115,7 @@ endfunction()
 # test using OpenCMISS libraries
 # Intended use is the OpenCMISS User SDK.
 function(add_opencmiss_environment TESTNAME)
-    get_library_path(PATH_DEFINITION "${OPENCMISS_INSTALL_DIR_ARCHPATH}/bin")
+    get_library_path(PATH_DEFINITION "${OPENCMISS_BINARIES_PATH}")
     messaged("Setting environment for test ${TESTNAME}: ${LD_PATH}")
     # Set up the correct environment for the test
     # See https://cmake.org/pipermail/cmake/2009-May/029464.html
