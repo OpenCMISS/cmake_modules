@@ -420,49 +420,77 @@ function (_mpi_check_compiler compiler options cmdvar resvar)
     messagev("Checking MPI compiler; compiler=${compiler}; options=${options}; cmdline=${cmdline}; result=${success}")
 endfunction()
 
-macro(_fortran_extras_for_windows lang)
+function(_find_extra_msmpi_info ARCH_DIR RETURN_VAR_INCLUDE RETURN_VAR_LIBRARY)
+	unset(MSMPI_HEADER_PATH_FORTRAN CACHE)
+	unset(MSMPI_EXTRA_FORTRAN_LIBRARY CACHE)
+	messagev("_MPI_BASE_DIR: ${_MPI_BASE_DIR}")
+	#messagev("_MPI_PREFIX_PATH: ${_MPI_PREFIX_PATH}")
+	messagev("ARCH_DIR: ${ARCH_DIR}")
+	# MSMPI case: When using fortran mpif.h, it also needs an bit-dependent file
+	# mpifptr.h, which is located inside the Include/(x86|x64) folders, respectively.
+	find_path(MSMPI_HEADER_PATH_FORTRAN mpifptr.h
+		HINTS ${_MPI_BASE_DIR} ${_MPI_PREFIX_PATH}
+		PATH_SUFFIXES include/${ARCH_DIR} Inc/${ARCH_DIR})
+	mark_as_advanced(MSMPI_HEADER_PATH_FORTRAN)
+
+	# MSMPI: We also need additional fortran libraries!
+	find_library(MSMPI_EXTRA_FORTRAN_LIBRARY
+		NAMES         msmpifec msmpifmc
+		HINTS         ${_MPI_BASE_DIR} ${_MPI_PREFIX_PATH}
+		PATH_SUFFIXES lib/${ARCH_DIR})
+	mark_as_advanced(MSMPI_EXTRA_FORTRAN_LIBRARY)
+	set(${RETURN_VAR_INCLUDE} "${MSMPI_HEADER_PATH_FORTRAN}"  PARENT_SCOPE)
+	set(${RETURN_VAR_LIBRARY} "${MSMPI_EXTRA_FORTRAN_LIBRARY}"  PARENT_SCOPE)
+endfunction()
+
+function(_find_mpich_on_windows RETURN_VAR_LIBRARY)
+	if (CMAKE_${lang}_COMPILER_ID STREQUAL GNU)
+		# This version exports lower case & underscore_ names
+		set(FORTRAN_LIBNAMES fmpich2g fmpichg)
+	else()
+		# This version has UPPERCASE symbols
+		set(FORTRAN_LIBNAMES fmpich2 fmpich)
+	endif()
+	unset(MPI_LIB CACHE)
+	find_library(MPI_LIB
+		NAMES         ${FORTRAN_LIBNAMES}
+		HINTS         ${_MPI_BASE_DIR} ${_MPI_PREFIX_PATH}
+		PATH_SUFFIXES lib)
+	mark_as_advanced(MPI_LIB)
+	set(${RETURN_VAR_LIBRARY} "${MPI_LIB}"  PARENT_SCOPE)
+endfunction()
+
+macro(_fortran_extras_for_windows LANG ARCH_DIR)
 	# Added by Daniel Wirtz - support for finding MPICH2 or MSMPI fortran MPI libraries on windows
-	if (lang STREQUAL Fortran AND WIN32)
+	if ("${LANG}" STREQUAL "Fortran" AND WIN32)
 		messagev("Adding further libraries and include dirs for fortran on windows.")
-		set(MPI_LIB "MPI_LIB-NOTFOUND" CACHE FILEPATH "Cleared" FORCE)
 		string(REPLACE "\\" "\\\\" _MPI_PREFIX_PATH_msg "${_MPI_PREFIX_PATH}")
 		string(REPLACE "\\" "\\\\" _MPI_BASE_DIR_msg "${_MPI_BASE_DIR}")
 		messagev("Looking for fortran libraries in ${_MPI_BASE_DIR_msg} ${_MPI_PREFIX_PATH_msg}")
 		if (_MPI_LOWER STREQUAL mpich)
-			if (CMAKE_${lang}_COMPILER_ID STREQUAL GNU)
-				# This version exports lower case & underscore_ names
-				set(FORTRAN_LIBNAMES fmpich2g fmpichg)
-			else()
-				# This version has UPPERCASE symbols
-				set(FORTRAN_LIBNAMES fmpich2 fmpich)
-			endif()
-			find_library(MPI_LIB
-				NAMES         ${FORTRAN_LIBNAMES}
-				HINTS         ${_MPI_BASE_DIR} ${_MPI_PREFIX_PATH}
-				PATH_SUFFIXES lib)
-			if (MPI_LIBRARIES_WORK AND MPI_LIB)
-				list(APPEND MPI_LIBRARIES_WORK ${MPI_LIB})
-			endif()
+			_find_mpich_on_windows(_MPICH_MPI_LIB)
 		elseif (_MPI_LOWER STREQUAL msmpi)
-			# MSMPI case: When using fortran mpif.h, it also needs an bit-dependent file
-			# mpifptr.h, which is located inside the Include/(x86|x64) folders, respectively.
-			find_path(MPI_HEADER_PATH_FORTRAN mpifptr.h
-				HINTS ${_MPI_BASE_DIR} ${_MPI_PREFIX_PATH}
-				PATH_SUFFIXES include/${MS_MPI_ARCH_DIR} Inc/${MS_MPI_ARCH_DIR})
-			if (MPI_HEADER_PATH_FORTRAN)
-				list(APPEND MPI_INCLUDE_PATH_WORK "${MPI_HEADER_PATH_FORTRAN}")
-			endif()
-
-			# MSMPI: We also need additional fortran libraries!
-			find_library(MSMPI_EXTRA_FORTRAN_LIBRARY
-				NAMES         msmpifec msmpifmc
-				HINTS         ${_MPI_BASE_DIR} ${_MPI_PREFIX_PATH}
-				PATH_SUFFIXES lib/${MS_MPI_ARCH_DIR})
-			if (MPI_LIBRARIES_WORK AND MSMPI_EXTRA_FORTRAN_LIBRARY)
-				list(APPEND MPI_LIBRARIES_WORK ${MSMPI_EXTRA_FORTRAN_LIBRARY})
-			endif()
+			_find_extra_msmpi_info(${ARCH_DIR} _MSMPI_INC_PATH_FORTRAN _MSMPI_EXTRA_FORTRAN_LIBRARY)
 		else ()
-			message(STATUS "This set MPI: '${_MPI_LOWER}' is not implemented for windows.")
+			messagev("MPI not specified ... looking for extra fortran msmpi libraries.")
+			_find_extra_msmpi_info(${ARCH_DIR} _MSMPI_INC_PATH_FORTRAN _MSMPI_EXTRA_FORTRAN_LIBRARY)
+			messagev("_MSMPI_INC_PATH_FORTRAN: ${_MSMPI_INC_PATH_FORTRAN}")
+			messagev("_MSMPI_EXTRA_FORTRAN_LIBRARY: ${_MSMPI_EXTRA_FORTRAN_LIBRARY}")
+			if (NOT _MSMPI_EXTRA_FORTRAN_LIBRARY)
+				messagev("MPI not specified, no extra fortran msmpi libraries found ... looking for mpich libraries.")
+				_find_mpich_on_windows(_MPICH_MPI_LIB)
+			endif ()
+		endif()
+		list(FIND MPI_INCLUDE_PATH_WORK "${_MSMPI_INC_PATH_FORTRAN}" _INDEX)
+		if (_MSMPI_INC_PATH_FORTRAN AND "${_INDEX}" STREQUAL "-1")
+			list(APPEND MPI_INCLUDE_PATH_WORK "${_MSMPI_INC_PATH_FORTRAN}")
+		endif()
+		list(FIND MPI_LIBRARIES_WORK "${_MSMPI_EXTRA_FORTRAN_LIBRARY}" _INDEX)
+		if (MPI_LIBRARIES_WORK AND _MSMPI_EXTRA_FORTRAN_LIBRARY AND "${_INDEX}" STREQUAL "-1")
+			list(APPEND MPI_LIBRARIES_WORK ${_MSMPI_EXTRA_FORTRAN_LIBRARY})
+		endif()
+		if (MPI_LIBRARIES_WORK AND _MPICH_MPI_LIB)
+			list(APPEND MPI_LIBRARIES_WORK ${MPI_LIB})
 		endif()
 	endif()
 endmacro()
@@ -493,6 +521,15 @@ function (interrogate_mpi_compiler lang try_libs)
     # inspect that compiler anew.  This allows users to set new compilers w/o rm'ing cache.
     string(COMPARE NOTEQUAL "${MPI_${lang}_NO_INTERROGATE}" "${MPI_${lang}_COMPILER}" interrogate)
 
+	# Decide between 32-bit and 64-bit libraries for Microsoft's MPI
+	if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+		set(MSMPI_ARCH_DIR x64)
+		set(MSMPI_ARCH_DIR2 amd64)
+	else()
+		set(MSMPI_ARCH_DIR x86)
+		set(MSMPI_ARCH_DIR2 i386)
+	endif()
+
     # If MPI is set already in the cache, don't bother with interrogating the compiler.
     messagev("interrogate: ${interrogate}, inc path:${MPI_${lang}_INCLUDE_PATH}")
     messagev("libs: ${MPI_${lang}_LIBRARIES}")
@@ -503,7 +540,7 @@ function (interrogate_mpi_compiler lang try_libs)
 			set(MPI_INCLUDE_PATH_WORK ${MPI_${lang}_INCLUDE_PATH})
 			set(MPI_LINK_FLAGS_WORK ${MPI_${lang}_LINK_FLAGS})
 			set(MPI_LIBRARIES_WORK ${MPI_${lang}_LIBRARIES})
-			_fortran_extras_for_windows(${lang})
+			_fortran_extras_for_windows(${lang} ${MSMPI_ARCH_DIR})
 		else ()
 			if (MPI_${lang}_COMPILER)
 				messagev("Interrogating: ${MPI_${lang}_COMPILER}")
@@ -690,15 +727,6 @@ function (interrogate_mpi_compiler lang try_libs)
 			elseif(try_libs)
 				messagev("Falling back to classic library search as no MPI_${lang}_COMPILER is set")
 
-				# Decide between 32-bit and 64-bit libraries for Microsoft's MPI
-				if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
-					set(MS_MPI_ARCH_DIR x64)
-					set(MS_MPI_ARCH_DIR2 amd64)
-				else()
-					set(MS_MPI_ARCH_DIR x86)
-					set(MS_MPI_ARCH_DIR2 i386)
-				endif()
-
 				# If we didn't have an MPI compiler script to interrogate, attempt to find everything
 				# with plain old find functions.  This is nasty because MPI implementations have LOTS of
 				# different library names, so this section isn't going to be very generic.  We need to
@@ -713,7 +741,7 @@ function (interrogate_mpi_compiler lang try_libs)
 				find_library(MPI_LIB
 					NAMES         mpi mpich mpich2 msmpi
 					HINTS         ${_MPI_BASE_DIR} ${_MPI_PREFIX_PATH}
-					PATH_SUFFIXES lib lib/${MS_MPI_ARCH_DIR} Lib Lib/${MS_MPI_ARCH_DIR} Lib/${MS_MPI_ARCH_DIR2})
+					PATH_SUFFIXES lib lib/${MSMPI_ARCH_DIR} Lib Lib/${MSMPI_ARCH_DIR} Lib/${MSMPI_ARCH_DIR2})
 				set(MPI_LIBRARIES_WORK ${MPI_LIB})
 
 				# Right now, we only know about the extra libs for C++.
@@ -732,8 +760,8 @@ function (interrogate_mpi_compiler lang try_libs)
 				endif()
 
 				# Windows requires further libraries when using Fortran
-				_fortran_extras_for_windows(${lang})
-			messagev("MPI_INCLUDE_PATH_WORK: ${MPI_INCLUDE_PATH_WORK}")
+				_fortran_extras_for_windows(${lang} ${MSMPI_ARCH_DIR})
+				messagev("MPI_INCLUDE_PATH_WORK: ${MPI_INCLUDE_PATH_WORK}")
 
 				if (NOT MPI_LIBRARIES_WORK)
 					set(MPI_LIBRARIES_WORK "MPI_${lang}_LIBRARIES-NOTFOUND")
