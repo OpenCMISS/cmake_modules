@@ -31,6 +31,7 @@ endif ()
 set(CMAKE_INSTALL_PREFIX "${CMAKE_MODULES_INSTALL_PREFIX}" CACHE INTERNAL "Internalise install path prefix." FORCE)
 
 set(MODULES_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FileSyncedOptions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindBLACS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindBLAS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/FindFTGL.cmake
