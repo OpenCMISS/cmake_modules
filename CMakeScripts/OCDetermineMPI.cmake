@@ -180,13 +180,14 @@ if (NOT MPI_FOUND)
     # MPI mnemonic in the path. Instead, we use "mpi" as common top folder to collect all local MPI builds.
     # Only the debug/release versions of MPI are located in different folders (for own builds only - the behaviour using system mpi
     # in debug mode is unspecified)
-    set(SYSTEM_PART_ARCH_PATH .)
+    set(_OWN_INSTALL_ARCH_PATH .)
     if (OPENCMISS_USE_ARCHITECTURE_PATH)
         getSystemPartArchitecturePath(SYSTEM_PART_ARCH_PATH)
+        set(_OWN_INSTALL_ARCH_PATH ${SYSTEM_PART_ARCH_PATH}/no_mpi
     endif()
 
     # This is where our own build of MPI will reside if compilation is needed
-    set(OPENCMISS_OWN_MPI_INSTALL_PREFIX ${OPENCMISS_OWN_MPI_INSTALL_BASE}/${SYSTEM_PART_ARCH_PATH}/no_mpi/${OPENCMISS_MPI}/${MPI_BUILD_TYPE_LOWER})
+    set(OPENCMISS_OWN_MPI_INSTALL_PREFIX ${OPENCMISS_OWN_MPI_INSTALL_BASE}/${_OWN_INSTALL_ARCH_PATH}/${OPENCMISS_MPI}/${MPI_BUILD_TYPE_LOWER})
 
     # Set MPI_HOME to the install location - its not set outside anyways (see first if case at top)
     # Important: Do not unset(MPI_HOME) afterwards - this needs to get passed to all external projects the same way
