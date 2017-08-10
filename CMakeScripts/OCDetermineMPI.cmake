@@ -183,7 +183,7 @@ if (NOT MPI_FOUND)
     set(_OWN_INSTALL_ARCH_PATH .)
     if (OPENCMISS_USE_ARCHITECTURE_PATH)
         getSystemPartArchitecturePath(SYSTEM_PART_ARCH_PATH)
-        set(_OWN_INSTALL_ARCH_PATH ${SYSTEM_PART_ARCH_PATH}/no_mpi
+        set(_OWN_INSTALL_ARCH_PATH ${SYSTEM_PART_ARCH_PATH}/no_mpi)
     endif()
 
     # This is where our own build of MPI will reside if compilation is needed
