@@ -145,6 +145,8 @@ macro(clearFindMPIVariables)
     unset(MPIEXEC_PREFLAGS CACHE)
     unset(MPIEXEC_POSTFLAGS CACHE)
     unset(MPIEXEC_MAX_NUMPROCS CACHE)
+    unset(MPI_LIBRARY CACHE)
+    unset(MPI_EXTRA_LIBRARY CACHE)
 endmacro()
 
 # include this to handle the QUIETLY and REQUIRED arguments
@@ -367,7 +369,10 @@ set(_MNEMONICS
     openmpi
     intel
     mvapich2
-    msmpi)
+    msmpi
+    mpistub
+)
+list(LENGTH _MNEMONICS _MNEMONICS_COUNT)
 # If the detection fails, this value is returned.
 set(MPI_TYPE_UNKNOWN unknown)
 # Patterns to match the include and library paths - must be in same order as _MNEMONICS
@@ -378,6 +383,7 @@ set(_PATTERNS
     ".*(intel|impi)[/|-].*"
     ".*mvapich(2)?([/|-].*|$)"
     ".*microsoft(.*|$)"
+    ".*mpistub(.*|$)"
 )
 
 ############################################################
@@ -510,7 +516,6 @@ function (interrogate_mpi_compiler lang try_libs)
         set(MSMPI_ARCH_DIR x86)
         set(MSMPI_ARCH_DIR2 i386)
     endif()
-
     # If MPI is set already in the cache, don't bother with interrogating the compiler.
     messagev("interrogate: ${interrogate}, inc path:${MPI_${lang}_INCLUDE_PATH}")
     messagev("libs: ${MPI_${lang}_LIBRARIES}")
@@ -913,7 +918,10 @@ function(unset_mpi lang)
     set(MPI_${lang}_LIBRARIES "MPI_${lang}_LIBRARIES-NOTFOUND" CACHE STRING "Cleared" FORCE)
     set(MPI_${lang}_COMPILER "MPI_${lang}_COMPILER-NOTFOUND" CACHE FILEPATH "Cleared" FORCE)
     set(MPI_${lang}_LINK_FLAGS "" CACHE STRING "Cleared" FORCE)
-    set(MPI_EXTRA_LIBRARY "" CACHE STRING "Extra MPI libraries to link against" FORCE)
+    if (lang IN_LIST C CXX)
+        set(MPI_LIBRARY "" CACHE STRING "MPI library to link against" FORCE)
+        set(MPI_EXTRA_LIBRARY "" CACHE STRING "Extra MPI libraries to link against" FORCE)
+    endif ()
     unset(MPIEXEC CACHE)
     unset(MPI_${lang}_FOUND)
 endfunction()
@@ -932,7 +940,8 @@ function(check_mpi_type lang)
             return()
         endif()
     endif()
-    foreach(IDX RANGE 5)
+    math(EXPR _MNEMONICS_RANGE_LIMIT "${_MNEMONICS_COUNT}-1")
+    foreach(IDX RANGE ${_MNEMONICS_RANGE_LIMIT})
         list(GET _MNEMONICS ${IDX} MNEMONIC)
         list(GET _PATTERNS ${IDX} PATTERN)
         messagev("Checking '${INC_PATH} MATCHES ${PATTERN} OR ${LIB_PATH} MATCHES ${PATTERN}'")
@@ -952,6 +961,7 @@ function(check_mpi_type lang)
             if (MNEMONIC STREQUAL mpich)
                 set(_PROIR_TO_TEST_VALUE ${CMAKE_REQUIRED_INCLUDES})
                 set(CMAKE_REQUIRED_INCLUDES ${MPI_${lang}_INCLUDE_PATH})
+                unset(MPICH_VERSION_FOUND CACHE)
                 check_symbol_exists(MPICH_VERSION "mpi.h" MPICH_VERSION_FOUND)
                 set(CMAKE_REQUIRED_INCLUDES ${_PROIR_TO_TEST_VALUE})
                 if (MPICH_VERSION_FOUND)
@@ -962,9 +972,21 @@ function(check_mpi_type lang)
             elseif (MNEMONIC STREQUAL openmpi)
                 set(_PROIR_TO_TEST_VALUE ${CMAKE_REQUIRED_INCLUDES})
                 set(CMAKE_REQUIRED_INCLUDES ${MPI_${lang}_INCLUDE_PATH})
+                unset(OMPI_MAJOR_VERSION_FOUND CACHE)
                 check_symbol_exists(OMPI_MAJOR_VERSION "mpi.h" OMPI_MAJOR_VERSION_FOUND)
                 set(CMAKE_REQUIRED_INCLUDES ${_PROIR_TO_TEST_VALUE})
                 if (OMPI_MAJOR_VERSION_FOUND)
+                    messagev("Detected MPI-${lang} implementation: ${MNEMONIC}")
+                    list(APPEND _MPI_DETECTED_MNEMONICS ${MNEMONIC})
+                    break()
+                endif ()
+            elseif (MNEMONIC STREQUAL mpistub)
+                set(_PROIR_TO_TEST_VALUE ${CMAKE_REQUIRED_INCLUDES})
+                set(CMAKE_REQUIRED_INCLUDES ${MPI_${lang}_INCLUDE_PATH})
+                unset(MPISTUB_VERSION_FOUND CACHE)
+                check_symbol_exists(MPISTUB_VERSION "mpi.h" MPISTUB_VERSION_FOUND)
+                set(CMAKE_REQUIRED_INCLUDES ${_PROIR_TO_TEST_VALUE})
+                if (MPISTUB_VERSION_FOUND)
                     messagev("Detected MPI-${lang} implementation: ${MNEMONIC}")
                     list(APPEND _MPI_DETECTED_MNEMONICS ${MNEMONIC})
                     break()
