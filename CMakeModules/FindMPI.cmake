@@ -1235,55 +1235,6 @@ if (NOT DEFINED MPI)
 endif()
 
 #=============================================================================
-# Convenience link targets
-#
-# This function creates imported targets mpi-$lang and an interface target mpi
-# to be linked against if no compiler wrappers are already used as project compilers
-function(create_mpi_target lang)
-    if (NOT TARGET mpi)
-        add_library(mpi INTERFACE)
-    endif()
-    string(TOLOWER ${lang} _lang)
-    set(target mpi-${_lang})
-    if (MPI_${lang}_LIBRARIES AND NOT TARGET ${target})
-        add_library(${target} UNKNOWN IMPORTED)
-        # Get first library as "main" imported lib
-        list(GET MPI_${lang}_LIBRARIES 0 FIRSTLIB)
-        list(REMOVE_AT MPI_${lang}_LIBRARIES 0)
-
-        separate_arguments(MPI_${lang}_COMPILE_FLAGS)
-        separate_arguments(MPI_${lang}_LINK_FLAGS)
-        set_target_properties(${target} PROPERTIES
-          IMPORTED_LOCATION "${FIRSTLIB}"
-          INTERFACE_INCLUDE_DIRECTORIES "${MPI_${lang}_INCLUDE_PATH}"
-          INTERFACE_LINK_LIBRARIES "${MPI_${lang}_LIBRARIES}"
-          INTERFACE_COMPILE_OPTIONS "${MPI_${lang}_COMPILE_FLAGS}"
-          LINK_FLAGS "${MPI_${lang}_LINK_FLAGS}"
-          IMPORTED_LINK_INTERFACE_LANGUAGES "${lang}"
-        )
-        messagev("Creating imported target '${target}' with properties
-          IMPORTED_LOCATION \"${FIRSTLIB}\"
-          INTERFACE_INCLUDE_DIRECTORIES \"${MPI_${lang}_INCLUDE_PATH}\"
-          INTERFACE_LINK_LIBRARIES \"${MPI_${lang}_LIBRARIES}\"
-          INTERFACE_COMPILE_OPTIONS \"${MPI_${lang}_COMPILE_FLAGS}\"
-          LINK_FLAGS \"${MPI_${lang}_LINK_FLAGS}\"
-          IMPORTED_LINK_INTERFACE_LANGUAGES \"${lang}\"
-        )")
-        target_link_libraries(mpi INTERFACE ${target})
-    endif()
-endfunction()
-# Do the actual target creation.
-# It is IMPORTANT that the order is with Fortran at first, as the include
-# path is different from the one of the other languages (although it contains parts of the others)
-# This is a problem of order whenever GNU/Intel compilers and MPI are mixed, as the gfortran mpi.mod file is located
-# within the fortran include path.
-foreach (lang Fortran C CXX)
-    if (CMAKE_${lang}_COMPILER_WORKS)
-        #create_mpi_target(${lang})
-    endif()
-endforeach()
-
-#=============================================================================
 # More backward compatibility stuff
 #
 # Bare MPI sans ${lang} vars are set to CXX then C, depending on what was found.
