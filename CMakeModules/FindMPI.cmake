@@ -1279,7 +1279,7 @@ endfunction()
 # within the fortran include path.
 foreach (lang Fortran C CXX)
     if (CMAKE_${lang}_COMPILER_WORKS)
-        create_mpi_target(${lang})
+        #create_mpi_target(${lang})
     endif()
 endforeach()
 
