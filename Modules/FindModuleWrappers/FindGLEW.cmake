@@ -3,13 +3,13 @@ function(append_link_library TARGET LIB)
     get_target_property(CURRENT_ILL
         ${TARGET} INTERFACE_LINK_LIBRARIES)
     if (NOT CURRENT_ILL)
-        SET(CURRENT_ILL )
+        set(CURRENT_ILL )
     endif()
     # Treat framework references different
     if(APPLE AND ${LIB} MATCHES ".framework$")
-        STRING(REGEX REPLACE ".*/([A-Za-z0-9.]+).framework$" "\\1" FW_NAME ${LIB})
+        string(REGEX REPLACE ".*/([A-Za-z0-9.]+).framework$" "\\1" FW_NAME ${LIB})
         #message(STATUS "Matched '${FW_NAME}' to ${LIB}")
-        SET(LIB "-framework ${FW_NAME}")
+        set(LIB "-framework ${FW_NAME}")
     endif()
     set_target_properties(${TARGET} PROPERTIES
         INTERFACE_LINK_LIBRARIES "${CURRENT_ILL};${LIB}")
@@ -27,23 +27,12 @@ endfunction()
 my_stupid_package_dependent_message_function_debug_glew("Entering script. CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}, _IMPORT_PREFIX=${_IMPORT_PREFIX}")
 
 # Default: Not found
-SET(GLEW_FOUND NO)
+set(GLEW_FOUND NO)
     
 # The default way is to look for components in the current PREFIX_PATH, e.g. own build components.
 # If the OC_SYSTEM_GLEW flag is set for a package, the MODULE and CONFIG modes are tried outside the PREFIX PATH first.
-if (NOT OC_SYSTEM_GLEW)
-     set(OC_SYSTEM_GLEW NO) # set it to NO so that we have a value if none is set at all (debug output)
-     find_package(GLEW ${GLEW_FIND_VERSION} CONFIG
-        PATHS ${CMAKE_PREFIX_PATH}
-        QUIET
-        NO_DEFAULT_PATH)
-    if (GLEW_FOUND)
-        set(GLEW_FOUND YES)
-        my_stupid_package_dependent_message_function_glew("Found version ${GLEW_FIND_VERSION} at ${GLEW_DIR} in CONFIG mode")
-    endif()
-else()
+if (GLEW_FIND_SYSTEM)
     # If local lookup is enabled, try to look for packages in old-fashioned module mode and then config modes 
-    
     my_stupid_package_dependent_message_function_glew("System search enabled")
     
     # Remove all paths resolving to this one here so that recursive calls wont search here again
@@ -53,7 +42,7 @@ else()
         get_filename_component(_ENTRY_ABSOLUTE ${_ENTRY} ABSOLUTE)
         if (_ENTRY_ABSOLUTE STREQUAL _THIS_DIRECTORY)
             list(REMOVE_ITEM CMAKE_MODULE_PATH ${_ENTRY})
-        endif()
+        endif ()
     endforeach()
     unset(_THIS_DIRECTORY)
     unset(_ENTRY_ABSOLUTE)
@@ -71,7 +60,7 @@ else()
     if (CMAKE_INSTALL_PREFIX AND CMAKE_SYSTEM_PREFIX_PATH)
         list(REMOVE_ITEM CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
         set(_readd YES)
-    endif()
+    endif ()
     
     # Actual MODULE mode find call
     #message(STATUS "find_package(GLEW ${GLEW_FIND_VERSION} MODULE QUIET)")
@@ -81,7 +70,7 @@ else()
     SET(GLEW_FIND_REQUIRED ${_PKG_REQ_OLD})
     if (_readd)
         list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
-    endif()
+    endif ()
     unset(_readd)
     
     # Restore the current module path
@@ -147,44 +136,44 @@ else()
         else()
             my_stupid_package_dependent_message_function_glew("Avoiding double import of target 'glew'")
         endif()
-    else()
-        my_stupid_package_dependent_message_function_glew("Trying to find version ${GLEW_FIND_VERSION} on system in CONFIG mode")
-        
-        # First look outside the prefix path
+    else ()
+        # Look outside the prefix path
         my_stupid_package_dependent_message_function_debug_glew("Calling find_package(GLEW ${GLEW_FIND_VERSION} CONFIG QUIET NO_CMAKE_PATH)")
         find_package(GLEW ${GLEW_FIND_VERSION} CONFIG QUIET NO_CMAKE_PATH)
-        
+
         # If not found, look also at the prefix path
         if (GLEW_FOUND)
             set(GLEW_FOUND ${GLEW_FOUND})
             my_stupid_package_dependent_message_function_glew("Found at ${GLEW_DIR} in CONFIG mode")
-        else()
-            my_stupid_package_dependent_message_function_glew("No system package found/available.")
-            find_package(GLEW ${GLEW_FIND_VERSION} CONFIG
-                QUIET
-                PATHS ${CMAKE_PREFIX_PATH}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_BUILDS_PATH
-                NO_CMAKE_PACKAGE_REGISTRY
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_SYSTEM_PACKAGE_REGISTRY
-            )
-            if (GLEW_FOUND)
-                set(GLEW_FOUND ${GLEW_FOUND})
-                my_stupid_package_dependent_message_function_glew("Found at ${GLEW_DIR} in CONFIG mode")
-            endif()
-        endif()
-    endif()
-endif()
+        endif ()
+    endif ()
+endif ()
+
+# If not found, look also at the prefix path
+if (NOT GLEW_FOUND)
+    #my_stupid_package_dependent_message_function_glew("No system package found/available.")
+    find_package(GLEW ${GLEW_FIND_VERSION} CONFIG
+        QUIET
+        PATHS ${CMAKE_PREFIX_PATH}
+        NO_CMAKE_ENVIRONMENT_PATH
+        NO_SYSTEM_ENVIRONMENT_PATH
+        NO_CMAKE_BUILDS_PATH
+        NO_CMAKE_PACKAGE_REGISTRY
+        NO_CMAKE_SYSTEM_PATH
+        NO_CMAKE_SYSTEM_PACKAGE_REGISTRY
+    )
+    if (GLEW_FOUND)
+        set(GLEW_FOUND ${GLEW_FOUND})
+        my_stupid_package_dependent_message_function_glew("Found at ${GLEW_DIR} in CONFIG mode")
+    endif ()
+endif ()
 
 if (GLEW_FIND_REQUIRED AND NOT GLEW_FOUND)
-    message(FATAL_ERROR "OpenCMISS FindModuleWrapper error!\n"
+    message(FATAL_ERROR "FindModuleWrapper error!\n"
         "Could not find GLEW ${GLEW_FIND_VERSION} with either MODULE or CONFIG mode.\n"
         "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}\n"
         "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}\n"
-        "Allow system GLEW: ${OC_SYSTEM_GLEW}\n"
-        "Please check your OpenCMISSLocalConfig file and ensure to set USE_GLEW=YES\n"
+        "Allow system search for GLEW: ${GLEW_FIND_SYSTEM}\n"
         "Alternatively, refer to CMake(Output|Error).log in ${PROJECT_BINARY_DIR}/CMakeFiles\n"
     )
 endif()
