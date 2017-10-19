@@ -26,14 +26,14 @@ set(BINDINGS_INFO_FILE "${CMAKE_CURRENT_BINARY_DIR}/bindingsinfo_${PYTHON_PACKAG
 set(BINDINGS_INFO_STAGED_FILE "${CMAKE_CURRENT_BINARY_DIR}/Templates/bindingsinfo_${PYTHON_PACKAGE_CURRENT_NAME}_py${PYTHONLIBS_MAJOR_VERSION}${PYTHONLIBS_MINOR_VERSION}.in.py")
 set(GEN_BINDINGS_INFO_FILE "${CMAKE_CURRENT_BINARY_DIR}/Scripts/genbindingsinfo.cmake")
 configure_file(
-    "${CMAKE_CURRENT_LIST_DIR}/../../Templates/script_gen_bindings_info.in.cmake"
+    "${CMAKE_CURRENT_LIST_DIR}/../Templates//script_gen_bindings_info.in.cmake"
     "${GEN_BINDINGS_INFO_FILE}"
     @ONLY
 )
 
 # Do initial configuration of bindings info file.
 configure_file(
-    "${CMAKE_CURRENT_LIST_DIR}/../../Templates/bindingsinfo.in.py"
+    "${CMAKE_CURRENT_LIST_DIR}/../Templates//bindingsinfo.in.py"
     "${BINDINGS_INFO_STAGED_FILE}"
     @ONLY
 )
@@ -52,10 +52,10 @@ add_custom_command(TARGET collect_python_binding_files POST_BUILD
 )
 
 set(VIRTUALENV_OPENCMISS_LIBRARIES_FILE ${CMAKE_CURRENT_BINARY_DIR}/opencmisslibraries.py)
-message(STATUS "Template file: ${CMAKE_CURRENT_LIST_DIR}/../../Templates/librarybindings.in.py")
+message(STATUS "Template file: ${CMAKE_CURRENT_LIST_DIR}/../Templates//librarybindings.in.py")
 message(STATUS "VIRTUALENV_OPENCMISS_LIBRARIES_FILE: ${VIRTUALENV_OPENCMISS_LIBRARIES_FILE}")
 configure_file(
-    "${CMAKE_CURRENT_LIST_DIR}/../../Templates/librarybindings.in.py"
+    "${CMAKE_CURRENT_LIST_DIR}/../Templates//librarybindings.in.py"
     "${VIRTUALENV_OPENCMISS_LIBRARIES_FILE}" COPYONLY
 )
 
@@ -75,7 +75,7 @@ add_custom_command(TARGET collect_python_binding_files POST_BUILD
         -DVIRTUALENV_EXEC=${VIRTUALENV_EXEC}
         -DVENV_BINDIR=${VENV_BINDIR}
         -DVIRTUALENV_COMPLETE_INSTALL_PREFIX=${VIRTUALENV_COMPLETE_INSTALL_PREFIX}
-        -DCREATE_AND_INSTALL_TEMPLATE_SCRIPT=${CMAKE_CURRENT_LIST_DIR}/../../Templates/script_virtualenv_create_and_install.in.cmake
+        -DCREATE_AND_INSTALL_TEMPLATE_SCRIPT=${CMAKE_CURRENT_LIST_DIR}/../Templates//script_virtualenv_create_and_install.in.cmake
         -DCREATE_AND_INSTALL_SCRIPT=${SCRIPT_VIRTUALENV_CREATE_INSTALL}
         -P ${GEN_SCRIPT_VIRTUAL_ENV_CREATE_AND_INSTALL}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
