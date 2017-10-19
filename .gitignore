@@ -1,5 +1,4 @@
 
-FindModuleWrappers/
 CMakeLists.txt.user
 *.swp
 *.pyc
