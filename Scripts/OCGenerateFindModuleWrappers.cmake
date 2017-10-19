@@ -2,11 +2,13 @@
 # Those components are all but those we maintain ourselves.
 if (NOT DEFINED GENERATE_COMPONENTS)
     set(GENERATE_COMPONENTS BZIP2 FIELDML-API GTEST HDF5 LIBXML2 SZIP 
-        ZLIB CELLML CLANG CSIM HYPRE IRON LAPACK LIBCELLML
+        ZLIB CELLML CLANG CSIM HYPRE IRON BLAS LAPACK LIBCELLML
         LLVM MUMPS PARMETIS PASTIX PETSC PLAPACK SCALAPACK SCOTCH SLEPC
         SOWING SUITESPARSE SUNDIALS SUPERLU SUPERLU_DIST FREETYPE FTGL 
         GDCM-ABI GLEW IMAGEMAGICK ITK JPEG NETGEN OPTPP PNG TIFF ZINC
     )
+else ()
+    string(REPLACE "-semi-colon-" ";" GENERATE_COMPONENTS ${GENERATE_COMPONENTS})
 endif ()
 
 set(PACKAGES_WITH_TARGETS ${GENERATE_COMPONENTS})
@@ -54,6 +56,6 @@ foreach(PACKAGE_NAME ${PACKAGES_WITH_TARGETS})
         string(REPLACE "-" "_" _HLP ${PACKAGE_TARGET})
         set(MESSAGE "my_stupid_package_dependent_message_function_${_HLP}")
         set(DEBUG_MESSAGE "my_stupid_package_dependent_message_function_debug_${_HLP}")
-        configure_file("${FINDXXX_TEMPLATE}" "${FILE}" @ONLY)
+        configure_file("${FINDXXX_TEMPLATE}" "FindModuleWrappers/${FILE}" @ONLY)
     #endif()
 endforeach()

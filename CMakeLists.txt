@@ -24,9 +24,13 @@ endif ()
 # Standard installation scenario and the module path can be found relative to this directory
 get_filename_component(_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}/../../install/" REALPATH)
 
+if (GENERATE_COMPONENTS)
+    string(REPLACE ";" "-semi-colon-" GENERATE_COMPONENTS_LIST "${GENERATE_COMPONENTS}")
+    set(GENERATE_COMPONENTS_OPTION -DGENERATE_COMPONENTS=${GENERATE_COMPONENTS_LIST})
+    unset(GENERATE_COMPONENTS CACHE)
+endif ()
 add_custom_target(generate_find_module_wrappers
-    COMMAND ${CMAKE_COMMAND} -DFINDXXX_TEMPLATE=${CMAKE_CURRENT_SOURCE_DIR}/Templates/FindXXX.template.cmake -P ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCGenerateFindModuleWrappers.cmake
-    WORKING_DIRECTORY FindModuleWrappers
+    COMMAND ${CMAKE_COMMAND} ${GENERATE_COMPONENTS_OPTION} -DFINDXXX_TEMPLATE=${CMAKE_CURRENT_SOURCE_DIR}/Templates/FindXXX.template.cmake -P ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCGenerateFindModuleWrappers.cmake
 )
 
 set(CMAKE_MODULES_INSTALL_PREFIX "${_INSTALL_PREFIX}" CACHE PATH "Install path prefix, prepended onto install directories.")
@@ -65,7 +69,43 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindwxWidgets.cmake
 )
 set(FIND_MODULE_WRAPPERS_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindBLAS.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindBZip2.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindCSim.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindClang.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindFTGL.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindFreetype.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindGDCM-ABI.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindGLEW.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindGTest.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindHDF5.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindHYPRE.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindITK.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindImageMagick.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindJPEG.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLAPACK.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLLVM.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLibXml2.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMPI.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMUMPS.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindNETGEN.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindOPTPP.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindPARMETIS.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindPASTIX.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindPETSC.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindPLAPACK.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindPNG.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSCALAPACK.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSCOTCH.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSLEPC.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSOWING.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSUITESPARSE.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSUNDIALS.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSUPERLU.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSUPERLU_DIST.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindSZIP.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindTIFF.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindZLIB.cmake
 )
 set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCArchitecturePathFunctions.cmake
