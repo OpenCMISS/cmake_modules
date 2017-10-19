@@ -1,6 +1,15 @@
 # Create the list of all components we'll need FindXXX wrappers for.
 # Those components are all but those we maintain ourselves.
-set(PACKAGES_WITH_TARGETS ${OC_REQUIRED_COMPONENTS})
+if (NOT DEFINED GENERATE_COMPONENTS)
+    set(GENERATE_COMPONENTS BZIP2 FIELDML-API GTEST HDF5 LIBXML2 SZIP 
+        ZLIB CELLML CLANG CSIM HYPRE IRON LAPACK LIBCELLML
+        LLVM MUMPS PARMETIS PASTIX PETSC PLAPACK SCALAPACK SCOTCH SLEPC
+        SOWING SUITESPARSE SUNDIALS SUPERLU SUPERLU_DIST FREETYPE FTGL 
+        GDCM-ABI GLEW IMAGEMAGICK ITK JPEG NETGEN OPTPP PNG TIFF ZINC
+    )
+endif ()
+
+set(PACKAGES_WITH_TARGETS ${GENERATE_COMPONENTS})
 list(REMOVE_ITEM PACKAGES_WITH_TARGETS
     LIBCELLML CELLML FIELDML-API ZINC IRON
 )
@@ -32,7 +41,7 @@ foreach(PACKAGE_NAME ${PACKAGES_WITH_TARGETS})
         SET(PACKAGE_CASENAME ${PACKAGE_NAME})
     endif()
 
-    set(FILE ${OPENCMISS_CMAKE_MODULE_PATH}/FindModuleWrappers/Find${PACKAGE_CASENAME}.cmake)
+    set(FILE Find${PACKAGE_CASENAME}.cmake)
     #if(NOT EXISTS ${FILE})
         # Some packages have different target names than their package name
         if (${PACKAGE_NAME}_TARGETNAME)
@@ -45,18 +54,6 @@ foreach(PACKAGE_NAME ${PACKAGES_WITH_TARGETS})
         string(REPLACE "-" "_" _HLP ${PACKAGE_TARGET})
         set(MESSAGE "my_stupid_package_dependent_message_function_${_HLP}")
         set(DEBUG_MESSAGE "my_stupid_package_dependent_message_function_debug_${_HLP}")
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Templates/FindXXX.template.cmake" "${FILE}" @ONLY)
+        configure_file("${FINDXXX_TEMPLATE}" "${FILE}" @ONLY)
     #endif()
 endforeach()
-
-# MPI is a special case handle it separatly.
-set(FILE ${OPENCMISS_CMAKE_MODULE_PATH}/FindModuleWrappers/FindMPI.cmake)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Templates/FindMPI.template.cmake" "${FILE}" @ONLY)
-
-if (NOT OPENCMISS_DEPENDENCIES_ONLY)
-    # Even though the Wrappers are already at the OpenCMISS install dir,
-    # we also use the install command to allow cpack get a hold of them
-    install(DIRECTORY ${OPENCMISS_CMAKE_MODULE_PATH}/FindModuleWrappers
-        DESTINATION share/cmake
-        COMPONENT Development)
-endif ()

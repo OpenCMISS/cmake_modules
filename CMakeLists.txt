@@ -24,6 +24,11 @@ endif ()
 # Standard installation scenario and the module path can be found relative to this directory
 get_filename_component(_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}/../../install/" REALPATH)
 
+add_custom_target(generate_find_module_wrappers
+    COMMAND ${CMAKE_COMMAND} -DFINDXXX_TEMPLATE=${CMAKE_CURRENT_SOURCE_DIR}/Templates/FindXXX.template.cmake -P ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCGenerateFindModuleWrappers.cmake
+    WORKING_DIRECTORY FindModuleWrappers
+)
+
 set(CMAKE_MODULES_INSTALL_PREFIX "${_INSTALL_PREFIX}" CACHE PATH "Install path prefix, prepended onto install directories.")
 if (DEFINED INSTALL_PREFIX)
     set(CMAKE_MODULES_INSTALL_PREFIX "${INSTALL_PREFIX}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
@@ -60,6 +65,7 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindwxWidgets.cmake
 )
 set(FIND_MODULE_WRAPPERS_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMPI.cmake
 )
 set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCArchitecturePathFunctions.cmake
