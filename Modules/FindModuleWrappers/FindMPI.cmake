@@ -53,7 +53,7 @@ function(create_mpi_target lang)
         set_target_properties(${target} PROPERTIES
           IMPORTED_LOCATION "${FIRSTLIB}"
           INTERFACE_INCLUDE_DIRECTORIES "${MPI_${lang}_INCLUDE_PATH}"
-          INTERFACE_LINK_LIBRARIES "${MPI_${lang}_LINK_FLAGS} ${MPI_${lang}_LIBRARIES}"
+        #  INTERFACE_LINK_LIBRARIES "${MPI_${lang}_LINK_FLAGS} ${MPI_${lang}_LIBRARIES}"
           INTERFACE_COMPILE_OPTIONS "${MPI_${lang}_COMPILE_FLAGS}"
           IMPORTED_LINK_INTERFACE_LANGUAGES "${lang}"
         )
@@ -64,6 +64,9 @@ function(create_mpi_target lang)
           INTERFACE_COMPILE_OPTIONS \"${MPI_${lang}_COMPILE_FLAGS}\"
           IMPORTED_LINK_INTERFACE_LANGUAGES \"${lang}\"
         )")
+        foreach(_part ${MPI_${lang}_LINK_FLAGS} ${MPI_${lang}_LIBRARIES})
+            set_property(TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${_part})
+        endforeach()
         set_property(TARGET mpi APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${target})
     endif()
 endfunction()
