@@ -57,7 +57,11 @@ if (GLEW_FIND_SYSTEM)
     
     # Remove CMAKE_INSTALL_PREFIX from CMAKE_SYSTEM_PREFIX_PATH - we dont want the module search to "accidentally"
     # discover the packages in our install directory, collect libraries and then re-turn them into targets (redundant round-trip)
-    if (CMAKE_INSTALL_PREFIX AND CMAKE_SYSTEM_PREFIX_PATH)
+    set(DEFAULT_INSTALL_PREFIX FALSE)
+    if (CMAKE_INSTALL_PREFIX STREQUAL "/usr/local" OR CMAKE_INSTALL_PREFIX STREQUAL "c:/Program Files")
+        set(DEFAULT_INSTALL_PREFIX TRUE)
+    endif ()
+    if (NOT DEFAULT_INSTALL_PREFIX AND CMAKE_INSTALL_PREFIX AND CMAKE_SYSTEM_PREFIX_PATH)
         list(REMOVE_ITEM CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
         set(_readd YES)
     endif ()
