@@ -667,6 +667,8 @@ function (interrogate_mpi_compiler lang try_libs)
                     # Convert -Xlinker to -Wl,
                     set(_LINK_FLAGS ${MPI_LINK_FLAGS_WORK})
                     separate_arguments(_LINK_FLAGS)
+
+                    set(_NEW_FLAGS)
                     list(LENGTH _LINK_FLAGS _link_flags_len)
                     while(_link_flags_len GREATER 0)
                         list(GET _LINK_FLAGS 0 _flag)
