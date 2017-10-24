@@ -664,6 +664,37 @@ function (interrogate_mpi_compiler lang try_libs)
                         endif()
                     endforeach()
 
+                    # Convert -Xlinker to -Wl,
+                    set(_LINK_FLAGS ${MPI_LINK_FLAGS_WORK})
+                    separate_arguments(_LINK_FLAGS)
+                    list(LENGTH _LINK_FLAGS _link_flags_len)
+                    while(_link_flags_len GREATER 0)
+                        list(GET _LINK_FLAGS 0 _flag)
+                        list(REMOVE_AT _LINK_FLAGS 0)
+                        if (_flag STREQUAL "-Xlinker")
+                            list(GET _LINK_FLAGS 0 _flag)
+                            list(REMOVE_AT _LINK_FLAGS 0)
+                            if (_flag STREQUAL "-rpath")
+
+                                while(NOT "${_flag}" STREQUAL "-Xlinker")
+                                    list(GET _LINK_FLAGS 0 _flag)
+                                    list(REMOVE_AT _LINK_FLAGS 0)
+                                endwhile()
+
+                                list(GET _LINK_FLAGS 0 _flag)
+                                list(REMOVE_AT _LINK_FLAGS 0)
+                                list(APPEND _NEW_FLAGS "-Wl,-rpath,${_flag}")
+                            else ()
+                                list(APPEND _NEW_FLAGS "-Wl,${_flag}")
+                            endif ()
+                        elseif (_flag)
+                            list(APPEND _NEW_FLAGS ${_flag})
+                        endif ()
+                        list(LENGTH _LINK_FLAGS _link_flags_len)
+                    endwhile()
+                    string(REPLACE ";" " " _XLINKER_FREE_FLAGS "${_NEW_FLAGS}")
+                    set(MPI_LINK_FLAGS_WORK ${_XLINKER_FREE_FLAGS})
+
                     # Extract the set of libraries to link against from the link command
                     # line
                     string(REGEX MATCHALL "(^| )-l([^\" ]+|\"[^\"]+\")" MPI_LIBNAMES "${MPI_LINK_CMDLINE}")
