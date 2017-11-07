@@ -167,4 +167,11 @@ function(GET_GIT_BRANCH GIT_SRC_DIR BRANCH_VAR)
     set(${BRANCH_VAR} ${GIT_BRANCH} PARENT_SCOPE)
 endfunction()
 
+function(get_configuration_subdir_suffix suffix_var)
+    set(suffix "")
+    if(CMAKE_CONFIGURATION_TYPES)
+        set(suffix "/${CMAKE_CFG_INTDIR}")
+    endif()
+    set(${suffix_var} "${suffix}" PARENT_SCOPE)
+endfunction()
 
