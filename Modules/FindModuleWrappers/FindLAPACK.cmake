@@ -137,6 +137,12 @@ if (LAPACK_FIND_SYSTEM)
                 my_stupid_package_dependent_message_function_debug_lapack("Adding extra library ${LIB} to link interface")
                 append_link_library(lapack ${LIB})
             endforeach()
+
+            # If we have found LAPACK we also need to create a blas target.
+            if (NOT TARGET blas)
+                set(BLAS_FIND_SYSTEM TRUE)
+                find_package(BLAS)
+            endif ()
         else()
             my_stupid_package_dependent_message_function_lapack("Avoiding double import of target 'lapack'")
         endif()
