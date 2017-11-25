@@ -67,6 +67,14 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindTIFF.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindVALGRIND.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindwxWidgets.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/fortranparam_mpi.f90.in
+)
+set(FINDMPI_MODULES_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/libver_mpi.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/libver_mpi.f90.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/mpiver.f90.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/test_mpi.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/test_mpi.f90.in
 )
 set(FIND_MODULE_WRAPPERS_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindBLAS.cmake
@@ -86,7 +94,7 @@ set(FIND_MODULE_WRAPPERS_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLLVM.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLibXml2.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMPI.cmake
+#    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMPI.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMUMPS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindNETGEN.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindOPTPP.cmake
@@ -126,6 +134,10 @@ set(TEMPLATE_FILES_LIST
 
 install(FILES ${MODULES_FILES_LIST}
     DESTINATION share/cmake/Modules
+    COMPONENT CMakeFiles
+)
+install(FILES ${FINDMPI_MODULES_FILES_LIST}
+    DESTINATION share/cmake/Modules/FindMPI
     COMPONENT CMakeFiles
 )
 install(FILES ${FIND_MODULE_WRAPPERS_FILES_LIST}
