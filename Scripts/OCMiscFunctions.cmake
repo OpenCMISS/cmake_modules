@@ -175,3 +175,9 @@ function(get_configuration_subdir_suffix suffix_var)
     set(${suffix_var} "${suffix}" PARENT_SCOPE)
 endfunction()
 
+function(messaged TEXT)
+    if (DEBUG_MESSAGE)
+        message(STATUS "DEBUG: ${TEST}")
+    endif ()
+endfunction()
+
