@@ -177,7 +177,7 @@ endfunction()
 
 function(messaged TEXT)
     if (DEBUG_MESSAGE)
-        message(STATUS "DEBUG: ${TEST}")
+        message(STATUS "DEBUG: ${TEXT}")
     endif ()
 endfunction()
 
