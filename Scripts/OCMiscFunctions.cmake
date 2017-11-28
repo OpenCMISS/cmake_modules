@@ -182,6 +182,7 @@ function(FIND_PROGRAM_ALL _var)
             find_program(_found ${ARGN})
             if (_found AND NOT _found IN_LIST ${_var})
                 set(${_var} "${${_var}};${_found}" CACHE FILEPATH "Path to a program." FORCE)
+                mark_as_advanced(${_var})
                 # ignore with the next try
                 get_filename_component(_dir "${_found}" DIRECTORY)
                 list(APPEND CMAKE_IGNORE_PATH "${_dir}")
