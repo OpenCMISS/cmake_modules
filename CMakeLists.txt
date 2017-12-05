@@ -39,6 +39,9 @@ if (DEFINED INSTALL_PREFIX)
 endif ()
 set(CMAKE_INSTALL_PREFIX "${CMAKE_MODULES_INSTALL_PREFIX}" CACHE INTERNAL "Internalise install path prefix." FORCE)
 
+set(FIND_MPI_MODULE_FILE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI.cmake
+)
 set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FileSyncedOptions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindBLACS.cmake
@@ -52,7 +55,6 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindJPEG.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLibGDCM.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMUMPS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindNETGEN.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindOpt++.cmake
@@ -94,7 +96,6 @@ set(FIND_MODULE_WRAPPERS_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLLVM.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLibXml2.cmake
-#    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMPI.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMUMPS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindNETGEN.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindOPTPP.cmake
@@ -125,6 +126,12 @@ set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCMultiConfigEnvironment.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCScriptGenerateVirtualEnvCreateAndInstall.cmake
 )
+set(OPENCMISS_MPI_MODULES_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCDetermineMPIFunctions.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCPostSelectMPI.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCPreSelectMPI.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCSelectMPI.cmake
+)
 set(TEMPLATE_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Templates/librarybindings.in.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Templates/bindingsinfo.in.py
@@ -134,10 +141,6 @@ set(TEMPLATE_FILES_LIST
 
 install(FILES ${MODULES_FILES_LIST}
     DESTINATION share/cmake/Modules
-    COMPONENT CMakeFiles
-)
-install(FILES ${FINDMPI_MODULES_FILES_LIST}
-    DESTINATION share/cmake/Modules/FindMPI
     COMPONENT CMakeFiles
 )
 install(FILES ${FIND_MODULE_WRAPPERS_FILES_LIST}
@@ -151,6 +154,18 @@ install(FILES ${TEMPLATE_FILES_LIST}
 install(FILES ${OPENCMISS_MODULES_FILES_LIST}
     DESTINATION share/cmake/Modules/OpenCMISS
     COMPONENT CMakeFiles
+)
+install(FILES ${FIND_MPI_MODULE_FILE}
+    DESTINATION share/cmake/Modules
+    COMPONENT SDK
+)
+install(FILES ${FINDMPI_MODULES_FILES_LIST}
+    DESTINATION share/cmake/Modules/FindMPI
+    COMPONENT SDK
+)
+install(FILES ${OPENCMISS_MPI_MODULES_FILES_LIST}
+    DESTINATION share/cmake/Modules/OpenCMISS
+    COMPONENT SDK
 )
 
 set(PRINT_SUMMARY TRUE)
