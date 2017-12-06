@@ -2,7 +2,7 @@
 
 set(_PRE_SELECT_MPI FALSE)
 if (OPENCMISS_MPI)
-    log("Pre-selecting MPI: ${OPENCMISS_MPI}")
+    message(STATUS "Pre-selecting MPI: ${OPENCMISS_MPI}")
     if (OPENCMISS_MPI IN_LIST _MNEMONICS)
         set(_PRE_SELECT_MPI TRUE)
     else ()
