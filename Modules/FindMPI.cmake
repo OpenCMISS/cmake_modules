@@ -248,6 +248,14 @@ cmake_policy(SET CMP0057 NEW) # if IN_LIST
 
 include(${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake)
 
+# Have to clear some variables which pollute the search for specific cases.
+# Occurs when we have to use this same module twice.
+if (WIN32 AND CMAKE_Fortran_COMPILER_LOADED)
+    unset(MPI_Fortran_INCLUDE_DIRS)
+    unset(MPI_Fortran_INCLUDE_PATH)
+    unset(MPI_Fortran_WORKS)
++endif ()
+
 # Generic compiler names
 set(_MPI_C_GENERIC_COMPILER_NAMES          mpicc    mpcc      mpicc_r mpcc_r)
 set(_MPI_CXX_GENERIC_COMPILER_NAMES        mpicxx   mpiCC     mpcxx   mpCC    mpic++   mpc++
