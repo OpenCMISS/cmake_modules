@@ -208,6 +208,14 @@ set(_MPI_XL_Fortran_COMPILER_NAMES         mpixlf95   mpixlf95_r mpxlf95 mpxlf95
                                            #mpixlf77   mpixlf77_r mpxlf77 mpxlf77_r
                                            mpixlf     mpixlf_r   mpxlf   mpxlf_r)
 
+# Have to clear some variables which pollute the search for specific cases.
+# Occurs when we have to use this same module twice.
+if (WIN32 AND CMAKE_Fortran_COMPILER_LOADED)
+    unset(MPI_Fortran_INCLUDE_DIRS)
+    unset(MPI_Fortran_INCLUDE_PATH)
+    unset(MPI_Fortran_WORKS)
+endif ()
+
 ############################################################
 # Get possible compiler names
 ############################################################
