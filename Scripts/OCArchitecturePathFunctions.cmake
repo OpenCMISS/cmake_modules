@@ -33,7 +33,7 @@
 #        Otherwise, the path element is skipped.
 #    :mpi: Denotes the used MPI implementation along with the mpi build type.
 #        The path element is composed as :path:`/<mnemonic>_<mpi-build-type>`, where *mnemonic*/*mpi-build-type* contains the 
-#        lower-case value of the :var:`OPENCMISS_MPI`/:var:`OPENCMISS_MPI_BUILD_TYPE` variable, respectively.
+#        lower-case value of the :var:`OPENCMISS_MPI_IMPLEMENTATION`/:var:`OPENCMISS_MPI_BUILD_TYPE` variable, respectively.
 #
 #        Moreover, a path element :path:`no_mpi` is used for any component that does not use MPI at all.  
 #    :buildtype: Path element for the current overall build type determined by :var:`CMAKE_BUILD_TYPE`.
@@ -97,8 +97,9 @@ function(getArchitecturePathGivenCompilerPart COMPILER_PART VARNAME VARNAME_MPI)
 endfunction()
 
 # This function assembles the MPI part of the architecture path.
-# This part is made up of [OPENCMISS_MPI][OPENCMISS_MPI_BUILD_TYPE]
-#
+# This part is made up of [OPENCMISS_MPI_IMPLEMENTATION][OPENCMISS_MPI_BUILD_TYPE]
+# if building our own MPI otherwise it is made up of
+# [OPENCMISS_MPI]system.
 function(getMPIPartArchitecturePath VARNAME)
     # MPI version information
     if (OPENCMISS_MPI STREQUAL none)
@@ -106,8 +107,12 @@ function(getMPIPartArchitecturePath VARNAME)
     else()
         # Add the build type of MPI to the architecture path - we obtain different libraries
         # for different mpi build types
-        string(TOLOWER "${OPENCMISS_MPI_BUILD_TYPE}" MPI_BUILD_TYPE_LOWER)
-        set(MPI_PART ${OPENCMISS_MPI}_${MPI_BUILD_TYPE_LOWER})
+        if (OPENCMISS_BUILD_OWN_MPI)
+            string(TOLOWER "${OPENCMISS_MPI_BUILD_TYPE}" MPI_BUILD_TYPE_LOWER)
+        else ()
+            set(MPI_BUILD_TYPE_LOWER system)
+        endif ()
+        set(MPI_PART ${OPENCMISS_MPI_IMPLEMENTATION}_${MPI_BUILD_TYPE_LOWER})
     endif()
 
     # Append to desired variable
