@@ -254,7 +254,7 @@ if (WIN32 AND CMAKE_Fortran_COMPILER_LOADED)
     unset(MPI_Fortran_INCLUDE_DIRS)
     unset(MPI_Fortran_INCLUDE_PATH)
     unset(MPI_Fortran_WORKS)
-+endif ()
+endif ()
 
 # Generic compiler names
 set(_MPI_C_GENERIC_COMPILER_NAMES          mpicc    mpcc      mpicc_r mpcc_r)
