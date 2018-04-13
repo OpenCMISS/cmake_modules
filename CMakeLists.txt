@@ -62,6 +62,9 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPNG.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPackageMultipass.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPerlLibs.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPython.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPython2.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPython3.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindScoreP.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindSCALAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindSUNDIALS.cmake
@@ -69,9 +72,12 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindTIFF.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindVALGRIND.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindwxWidgets.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/fortranparam_mpi.f90.in
+)
+set(FINDPYTHON_MODULES_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPython/Support.cmake
 )
 set(FINDMPI_MODULES_FILES_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/fortranparam_mpi.f90.in
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/libver_mpi.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/libver_mpi.f90.in
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMPI/mpiver.f90.in
@@ -157,6 +163,10 @@ install(FILES ${OPENCMISS_MODULES_FILES_LIST}
 )
 install(FILES ${FIND_MPI_MODULE_FILE}
     DESTINATION share/cmake/Modules
+    COMPONENT SDK
+)
+install(FILES ${FINDPYTHON_MODULES_FILES_LIST}
+    DESTINATION share/cmake/Modules/FindPython
     COMPONENT SDK
 )
 install(FILES ${FINDMPI_MODULES_FILES_LIST}
