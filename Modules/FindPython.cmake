@@ -132,6 +132,15 @@ If library type is not specified, ``MODULE`` is assumed.
 
 set (_PYTHON_PREFIX Python)
 
+function(findpython_clear_cache_variables)
+    foreach (_Python_ITEM IN ITEMS EXECUTABLE COMPILER
+                                   LIBRARY_RELEASE RUNTIME_LIBRARY_RELEASE
+                                   LIBRARY_DEBUG RUNTIME_LIBRARY_DEBUG
+                                   INCLUDE_DIR)
+        unset (Python_${_Python_ITEM} CACHE)
+    endforeach()
+endfunction()
+
 if (DEFINED Python_FIND_VERSION)
   set (_Python_REQUIRED_VERSION_MAJOR ${Python_FIND_VERSION_MAJOR})
 
@@ -151,12 +160,7 @@ else()
       break()
     endif()
     # clean-up some CACHE variables to ensure look-up restart from scratch
-    foreach (_Python_ITEM IN ITEMS EXECUTABLE COMPILER
-                                   LIBRARY_RELEASE RUNTIME_LIBRARY_RELEASE
-                                   LIBRARY_DEBUG RUNTIME_LIBRARY_DEBUG
-                                   INCLUDE_DIR)
-      unset (Python_${_Python_ITEM} CACHE)
-    endforeach()
+    findpython_clear_cache_variables()
   endforeach()
 
   unset (Python_FIND_VERSION)
