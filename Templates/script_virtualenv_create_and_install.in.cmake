@@ -1,6 +1,6 @@
 
 if (NOT EXISTS "@ACTIVATE_SCRIPT@")
-    execute_process(COMMAND @VIRTUALENV_EXEC@ --system-site-packages "@VIRTUALENV_COMPLETE_INSTALL_PREFIX@")
+    execute_process(COMMAND @VIRTUALENV_EXEC@ --python="@Python_EXECUTABLE@" --system-site-packages "@VIRTUALENV_COMPLETE_INSTALL_PREFIX@")
 endif ()
 
 file(TO_NATIVE_PATH "@PACKAGE_BINARY_DIR@" SETUP_PY_DIR)
