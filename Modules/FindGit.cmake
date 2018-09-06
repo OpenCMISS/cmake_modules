@@ -208,3 +208,42 @@ function(git_get_branch VARNAME)
     endif()
     set(${VARNAME} ${RES} PARENT_SCOPE)
 endfunction()
+
+#.rst:
+# .. command:: git_is_dirty
+#
+# ::
+#
+#     git_is_dirty(VARNAME
+#        [WORKING_DIRECTORY] <directory>)
+#
+# ``VARNAME``
+#    The workspace variable name to assign the result to.
+#
+# ``WORKING_DIRECTORY``
+#   The working directory at which to execute the git commands.
+#   If not specified, :variable:`CMAKE_CURRENT_SOURCE_DIR` is assumed.
+function(git_is_dirty VARNAME)
+    if (NOT GIT_FOUND)
+        message(FATAL_ERROR "Cannot use git_get_branch: Git was not found.")
+    endif ()
+
+    cmake_parse_arguments(GIT "" "WORKING_DIRECTORY" "" ${ARGN})
+
+    if (NOT GIT_WORKING_DIRECTORY OR "${GIT_WORKING_DIRECTORY}" STREQUAL "")
+        set(GIT_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    endif ()
+    execute_process(COMMAND ${GIT_EXECUTABLE} diff HEAD --name-only
+        OUTPUT_VARIABLE RES
+        ERROR_VARIABLE ERR
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        WORKING_DIRECTORY ${GIT_WORKING_DIRECTORY})
+    if (ERR)
+        message(WARNING "Issuing Git command '${GIT_EXECUTABLE} diff HEAD --name-only' failed: ${ERR}")
+    endif ()
+    if (RES)
+        set(${VARNAME} TRUE PARENT_SCOPE)
+    else ()
+        set(${VARNAME} FALSE PARENT_SCOPE)
+    endif ()
+endfunction()
