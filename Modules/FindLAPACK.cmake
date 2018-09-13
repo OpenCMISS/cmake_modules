@@ -138,8 +138,9 @@ endif()
 
  if(_libraries_work)
    set(${LIBRARIES} ${${LIBRARIES}} ${_blas} ${_threads})
- else()
-    set(${LIBRARIES} FALSE)
+   set(${LIBRARIES} ${${LIBRARIES}} gfortran)
+ #else()
+ #   set(${LIBRARIES} FALSE)
  endif()
 
 endmacro()

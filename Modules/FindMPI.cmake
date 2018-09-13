@@ -265,11 +265,16 @@ set(_MPI_Fortran_GENERIC_COMPILER_NAMES    mpif95   mpif95_r  mpf95   mpf95_r
                                            mpif77   mpif77_r  mpf77   mpf77_r
                                            mpifc)
 
+
+set(_MPI_C_CRAY_COMPILER_NAMES             mpicc)
+set(_MPI_CXX_CRAY_COMPILER_NAMES           mpicxx)
+set(_MPI_Fortran_CRAY_COMPILER_NAMES       mpif90)
+
 # GNU compiler names
-set(_MPI_GNU_C_COMPILER_NAMES              mpigcc mpgcc mpigcc_r mpgcc_r)
-set(_MPI_GNU_CXX_COMPILER_NAMES            mpig++ mpg++ mpig++_r mpg++_r mpigxx)
+set(_MPI_GNU_C_COMPILER_NAMES              mpigcc mpgcc mpigcc_r mpgcc_r mpicc)
+set(_MPI_GNU_CXX_COMPILER_NAMES            mpig++ mpg++ mpig++_r mpg++_r mpigxx mpicxx)
 set(_MPI_GNU_Fortran_COMPILER_NAMES        mpigfortran mpgfortran mpigfortran_r mpgfortran_r
-                                           mpig77 mpig77_r mpg77 mpg77_r)
+                                           mpig77 mpig77_r mpg77 mpg77_r mpif77)
 
 # Intel MPI compiler names on Windows
 if(WIN32)
@@ -322,7 +327,7 @@ endif ()
 # pick up the right settings for it.
 foreach (LANG IN ITEMS C CXX Fortran)
   set(_MPI_${LANG}_COMPILER_NAMES "")
-  foreach (id IN ITEMS GNU Intel MSVC PGI XL)
+  foreach (id IN ITEMS CRAY GNU Intel MSVC PGI XL)
     if (NOT CMAKE_${LANG}_COMPILER_ID OR CMAKE_${LANG}_COMPILER_ID STREQUAL id)
       foreach(_COMPILER_NAME ${_MPI_${id}_${LANG}_COMPILER_NAMES})
         list(APPEND _MPI_${LANG}_COMPILER_NAMES ${_COMPILER_NAME}${MPI_EXECUTABLE_SUFFIX})
@@ -414,6 +419,8 @@ function (_MPI_interrogate_compiler lang)
       endif()
     endif()
   endif()
+
+string(REGEX REPLACE "-I.*backward_old" "" MPI_COMPILE_CMDLINE "${MPI_COMPILE_CMDLINE}")
 
   # MPICH, MVAPICH2 and Intel MPI just use "-show". Open MPI also offers this, but the
   # -showme commands are more specialized.
