@@ -138,7 +138,12 @@ endif()
 
  if(_libraries_work)
    set(${LIBRARIES} ${${LIBRARIES}} ${_blas} ${_threads})
-   set(${LIBRARIES} ${${LIBRARIES}} gfortran)
+#if the compiler is gcc, add gfortran library to avoid linking problems
+   if (CMAKE_C_COMPILER MATCHES ".+gcc")
+       set(${LIBRARIES} ${${LIBRARIES}} gfortran)
+   endif()
+#No need to set LIBRARIES to FALSE, it doesn't do any good
+#to the building process. Simply leave the libraries along
  #else()
  #   set(${LIBRARIES} FALSE)
  endif()
