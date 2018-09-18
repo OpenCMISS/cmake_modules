@@ -420,6 +420,7 @@ function (_MPI_interrogate_compiler lang)
     endif()
   endif()
 
+#remove 'backward' path from gcc compile-info report
 string(REGEX REPLACE "-I.*backward_old" "" MPI_COMPILE_CMDLINE "${MPI_COMPILE_CMDLINE}")
 
   # MPICH, MVAPICH2 and Intel MPI just use "-show". Open MPI also offers this, but the
