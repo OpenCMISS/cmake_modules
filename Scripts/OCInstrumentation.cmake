@@ -21,6 +21,8 @@ if (OPENCMISS_INSTRUMENTATION)
 #	else()
 #          message(WARNING "Can only use vtune instrumentation with an Intel toolchain. Proceeding with no instrumentation.")
 #        endif()
+    elseif (OPENCMISS_INSTRUMENTATION STREQUAL "gprof")
+          SET(OC_INSTRUMENTATION gprof)
     elseif (OPENCMISS_INSTRUMENTATION STREQUAL "none")
         # Do nothing
 
