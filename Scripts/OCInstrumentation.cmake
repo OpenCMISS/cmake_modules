@@ -2,6 +2,7 @@
 SET(OC_INSTRUMENTATION none)
 if (OPENCMISS_INSTRUMENTATION)
     STRING(TOLOWER "${OPENCMISS_INSTRUMENTATION}" OPENCMISS_INSTRUMENTATION)
+    SET(OC_INSTRUMENTATION ${OPENCMISS_INSTRUMENTATION})
     if (OPENCMISS_INSTRUMENTATION STREQUAL "scorep")
         SET(OC_INSTRUMENTATION scorep)
 	# Reset compiler names to their scorep wrapper compiler name
@@ -15,11 +16,11 @@ if (OPENCMISS_INSTRUMENTATION)
 	  string(CONCAT CMAKE_Fortran_COMPILER "scorep-" "${CMAKE_Fortran_COMPILER}")
 	endif()
     elseif (OPENCMISS_INSTRUMENTATION STREQUAL "vtune")
-        if(TOOLCHAIN STREQUAL "intel")
+#        if(TOOLCHAIN STREQUAL "intel")
           SET(OC_INSTRUMENTATION vtune)
-	else()
-          message(WARNING "Can only use vtune instrumentation with an Intel toolchain. Proceeding with no instrumentation.")
-        endif()
+#	else()
+#          message(WARNING "Can only use vtune instrumentation with an Intel toolchain. Proceeding with no instrumentation.")
+#        endif()
     elseif (OPENCMISS_INSTRUMENTATION STREQUAL "none")
         # Do nothing
 

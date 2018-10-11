@@ -153,13 +153,13 @@ endfunction()
 function(getInstrumentationPartArchitecturePath VARNAME)
 
     # Instrumentation
-    if ("${OPENCMISS_INSTRUMENTATION}" STREQUAL "scorep")
+    if ("${OC_INSTRUMENTATION}" STREQUAL "scorep")
         set(INSTRUMENTATION_PART /scorep)
-    elseif ("${OPENCMISS_INSTRUMENTATION}" STREQUAL "vtune")
+    elseif ("${OC_INSTRUMENTATION}" STREQUAL "vtune")
         set(INSTRUMENTATION_PART /vtune)
-    elseif ("${OPENCMISS_INSTRUMENTATION}" STREQUAL "gprof")
+    elseif ("${OC_INSTRUMENTATION}" STREQUAL "gprof")
         set(INSTRUMENTATION_PART /gprof)
-    elseif ("${OPENCMISS_INSTRUMENTATION}" STREQUAL "none")
+    elseif ("${OC_INSTRUMENTATION}" STREQUAL "none")
         set(INSTRUMENTATION_PART) # Do nothing
     else ()
         message(STATUS "Unknown instrumentation option. Ignoring.")
