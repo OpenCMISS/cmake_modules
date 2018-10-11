@@ -102,7 +102,7 @@ foreach(_library ${_list})
         set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
       endif ()
     else ()
-			if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
         # for ubuntu's libblas3gf and liblapack3gf packages
         set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3gf)
       endif ()
@@ -264,6 +264,11 @@ if (BLA_VENDOR MATCHES "Intel" OR BLA_VENDOR STREQUAL "All")
       set(LAPACK_mkl_SEARCH_SYMBOL "cheev")
       set(_LIBRARIES LAPACK_LIBRARIES)
       set(_BLAS_LIBRARIES ${BLAS_LIBRARIES})
+      if (UNIX)
+	  list(APPEND LAPACK_LINKER_FLAGS "-qopenmp -lpthread")
+          SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -qopenmp -std=c++0x")
+          SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -qopenmp")
+      endif ()
 
       # old
       list(APPEND LAPACK_SEARCH_LIBS
@@ -351,6 +356,9 @@ else()
   endif()
  endif()
 endif()
+
+
+
 
 cmake_pop_check_state()
 set(CMAKE_FIND_LIBRARY_SUFFIXES ${_lapack_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})

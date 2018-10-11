@@ -664,7 +664,7 @@ string(REGEX REPLACE "-I.*backward_old" "" MPI_COMPILE_CMDLINE "${MPI_COMPILE_CM
   # MPI might require pthread to work. The above mechanism wouldn't detect it, but we need to
   # link it in that case. -lpthread is covered by the normal library treatment on the other hand.
   if("${MPI_COMPILE_CMDLINE}" MATCHES "-pthread")
-    list(APPEND MPI_COMPILE_OPTIONS_WORK "-pthread")
+    list(APPEND MPI_COMPILE_OPTIONS_WORK " -pthread")
     if(MPI_LINK_FLAGS_WORK)
       string(APPEND MPI_LINK_FLAGS_WORK " -pthread")
     else()
@@ -1021,6 +1021,7 @@ macro(_MPI_check_lang_works LANG)
       set(MPI_${LANG}_WORKS FALSE)
 
       foreach(mpimethod IN ITEMS F77_HEADER F08_MODULE F90_MODULE)
+        message(STATUS "Checking method: ${mpimethod}")
         if(MPI_RESULT_${LANG}_test_mpi_${mpimethod})
           set(MPI_${LANG}_WORKS TRUE)
           set(MPI_${LANG}_HAVE_${mpimethod} TRUE)

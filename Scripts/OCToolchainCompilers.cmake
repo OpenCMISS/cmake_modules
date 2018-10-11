@@ -14,10 +14,10 @@ macro(setCMakeCompilersForToolchain TOOLCHAIN)
 			SET(CMAKE_Fortran_COMPILER gfortran)
 			
 		elseif (TOOLCHAIN STREQUAL "intel")
+			set(CMAKE_CXX_STANDARD 11)
 			SET(CMAKE_C_COMPILER icc)
 			SET(CMAKE_CXX_COMPILER icpc)
 			SET(CMAKE_Fortran_COMPILER ifort)
-			
 		elseif (TOOLCHAIN STREQUAL "ibm")
 			if (OC_MULTITHREADING)
 				SET(CMAKE_C_COMPILER xlc_r)
