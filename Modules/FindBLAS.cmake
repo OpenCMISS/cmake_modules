@@ -114,7 +114,7 @@ foreach(_library ${_list})
         set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
       endif ()
     else ()
-      if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+      if (UNIX)
         # for ubuntu's libblas3gf and liblapack3gf packages
         set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3gf)
       endif ()
@@ -499,6 +499,13 @@ if (BLA_VENDOR MATCHES "Intel" OR BLA_VENDOR STREQUAL "All")
           "mkl_blas95_lp64${BLAS_mkl_DLL_SUFFIX} mkl_intel_lp64${BLAS_mkl_DLL_SUFFIX}")
       endif ()
 
+#MKL (Intel) - specific
+     if(UNIX)
+          list(APPEND BLAS_LINKER_FLAGS "-qopenmp -lpthread")
+	  SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -qopenmp")
+	  SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -qopenmp")
+      endif ()
+
       # Add threading/sequential libs
       set(BLAS_SEARCH_LIBS_WIN_THREAD "")
       if (BLA_VENDOR STREQUAL "*_seq" OR BLA_VENDOR STREQUAL "All")
@@ -643,6 +650,19 @@ if (BLA_VENDOR MATCHES "Intel" OR BLA_VENDOR STREQUAL "All")
  endif ()
 endif ()
 
+if(NOT BLAS_LIBRARIES)
+  FIND_PACKAGE(MKL)
+  IF(MKL_FOUND)
+    set(BLAS_FOUND TRUE)
+    SET(BLAS_INFO "mkl")
+    if(UNIX)
+    	SET(BLAS_LIBRARIES ${MKL_LIBRARIES} "-openmp -lpthread" )
+    endif()
+    SET(BLAS_INCLUDE_DIR ${MKL_INCLUDE_DIR})
+    SET(BLAS_VERSION ${MKL_VERSION})
+  ENDIF(MKL_FOUND)
+endif()
+
 
 if(BLA_F95)
  if(BLAS95_LIBRARIES)
@@ -689,6 +709,8 @@ else()
     endif()
   endif()
 endif()
+
+
 
 cmake_pop_check_state()
 set(CMAKE_FIND_LIBRARY_SUFFIXES ${_blas_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})
