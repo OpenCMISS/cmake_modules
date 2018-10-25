@@ -500,7 +500,7 @@ if (BLA_VENDOR MATCHES "Intel" OR BLA_VENDOR STREQUAL "All")
       endif ()
 
 #MKL (Intel) - specific
-     if(UNIX)
+     if (UNIX AND (CMAKE_C_COMPILER_ID STREQUAL "Intel" OR CMAKE_CXX_COMPILER_ID STREQUAL "Intel"))
           list(APPEND BLAS_LINKER_FLAGS "-qopenmp -lpthread")
 	  SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -qopenmp")
 	  SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -qopenmp")
