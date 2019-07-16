@@ -96,7 +96,13 @@ if (@PACKAGE_NAME@_FIND_SYSTEM)
         set(@PACKAGE_CASENAME@_FOUND YES)
         if (NOT TARGET @PACKAGE_TARGET@)
             set(LIBS ${@PACKAGE_NAME@_LIBRARIES})
-            @MESSAGE@("Found: ${LIBS}")
+            #get filename only
+            get_filename_component(LIB_NAME ${LIBS} NAME_WE)
+            #remove leading lib part
+            if (${LIB_NAME} MATCHES "^lib.+")
+                    string(REGEX REPLACE "^lib" "" LIB_NAME ${LIB_NAME})
+            endif()
+	    @MESSAGE@("Found: ${LIBS} with name {$LIB_NAME}")
             
             SET(INCS )
             foreach(DIRSUFF _INCLUDE_DIRS _INCLUDES _INCLUDE_PATH _INCLUDE_DIR)
@@ -121,7 +127,7 @@ if (@PACKAGE_NAME@_FIND_SYSTEM)
             @DEBUG_MESSAGE@("Current build type: CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -- CURRENT_BUILD_TYPE=${CURRENT_BUILD_TYPE}")
             
             list(GET LIBS 0 _FIRST_LIB)
-            add_library(@PACKAGE_TARGET@ UNKNOWN IMPORTED)
+	    add_library(${LIB_NAME} UNKNOWN IMPORTED)
             # Treat apple frameworks separate
             # See http://stackoverflow.com/questions/12547624/cant-link-macos-frameworks-with-cmake
             if(APPLE AND ${_FIRST_LIB} MATCHES ".framework$")
@@ -129,7 +135,7 @@ if (@PACKAGE_NAME@_FIND_SYSTEM)
                 #message(STATUS "Matched '${FW_NAME}' to ${LIB}")
                 SET(_FIRST_LIB "${_FIRST_LIB}/${FW_NAME}")
             endif()
-            set_target_properties(@PACKAGE_TARGET@ PROPERTIES 
+	    set_target_properties(${LIB_NAME} PROPERTIES 
                     IMPORTED_LOCATION_${CURRENT_BUILD_TYPE} ${_FIRST_LIB}
                     IMPORTED_CONFIGURATIONS ${CURRENT_BUILD_TYPE}
                     INTERFACE_INCLUDE_DIRECTORIES "${INCS}"
@@ -139,7 +145,7 @@ if (@PACKAGE_NAME@_FIND_SYSTEM)
             # Add non-matched libraries as link libraries so nothing gets forgotten
             foreach(LIB ${LIBS})
                 @DEBUG_MESSAGE@("Adding extra library ${LIB} to link interface")
-                append_link_library(@PACKAGE_TARGET@ ${LIB})
+		append_link_library(${LIB_NAME} ${LIB})
             endforeach()
         else()
             @MESSAGE@("Avoiding double import of target '@PACKAGE_TARGET@'")
