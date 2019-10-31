@@ -72,3 +72,5 @@ function(getToolchain VARNAME)
 
     set(${VARNAME} ${_TOOLCHAIN} PARENT_SCOPE)
 endfunction()
+
+include(OCToolchainFlags)
