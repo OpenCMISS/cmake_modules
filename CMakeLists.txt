@@ -126,6 +126,7 @@ set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCArchitecturePathFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCMiscFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCToolchainCompilers.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCToolchainFlags.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCInstrumentation.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCToolchainChecks.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCPythonBindingsVirtualEnv.cmake
