@@ -55,6 +55,7 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindJPEG.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLibGDCM.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMKL.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMUMPS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindNETGEN.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindOpt++.cmake
@@ -102,7 +103,6 @@ set(FIND_MODULE_WRAPPERS_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLLVM.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindLibXml2.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMKL.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindMUMPS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindNETGEN.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindModuleWrappers/FindOPTPP.cmake
