@@ -2,6 +2,8 @@
 # Also performs a check if the current compiler supports the flag
 #
 # This needs to be included AFTER the MPIConfig as the used MPI mnemonic is used here, too!
+include(CheckFortranSourceCompiles)
+
 macro(addFlag VALUE LANGUAGE)
     getFlagCheckVariableName(${VALUE} ${LANGUAGE} CHK_VAR)
     if (${LANGUAGE} STREQUAL C)
