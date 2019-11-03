@@ -36,15 +36,9 @@ function(getFlagCheckVariableName FLAG LANGUAGE RESULT_VAR)
     set(${RESULT_VAR} ${LANGUAGE}_COMPILER_FLAG_${RES} PARENT_SCOPE)
 endfunction()
 
-if (C IN_LIST OC_ACTIVE_LANGUAGES)
-    include(CheckCCompilerFlag)
-endif ()
-if (CXX IN_LIST OC_ACTIVE_LANGUAGES)
-    include(CheckCXXCompilerFlag)
-endif ()
-if (Fortran IN_LIST OC_ACTIVE_LANGUAGES)
-    include(CheckFortranCompilerFlag)
-endif ()
+include(CheckCCompilerFlag)
+include(CheckCXXCompilerFlag)
+include(CheckFortranCompilerFlag)
 
 # ABI detection - no crosscompiling implemented yet, so will use native
 #if (NOT ABI)
