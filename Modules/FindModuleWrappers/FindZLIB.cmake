@@ -25,9 +25,11 @@ function(my_stupid_package_dependent_message_function_debug_zlib MSG)
 endfunction()
 
 my_stupid_package_dependent_message_function_debug_zlib("Entering script. CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}, _IMPORT_PREFIX=${_IMPORT_PREFIX}")
+my_stupid_package_dependent_message_function_zlib("Entering script. CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}, _IMPORT_PREFIX=${_IMPORT_PREFIX}")
 
 # Default: Not found
 set(ZLIB_FOUND NO)
+set(ZLIB_FIND_SYSTEM ON)
     
 # The default way is to look for components in the current PREFIX_PATH, e.g. own build components.
 # If the OC_SYSTEM_ZLIB flag is set for a package, the MODULE and CONFIG modes are tried outside the PREFIX PATH first.
@@ -96,7 +98,13 @@ if (ZLIB_FIND_SYSTEM)
         set(ZLIB_FOUND YES)
         if (NOT TARGET zlib)
             set(LIBS ${ZLIB_LIBRARIES})
-            my_stupid_package_dependent_message_function_zlib("Found: ${LIBS}")
+	    #get filename only
+	    get_filename_component(LIB_NAME ${LIBS} NAME_WE)
+	    #remove leading lib part
+	    if (${LIB_NAME} MATCHES "^lib.+")
+		    string(REGEX REPLACE "^lib" "" LIB_NAME ${LIB_NAME}) 
+	    endif()
+	    my_stupid_package_dependent_message_function_zlib("Found: ${LIBS} with name ${LIB_NAME}")
             
             SET(INCS )
             foreach(DIRSUFF _INCLUDE_DIRS _INCLUDES _INCLUDE_PATH _INCLUDE_DIR)
@@ -117,7 +125,8 @@ if (ZLIB_FIND_SYSTEM)
             my_stupid_package_dependent_message_function_debug_zlib("Current build type: CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -- CURRENT_BUILD_TYPE=${CURRENT_BUILD_TYPE}")
             
             list(GET LIBS 0 _FIRST_LIB)
-            add_library(zlib UNKNOWN IMPORTED)
+	    #add_library(zlib UNKNOWN IMPORTED)
+	    add_library(${LIB_NAME} UNKNOWN IMPORTED)
             # Treat apple frameworks separate
             # See http://stackoverflow.com/questions/12547624/cant-link-macos-frameworks-with-cmake
             if(APPLE AND ${_FIRST_LIB} MATCHES ".framework$")
@@ -125,7 +134,7 @@ if (ZLIB_FIND_SYSTEM)
                 #message(STATUS "Matched '${FW_NAME}' to ${LIB}")
                 SET(_FIRST_LIB "${_FIRST_LIB}/${FW_NAME}")
             endif()
-            set_target_properties(zlib PROPERTIES 
+	    set_target_properties(${LIB_NAME} PROPERTIES 
                     IMPORTED_LOCATION_${CURRENT_BUILD_TYPE} ${_FIRST_LIB}
                     IMPORTED_CONFIGURATIONS ${CURRENT_BUILD_TYPE}
                     INTERFACE_INCLUDE_DIRECTORIES "${INCS}"
@@ -134,8 +143,8 @@ if (ZLIB_FIND_SYSTEM)
             list(REMOVE_AT LIBS 0)
             # Add non-matched libraries as link libraries so nothing gets forgotten
             foreach(LIB ${LIBS})
-                my_stupid_package_dependent_message_function_debug_zlib("Adding extra library ${LIB} to link interface")
-                append_link_library(zlib ${LIB})
+                my_stupid_package_dependent_message_function_zlib("Adding extra library ${LIB} to link interface")
+		append_link_library(${LIB_NAME} ${LIB})
             endforeach()
         else()
             my_stupid_package_dependent_message_function_zlib("Avoiding double import of target 'zlib'")
@@ -155,7 +164,7 @@ endif ()
 
 # If not found, look also at the prefix path
 if (NOT ZLIB_FOUND)
-    #my_stupid_package_dependent_message_function_zlib("No system package found/available.")
+    my_stupid_package_dependent_message_function_zlib("No system package found/available.")
     find_package(ZLIB ${ZLIB_FIND_VERSION} CONFIG
         QUIET
         PATHS ${CMAKE_PREFIX_PATH}
