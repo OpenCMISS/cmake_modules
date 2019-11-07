@@ -1,20 +1,3 @@
-# Appends a library to the list of interface_link_libraries
-function(append_link_library TARGET LIB)
-    get_target_property(CURRENT_ILL
-        ${TARGET} INTERFACE_LINK_LIBRARIES)
-    if (NOT CURRENT_ILL)
-        set(CURRENT_ILL )
-    endif()
-    # Treat framework references different
-    if(APPLE AND ${LIB} MATCHES ".framework$")
-        string(REGEX REPLACE ".*/([A-Za-z0-9.]+).framework$" "\\1" FW_NAME ${LIB})
-        #message(STATUS "Matched '${FW_NAME}' to ${LIB}")
-        set(LIB "-framework ${FW_NAME}")
-    endif()
-    set_target_properties(${TARGET} PROPERTIES
-        INTERFACE_LINK_LIBRARIES "${CURRENT_ILL};${LIB}")
-endfunction()
-
 # Need to have function name templates to have the correct package info at call time!
 # Took some time to figure this quiet function re-definition stuff out..
 function(my_stupid_package_dependent_message_function_gdcm_abi MSG)
@@ -23,6 +6,8 @@ endfunction()
 function(my_stupid_package_dependent_message_function_debug_gdcm_abi MSG)
     #message(STATUS "DEBUG FindGDCM-ABI wrapper: ${MSG}")
 endfunction()
+
+include(FindLibraryUtilityFunctions)
 
 my_stupid_package_dependent_message_function_debug_gdcm_abi("Entering script. CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}, _IMPORT_PREFIX=${_IMPORT_PREFIX}")
 
@@ -115,28 +100,33 @@ if (GDCM-ABI_FIND_SYSTEM)
                 SET(CURRENT_BUILD_TYPE NOCONFIG)
             endif()
             my_stupid_package_dependent_message_function_debug_gdcm_abi("Current build type: CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -- CURRENT_BUILD_TYPE=${CURRENT_BUILD_TYPE}")
-            
-            list(GET LIBS 0 _FIRST_LIB)
+
             add_library(gdcm-abi UNKNOWN IMPORTED)
-            # Treat apple frameworks separate
-            # See http://stackoverflow.com/questions/12547624/cant-link-macos-frameworks-with-cmake
-            if(APPLE AND ${_FIRST_LIB} MATCHES ".framework$")
-                STRING(REGEX REPLACE ".*/([A-Za-z0-9.]+).framework$" "\\1" FW_NAME ${_FIRST_LIB})
-                #message(STATUS "Matched '${FW_NAME}' to ${LIB}")
-                SET(_FIRST_LIB "${_FIRST_LIB}/${FW_NAME}")
+
+            list(FIND LIBS debug _DEBUG_CONFIG_INDEX)
+            list(FIND LIBS optimized _OPTIMIZED_CONFIG_INDEX)
+            list(FIND LIBS general _GENERAL_CONFIG_INDEX)
+            if (NOT _GENERAL_CONFIG_INDEX STREQUAL "-1")
+                message(SEND_ERROR "Currently not able to handle the 'general' keyword in link library interfaces")
             endif()
-            set_target_properties(gdcm-abi PROPERTIES 
-                    IMPORTED_LOCATION_${CURRENT_BUILD_TYPE} ${_FIRST_LIB}
-                    IMPORTED_CONFIGURATIONS ${CURRENT_BUILD_TYPE}
-                    INTERFACE_INCLUDE_DIRECTORIES "${INCS}"
-            )
-            
-            list(REMOVE_AT LIBS 0)
-            # Add non-matched libraries as link libraries so nothing gets forgotten
-            foreach(LIB ${LIBS})
-                my_stupid_package_dependent_message_function_debug_gdcm_abi("Adding extra library ${LIB} to link interface")
-                append_link_library(gdcm-abi ${LIB})
-            endforeach()
+
+            if (_OPTIMIZED_CONFIG_INDEX EQUAL -1 AND _DEBUG_CONFIG_INDEX EQUAL -1)
+                my_stupid_package_dependent_message_function_debug_gdcm_abi("Index: _OPTIMIZED_CONFIG_INDEX=${_OPTIMIZED_CONFIG_INDEX}, _DEBUG_CONFIG_INDEX=${_DEBUG_CONFIG_INDEX}")
+                add_configuration_link_libraries(gdcm-abi ${CURRENT_BUILD_TYPE} "${LIBS}")
+            else()
+                my_stupid_package_dependent_message_function_debug_gdcm_abi("Index: _OPTIMIZED_CONFIG_INDEX=${_OPTIMIZED_CONFIG_INDEX}, _DEBUG_CONFIG_INDEX=${_DEBUG_CONFIG_INDEX}")
+                if (_OPTIMIZED_CONFIG_INDEX EQUAL -1 OR _DEBUG_CONFIG_INDEX EQUAL -1)
+                    message(SEND_ERROR "Currently not able to handle the case where only one 'optimized' or 'debug' keyword is declared.")
+                endif()
+                if (_OPTIMIZED_CONFIG_INDEX GREATER -1)
+                    extract_config_libs(${_OPTIMIZED_CONFIG_INDEX} "${LIBS}" _EXTRACTED_LIBS)
+                    add_configuration_link_libraries(gdcm-abi RELEASE "${_EXTRACTED_LIBS}")
+                endif()
+                if (_DEBUG_CONFIG_INDEX GREATER -1)
+                    extract_config_libs(${_DEBUG_CONFIG_INDEX} "${LIBS}" _EXTRACTED_LIBS)
+                    add_configuration_link_libraries(gdcm-abi DEBUG "${_EXTRACTED_LIBS}")
+                endif()
+            endif()
         else()
             my_stupid_package_dependent_message_function_gdcm_abi("Avoiding double import of target 'gdcm-abi'")
         endif()

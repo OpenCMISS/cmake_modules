@@ -55,6 +55,7 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindJPEG.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLibGDCM.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLibraryUtilityFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMUMPS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindNETGEN.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindOpt++.cmake
