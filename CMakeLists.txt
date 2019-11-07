@@ -56,6 +56,7 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLAPACK.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLibGDCM.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindLibraryUtilityFunctions.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMKL.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMUMPS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindNETGEN.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindOpt++.cmake
@@ -127,6 +128,8 @@ set(OPENCMISS_MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCArchitecturePathFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCMiscFunctions.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCToolchainCompilers.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCToolchainFlags.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCInstrumentation.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCToolchainChecks.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCPythonBindingsVirtualEnv.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/OCCheckSDKInstallation.cmake
@@ -185,6 +188,7 @@ if (PRINT_SUMMARY)
     message(STATUS "@@@@@@@@@@@@@@@@@@@@@@ SUMMARY @@@@@@@@@@@@@@@@@@@@@@@")
     message(STATUS "@")
     message(STATUS "@ OPENCMISS_CMAKE_MODULE_PATH: ${CMAKE_INSTALL_PREFIX}/share/cmake/Modules")
+    message(STATUS "@ OPENCMISS_INSTRUMENTATION: ${OPEMCMISS_INSTRUMENTATION}")
     message(STATUS "@")
     message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     message(STATUS "@")

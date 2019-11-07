@@ -1,3 +1,6 @@
+# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+# file Copyright.txt or https://cmake.org/licensing for details.
+
 #.rst:
 # FindLAPACK
 # ----------
@@ -30,29 +33,33 @@
 #      all the possibilities
 #   BLA_F95     if set on tries to find the f95 interfaces for BLAS/LAPACK
 #
-# ## List of vendors (BLA_VENDOR) valid in this module # Intel(mkl),
-# ACML,Apple, NAS, Generic
-
-#=============================================================================
-# Copyright 2007-2009 Kitware, Inc.
+# List of vendors (BLA_VENDOR) valid in this module:
 #
-# Distributed under the OSI-approved BSD License (the "License");
-# see accompanying file Copyright.txt for details.
+# * Intel(mkl)
+# * OpenBLAS
+# * FLAME
+# * ACML
+# * Apple
+# * NAS
+# * Generic
 #
-# This software is distributed WITHOUT ANY WARRANTY; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the License for more information.
-#=============================================================================
-# (To distribute this file outside of CMake, substitute the full
-#  License text for the above reference.)
 
 set(_lapack_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
 
-get_property(_LANGUAGES_ GLOBAL PROPERTY ENABLED_LANGUAGES)
-if (NOT _LANGUAGES_ MATCHES Fortran)
-include(CheckFunctionExists)
+# Check the language being used
+if( NOT (CMAKE_C_COMPILER_LOADED OR CMAKE_CXX_COMPILER_LOADED OR CMAKE_Fortran_COMPILER_LOADED) )
+  if(LAPACK_FIND_REQUIRED)
+    message(FATAL_ERROR "FindLAPACK requires Fortran, C, or C++ to be enabled.")
+  else()
+    message(STATUS "Looking for LAPACK... - NOT found (Unsupported languages)")
+    return()
+  endif()
+endif()
+
+if (CMAKE_Fortran_COMPILER_LOADED)
+  include(CheckFortranFunctionExists)
 else ()
-include(CheckFortranFunctionExists)
+  include(CheckFunctionExists)
 endif ()
 include(CMakePushCheckState)
 
@@ -102,7 +109,7 @@ foreach(_library ${_list})
         set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
       endif ()
     else ()
-			if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
         # for ubuntu's libblas3gf and liblapack3gf packages
         set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3gf)
       endif ()
@@ -125,7 +132,7 @@ if(_libraries_work)
     set(CMAKE_REQUIRED_LIBRARIES ${_flags} ${${LIBRARIES}} ${_blas} ${_threads})
   endif()
 #  message("DEBUG: CMAKE_REQUIRED_LIBRARIES = ${CMAKE_REQUIRED_LIBRARIES}")
-  if (NOT _LANGUAGES_ MATCHES Fortran)
+  if (NOT CMAKE_Fortran_COMPILER_LOADED)
     check_function_exists("${_name}_" ${_prefix}${_combined_name}_WORKS)
   else ()
     check_fortran_function_exists(${_name} ${_prefix}${_combined_name}_WORKS)
@@ -138,6 +145,10 @@ endif()
 
  if(_libraries_work)
    set(${LIBRARIES} ${${LIBRARIES}} ${_blas} ${_threads})
+   # if the compiler is gcc, add gfortran library to avoid linking problems
+   if (CMAKE_C_COMPILER MATCHES ".+gcc")
+     set(${LIBRARIES} ${${LIBRARIES}} gfortran)
+   endif()
  else()
     set(${LIBRARIES} FALSE)
  endif()
@@ -181,6 +192,33 @@ if (BLA_VENDOR STREQUAL "Goto" OR BLA_VENDOR STREQUAL "All")
  endif()
 endif ()
 
+if (BLA_VENDOR STREQUAL "OpenBLAS" OR BLA_VENDOR STREQUAL "All")
+ if(NOT LAPACK_LIBRARIES)
+  check_lapack_libraries(
+  LAPACK_LIBRARIES
+  LAPACK
+  cheev
+  ""
+  "openblas"
+  "${BLAS_LIBRARIES}"
+  ""
+  )
+ endif()
+endif ()
+
+if (BLA_VENDOR STREQUAL "FLAME" OR BLA_VENDOR STREQUAL "All")
+ if(NOT LAPACK_LIBRARIES)
+  check_lapack_libraries(
+  LAPACK_LIBRARIES
+  LAPACK
+  cheev
+  ""
+  "flame"
+  "${BLAS_LIBRARIES}"
+  ""
+  )
+ endif()
+endif ()
 
 #acml lapack
  if (BLA_VENDOR MATCHES "ACML" OR BLA_VENDOR STREQUAL "All")
@@ -237,7 +275,7 @@ if (BLA_VENDOR MATCHES "Intel" OR BLA_VENDOR STREQUAL "All")
   if (NOT WIN32)
     set(LM "-lm")
   endif ()
-  if (_LANGUAGES_ MATCHES C OR _LANGUAGES_ MATCHES CXX)
+  if (CMAKE_C_COMPILER_LOADED OR CMAKE_CXX_COMPILER_LOADED)
     if(LAPACK_FIND_QUIETLY OR NOT LAPACK_FIND_REQUIRED)
       find_PACKAGE(Threads)
     else()
@@ -263,6 +301,11 @@ if (BLA_VENDOR MATCHES "Intel" OR BLA_VENDOR STREQUAL "All")
       set(LAPACK_mkl_SEARCH_SYMBOL "cheev")
       set(_LIBRARIES LAPACK_LIBRARIES)
       set(_BLAS_LIBRARIES ${BLAS_LIBRARIES})
+      if (UNIX AND (CMAKE_C_COMPILER_ID STREQUAL "Intel" OR CMAKE_CXX_COMPILER_ID STREQUAL "Intel"))
+	  list(APPEND LAPACK_LINKER_FLAGS "-qopenmp -lpthread")
+          SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -qopenmp -std=c++0x")
+          SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -qopenmp")
+      endif ()
 
       # old
       list(APPEND LAPACK_SEARCH_LIBS
@@ -350,6 +393,9 @@ else()
   endif()
  endif()
 endif()
+
+
+
 
 cmake_pop_check_state()
 set(CMAKE_FIND_LIBRARY_SUFFIXES ${_lapack_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})
