@@ -37,7 +37,7 @@ function(add_configuration_link_libraries _TARGET _CONFIG _LIBS)
     list(REMOVE_AT _LIBS 0)
     # Add non-matched libraries as link libraries so nothing gets forgotten
     foreach(LIB ${_LIBS})
-        append_link_library(${_TARGET} ${_CONFIG} ${LIB})
+        append_link_library(${_TARGET} ${LIB})
     endforeach()
 endfunction()
 
