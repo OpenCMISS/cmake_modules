@@ -60,6 +60,7 @@ set(MODULES_FILES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindMUMPS.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindNETGEN.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindOpt++.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindOSMesa.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPETSC.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPNG.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/Modules/FindPackageMultipass.cmake
